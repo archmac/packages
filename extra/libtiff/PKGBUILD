@@ -1,0 +1,37 @@
+pkgname=libtiff
+pkgver=4.0.7
+pkgrel=2
+pkgdesc="Library for manipulation of TIFF images"
+arch=('i686' 'x86_64')
+url="http://www.simplesystems.org/libtiff/"
+license=('custom')
+depends=('libjpeg' 'zlib' 'xz')
+#makedepends=('freeglut' 'glu' 'mesa' 'jbigkit')
+#optdepends=('freeglut: for using tiffgt')
+source=(http://download.osgeo.org/libtiff/tiff-${pkgver}.tar.gz fix-hylafax.patch)
+sha1sums=('2c1b64478e88f93522a42dd5271214a0e5eae648'
+          '32166444112dc283ffa4ffdb56c81f246243434c')
+
+prepare() {
+  cd tiff-$pkgver
+  # http://bugzilla.maptools.org/show_bug.cgi?id=2636
+  patch -p1 -i ../fix-hylafax.patch
+}
+
+build() {
+  cd tiff-${pkgver}
+  ./configure --prefix=/opt/arch
+  make
+}
+
+check() {
+  cd tiff-${pkgver}
+  make check
+}
+
+package() {
+  cd tiff-${pkgver}
+  make DESTDIR="${pkgdir}" install
+  install -d -m755 "${pkgdir}/opt/arch/share/licenses/${pkgname}/"
+  install -m644 COPYRIGHT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}

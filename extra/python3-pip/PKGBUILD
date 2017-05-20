@@ -1,0 +1,44 @@
+pkgname=('python3-pip')
+pkgver=8.1.1
+pkgrel=1
+pkgdesc="The PyPA recommended tool for installing Python packages"
+url="https://pip.pypa.io/"
+arch=('any')
+license=('MIT')
+makedepends=('python3' 'python3-setuptools')
+source=(http://pypi.python.org/packages/source/p/pip/pip-${pkgver}.tar.gz)
+md5sums=('6b86f11841e89c8241d689956ba99ed7')
+sha256sums=('3e78d3066aaeb633d185a57afdccf700aa2e660436b4af618bcb6ff0fa511798')
+
+package_python3-pip() {
+  depends=('python3' 'python3-setuptools')
+
+  cd "$srcdir/pip-$pkgver"
+  python3 setup.py build
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir"
+
+  rm $pkgdir/opt/arch/bin/pip
+
+  install -d -m755 \
+	  "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENSE.txt \
+	  "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+}
+
+#package_python2-pip() {
+#  depends=('python2' 'python2-setuptools')
+#
+#  cd "$srcdir/pip-$pkgver"
+#  python2 setup.py build
+#  python2 setup.py install --prefix=/opt/arch --root="$pkgdir"
+#
+#  mv "$pkgdir/opt/arch/bin/pip" "$pkgdir/opt/arch/bin/pip2"
+#  sed -i "s|#!/usr/bin/env python$|#!/usr/bin/env python2|" \
+#    ${pkgdir}/opt/arch/lib/python2.7/site-packages/pip/__init__.py
+#  python2 -m compileall ${pkgdir}/opt/arch/lib/python2.7/site-packages/pip/__init__.py
+#
+#  install -d -m755 \
+#	  "$pkgdir/opt/arch/share/licenses/$pkgname"
+#  install -m644 LICENSE.txt \
+#	  "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+#}

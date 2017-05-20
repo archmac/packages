@@ -1,0 +1,26 @@
+pkgname=rustfmt
+pkgver=0.8
+pkgrel=1
+pkgdesc="A tool for formatting Rust code according to style guidelines"
+url="https://github.com/rust-lang-nursery/rustfmt"
+makedepends=('cargo')
+arch=('i686' 'x86_64')
+license=('Apache' 'MIT')
+source=("https://github.com/rust-lang-nursery/$pkgname/archive/$pkgver.tar.gz")
+sha512sums=('2193c786bdf70540b304ef6f7f95ce32ca5cc9c7c1da174eca2b885911f9c5df1c66078da291f523fc4a5d0a684593684ccdac9bd3d1e2ed8ba4e94cd2977b8a')
+
+build() {
+  cd "$pkgname-$pkgver"
+  cargo build --release
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -dm755  "$pkgdir/opt/arch/share/licenses/$pkgname/"
+  install -m644 LICENSE-MIT "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE-MIT"
+  install -m644 LICENSE-APACHE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE-APACHE"
+  cd target/release
+  install -dm755 "$pkgdir/opt/arch/bin/"
+  install -m755 rustfmt "$pkgdir/opt/arch/bin/rustfmt"
+  install -m755 cargo-fmt "$pkgdir/opt/arch/bin/cargo-fmt"
+}

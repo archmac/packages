@@ -1,0 +1,11 @@
+*.tar.*
+*.pkg
+*.tgz
+*.zip
+/*/pkg
+/*/src
+
+/core/bash/bash43-*
+/core/bash/bash43-*.sig
+/core/readline/readline63-*
+/core/readline/readline63-*.sig

@@ -1,0 +1,30 @@
+post_install() {
+  if [ ! -d '/opt/arch/var/lib/postgres' ]; then
+    mkdir -p '/opt/arch/var/lib/postgres'
+    chown _postgres:_postgres '/opt/arch/var/lib/postgres'
+    chmod u+rwx,go+rx /opt/arch/var/lib/postgres
+  fi
+  if [ ! -d '/opt/arch/var/lib/postgres/data' ]; then
+    mkdir -p '/opt/arch/var/lib/postgres/data'
+    chown _postgres:_postgres '/opt/arch/var/lib/postgres/data'
+  fi
+  if [ ! -f "/opt/arch/var/lib/postgres/data/PG_VERSION" ]; then
+    sudo -u _postgres /opt/arch/bin/initdb -U postgres /opt/arch/var/lib/postgres/data >/dev/null
+  fi
+
+  echo
+  echo "PostgreSQL has been installed with 'Disabled' set to 'true'."
+  echo ""
+  echo "Start it manually with:"
+  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.arch-osx.postgresql.plist"
+  echo
+  echo "Access the command line tool with role postgres:"
+  echo "    psql -U postgres"
+  echo
+  echo "To have it start on boot, change 'Disabled' to 'false' in the plist"
+  echo
+}
+
+post_upgrade() {
+  post_install $1
+}

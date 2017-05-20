@@ -1,0 +1,52 @@
+pkgname=lua
+pkgver=5.3.4
+_majorver=${pkgver%.*}
+pkgrel=1
+pkgdesc='Powerful lightweight programming language designed for extending applications'
+arch=('i686' 'x86_64')
+url='http://www.lua.org/'
+depends=('readline')
+license=('MIT')
+options=('!emptydirs')
+source=(https://www.lua.org/ftp/lua-$pkgver.tar.gz
+#        liblua.so.patch
+        lua.pc
+        LICENSE)
+sha1sums=('79790cfd40e09ba796b01a571d4d63b52b1cd950'
+#          'c2b025588fb9d8e81812a12a5d3c11b2e995cb78'
+          'ea184f12de6cc7aa2c09182a8afa6c65ad909c7f'
+          '05f5f3b7bef0258bd617c505b8992de639af4551')
+
+prepare() {
+  cd lua-$pkgver
+#  patch -p1 -i ../liblua.so.patch
+
+  sed -e "s/%VER%/$_majorver/g;s/%REL%/$pkgver/g" ../lua.pc > lua.pc
+}
+
+build() {
+  cd lua-$pkgver
+
+  # quite a lot of packages still use lua 5.1 API, enable 5.1 compat mode
+  make MYCFLAGS="$CFLAGS -fPIC -DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1" MYLDFLAGS="$LDFLAGS" macosx
+}
+
+package() {
+  cd lua-$pkgver
+
+  make \
+    INSTALL_TOP="$pkgdir"/opt/arch \
+    INSTALL_MAN="$pkgdir"/opt/arch/share/man/man1 \
+    install
+  ln -sf /opt/arch/bin/lua "$pkgdir"/opt/arch/bin/lua$_majorver
+  ln -sf /opt/arch/bin/luac "$pkgdir"/opt/arch/bin/luac$_majorver
+
+  install -dm755 "$pkgdir"/opt/arch/lib/pkgconfig
+  install -m644 lua.pc "$pkgdir"/opt/arch/lib/pkgconfig/${pkgname}53.pc
+  ln -sf /opt/arch/lib/pkgconfig/${pkgname}53.pc "$pkgdir"/opt/arch/lib/pkgconfig/$pkgname.pc
+
+  install -d "$pkgdir"/opt/arch/share/doc/$pkgname
+  install -m644 doc/*.{gif,png,css,html} "$pkgdir"/opt/arch/share/doc/$pkgname
+  install -dm755 "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 ../LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}

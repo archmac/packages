@@ -1,0 +1,118 @@
+pkgbase="sqlite"
+#pkgname=('sqlite' 'sqlite-tcl' 'sqlite-doc' 'sqlite-analyzer')
+pkgname=('sqlite' 'sqlite-doc')
+_srcver=3120200
+_docver=${_srcver}
+#_docver=3080001
+pkgver=3.12.2
+pkgrel=1
+pkgdesc="A C library that implements an SQL database engine"
+arch=('x86_64')
+license=('custom:Public Domain')
+url="http://www.sqlite.org/"
+#makedepends=('tcl' 'readline')
+makedepends=('readline')
+source=(http://www.sqlite.org/2016/sqlite-src-${_srcver}.zip
+        http://www.sqlite.org/2016/sqlite-doc-${_docver}.zip
+        license.txt)
+options=('!emptydirs' '!makeflags') # json extensions breaks parallel build
+sha1sums=('d96d0c14549212d3cac9a11450109149a17065d6'
+          'e49eb277915d1f886a9ee4687a23ec67dc5fe3cb'
+          'f34f6daa4ab3073d74e774aad21d66878cf26853')
+
+prepare() {
+  cd sqlite-src-$_srcver
+#  autoreconf -vfi
+}
+
+build() {
+  export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1 \
+                             -DSQLITE_ENABLE_UNLOCK_NOTIFY \
+                             -DSQLITE_ENABLE_DBSTAT_VTAB=1 \
+                             -DSQLITE_ENABLE_FTS3_TOKENIZER=1 \
+                             -DSQLITE_SECURE_DELETE"
+
+  # build sqlite
+  cd sqlite-src-$_srcver
+  ./configure --prefix=/opt/arch \
+	--disable-static \
+	--disable-amalgamation \
+	--enable-fts3 \
+	--enable-fts4 \
+	--enable-fts5 \
+	--enable-rtree \
+	--enable-json1
+	TCLLIBDIR=/opt/arch/lib/sqlite$pkgver
+
+  make
+
+  # build additional tools
+  make showdb showjournal showstat4 showwal sqldiff sqlite3_analyzer
+}
+
+package_sqlite() {
+
+ pkgdesc="A C library that implements an SQL database engine"
+ depends=('readline')
+ provides=("sqlite3=$pkgver")
+ replaces=("sqlite3")
+
+  cd sqlite-src-$_srcver
+  make DESTDIR=${pkgdir} install
+
+  install -m755 showdb showjournal showstat4 showwal sqldiff ${pkgdir}/opt/arch/bin/
+
+  # install manpage
+  install -m755 -d ${pkgdir}/opt/arch/share/man/man1
+  install -m644 sqlite3.1 ${pkgdir}/opt/arch/share/man/man1/
+
+  # license - no linking required because pkgbase=pkgname
+  install -d -m755 ${pkgdir}/opt/arch/share/licenses/${pkgbase}
+  install -m644 ${srcdir}/license.txt ${pkgdir}/opt/arch/share/licenses/${pkgbase}/license.txt
+
+  # split out tcl extension
+  #mkdir $srcdir/tcl
+  #mv $pkgdir/opt/arch/lib/sqlite* $srcdir/tcl
+  rm -rf $pkgdir/System
+}
+
+#package_sqlite-tcl() {
+#
+# pkgdesc="sqlite Tcl Extension Architecture (TEA)"
+# depends=('sqlite')
+# provides=("sqlite3-tcl=$pkgver")
+# replaces=("sqlite3-tcl")
+#
+#  install -m755 -d ${pkgdir}/opt/arch/lib
+#  mv $srcdir/tcl/* ${pkgdir}/opt/arch/lib
+#
+#  # install manpage
+#  install -m755 -d ${pkgdir}/opt/arch/share/man/mann
+#  install -m644 ${srcdir}/sqlite-src-$_srcver/autoconf/tea/doc/sqlite3.n ${pkgdir}/opt/arch/share/man/mann/
+#
+#  # link license
+#  install -m755 -d ${pkgdir}/opt/arch/share/licenses
+#  ln -sf /opt/arch/share/licenses/${pkgbase} "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+#}
+#
+#package_sqlite-analyzer() {
+#
+# pkgdesc="An analysis program for sqlite3 database files"
+# depends=('sqlite' 'tcl')
+#
+#  cd sqlite-src-$_srcver
+#  install -m755 -d ${pkgdir}/opt/arch/bin
+#  install -m755 sqlite3_analyzer ${pkgdir}/opt/arch/bin/
+#}
+
+package_sqlite-doc() {
+
+ pkgdesc="most of the static HTML files that comprise this website, including all of the SQL Syntax and the C/C++ interface specs and other miscellaneous documentation"
+ #arch=('any') - not yet supported
+ provides=("sqlite3-doc=$pkgver")
+ replaces=("sqlite3-doc")
+
+  cd sqlite-doc-${_docver}
+  mkdir -p ${pkgdir}/opt/arch/share/doc/${pkgbase}
+  cp -R *  ${pkgdir}/opt/arch/share/doc/${pkgbase}/
+}

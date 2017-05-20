@@ -1,0 +1,59 @@
+pkgname=lua52
+pkgver=5.2.4
+pkgrel=2
+pkgdesc='Powerful lightweight programming language designed for extending applications'
+arch=('i686' 'x86_64')
+url='http://www.lua.org/'
+depends=('readline')
+license=('MIT')
+options=('!emptydirs')
+source=(http://www.lua.org/ftp/lua-$pkgver.tar.gz
+#        liblua.so.patch
+        lua.pc
+        LICENSE)
+md5sums=('913fdb32207046b273fdb17aad70be13'
+#         '94ca7c5e6ec32ef8491041d88193f12d'
+         '8c6ccf96a34dcbb999468abd9cf2d8c4'
+         '0e2bd67b909b9ff673da844ca3480df2')
+
+prepare() {
+  cd lua-$pkgver
+  #patch -p1 -i ../liblua.so.patch
+
+  sed -e "s/%VER%/${pkgver%.*}/g;s/%REL%/$pkgver/g" ../lua.pc > lua.pc
+  sed -i~ -e 's/llua/llua5.2/' -e 's/\/include/\/include\/lua5.2/' lua.pc
+  sed -i~ -e '/^LUA_SO=/ s/lua/lua5.2/' -e '/^LUA_A=/ s/lua/lua5.2/' -e '/^LUA_T=/ s/lua/lua5.2/' -e '/^LUAC_T=/ s/luac/luac5.2/' src/Makefile
+}
+
+build() {
+  cd lua-$pkgver
+
+  make MYCFLAGS="$CFLAGS -fPIC" MYLDFLAGS="$LDFLAGS" macosx
+}
+
+package() {
+  cd lua-$pkgver
+
+  make \
+    TO_BIN='lua5.2 luac5.2' \
+    TO_LIB="liblua5.2.a" \
+    INSTALL_TOP="$pkgdir"/opt/arch \
+    INSTALL_INC="$pkgdir"/opt/arch/include/lua5.2 \
+    INSTALL_MAN="$pkgdir"/opt/arch/share/man/man1 \
+    install
+
+  install -dm755 "$pkgdir"/opt/arch/lib/pkgconfig
+  install -m644 lua.pc "$pkgdir"/opt/arch/lib/pkgconfig/$pkgname.pc
+
+  install -d "$pkgdir"/opt/arch/share/doc/$pkgname
+  install -m644 doc/*.{gif,png,css,html} "$pkgdir"/opt/arch/share/doc/$pkgname
+  install -dm755 "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 ../LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+
+  ln -s liblua5.2.so "$pkgdir"/opt/arch/lib/liblua.so.5.2
+  ln -s liblua5.2.so "$pkgdir"/opt/arch/lib/liblua.so.$pkgver
+ 
+  cd "$pkgdir"/opt/arch/share/man/man1
+  mv lua.1 lua5.2.1
+  mv luac.1 luac5.2.1
+}

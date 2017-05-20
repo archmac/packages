@@ -1,0 +1,62 @@
+pkgname=gnupg
+pkgver=2.0.29
+pkgrel=1
+pkgdesc='Complete and free implementation of the OpenPGP standard'
+url='http://www.gnupg.org/'
+license=('GPL')
+arch=('x86_64')
+optdepends=('libldap: gpg2keys_ldap'
+            'libusb-compat: scdaemon')
+#makedepends=('libldap' 'libusb-compat')
+# depends=('pth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
+#          'pinentry' 'bzip2' 'readline' 'gnutls' 'sqlite')
+depends=('pth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
+         'pinentry' 'readline')
+validpgpkeys=('D8692123C4065DEA5E0F3AB5249B39D24F25E3B6'
+              '46CC730865BB5C78EBABADCF04376F3EE0856959'
+              '031EC2536E580D8EA286A9F22071B08A33BD3F06'
+              'D238EA65D64C67ED4C3073F28A861B1C7EFD60D9')
+source=("https://gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2"{,.sig})
+sha1sums=('87eb0df18f9953675f979405a1af10ab6c5322b3' 'SKIP')
+
+install=gnupg.install
+
+conflicts=('dirmngr' 'gnupg2')
+provides=('dirmngr' "gnupg2=${pkgver}")
+replaces=('dirmngr' 'gnupg2')
+
+prepare() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    #sed -e '/noinst_SCRIPTS = gpg-zip/c sbin_SCRIPTS += gpg-zip' -i~ tools/Makefile.in
+}
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    sdk_path="$(xcodebuild -sdk -version | grep Path | grep Developer/SDKs/MacOSX10 | cut -d' ' -f2)"
+    LDFLAGS="${LDFLAGS} -lresolv" gl_cv_absolute_stdint_h="${sdk_path}/usr/include/stdint.h" \
+    ./configure \
+        --enable-maintainer-mode \
+        --enable-symcryptrun \
+        --prefix=/opt/arch \
+        --disable-dependency-tracking \
+        # --sysconfdir=/etc \
+        # --sbindir=/usr/bin \
+        # --libexecdir=/usr/lib/gnupg \
+
+    make
+}
+
+check() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    make check
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    LDFLAGS="${LDFLAGS} -lresolv" make DESTDIR="${pkgdir}" install
+    ln -s gpg2 "${pkgdir}"/opt/arch/bin/gpg
+    ln -s gpgv2 "${pkgdir}"/opt/arch/bin/gpgv
+    ln -s gpg2.1.gz "${pkgdir}"/opt/arch/share/man/man1/gpg.1.gz
+    rm "${pkgdir}/opt/arch/share/gnupg/com-certs.pem" # FS#33059
+}

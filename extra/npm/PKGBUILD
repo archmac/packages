@@ -1,0 +1,48 @@
+pkgname=npm
+pkgver=3.8.7
+pkgrel=1
+pkgdesc='A package manager for javascript'
+arch=('any')
+url='https://www.npmjs.com/'
+license=('custom:Artistic')
+#depends=('nodejs' 'semver')
+depends=('nodejs')
+provides=('nodejs-node-gyp')
+#makedepends=('git' 'procps-ng')
+makedepends=('git')
+optdepends=('python2: for node-gyp')
+options=('!emptydirs')
+source=("git+https://github.com/npm/npm.git#tag=v$pkgver")
+md5sums=('SKIP')
+
+build() {
+  cd npm
+  make
+}
+
+package() {
+  cd npm
+  make NPMOPTS="--prefix=\"$pkgdir/opt/arch\"" install
+
+  # Why 777? :/
+  chmod -R u=rwX,go=rX "$pkgdir"
+
+  # Fix files owned by nobody:
+  chown -R `whoami` "$pkgdir/opt/arch/lib/node_modules"
+
+  # Fix wrong symlinks
+  for _dir in man1 man5 man7; do
+    rm -f "$pkgdir"/opt/arch/share/man/$_dir/*
+    cd "$pkgdir"/opt/arch/lib/node_modules/npm/man/$_dir
+    for _file in *; do
+      ln -s /opt/arch/lib/node_modules/npm/man/$_dir/$_file "$pkgdir"/opt/arch/share/man/$_dir/
+    done
+  done
+
+  # Provide node-gyp executable
+  cp "$pkgdir"/opt/arch/lib/node_modules/npm/bin/node-gyp-bin/node-gyp "$pkgdir"/opt/arch/bin/node-gyp
+  sed -i -e 's|"`dirname "$0"`/../../|"`dirname "$0"`/../lib/node_modules/npm/|' "$pkgdir"/opt/arch/bin/node-gyp
+
+  install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 "$srcdir/npm/LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+}

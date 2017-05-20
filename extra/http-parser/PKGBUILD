@@ -1,0 +1,39 @@
+pkgname=http-parser
+pkgver=2.7.0
+pkgrel=1
+pkgdesc="Parser for HTTP Request/Response written in C"
+arch=('x86_64')
+url="https://github.com/nodejs/http-parser"
+license=('MIT')
+depends=('libc')
+makedepends=('git')
+source=("git+https://github.com/nodejs/http-parser.git#tag=v$pkgver"
+        "install.patch")
+sha256sums=('SKIP'
+            'b2b0aa71f6db9983fdaaeffb59fcf2854a09259fbaa7ffc838740244c7f3556e')
+
+prepare() {
+  cd $pkgname
+  patch -Np2 < ../install.patch
+  sed -i -e 's|-Werror||' Makefile
+}
+
+build() {
+  cd $pkgname
+  make library
+}
+
+check() {
+  cd $pkgname
+  make test
+}
+
+package() {
+  cd $pkgname
+  make PREFIX="$pkgdir/opt/arch" install
+
+  install -dm755 \
+        "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+  install -m644 LICENSE-MIT \
+        "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE-MIT"
+}

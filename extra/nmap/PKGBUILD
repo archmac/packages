@@ -1,0 +1,36 @@
+pkgname=nmap
+pkgver=7.40
+pkgrel=2
+pkgdesc='Utility for network discovery and security auditing'
+url='http://nmap.org/'
+arch=('i686' 'x86_64')
+license=('GPL2')
+depends=('pcre' 'openssl' 'lua52')
+validpgpkeys=('436D66AB9A798425FDA0E3F801AF9F036B9355D0')
+source=("https://nmap.org/dist/${pkgname}-${pkgver}.tar.bz2"
+        "https://nmap.org/dist/sigs/${pkgname}-${pkgver}.tar.bz2.asc")
+sha256sums=('9e14665fffd054554d129d62c13ad95a7b5c7a046daa2290501909e65f4d3188'
+            'SKIP')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	./configure \
+		--prefix=/opt/arch \
+		--libexecdir=/opt/arch/lib \
+		--mandir=/opt/arch/share/man \
+		--with-libpcap=included \
+        --disable-universal \
+        --without-nmap-update \
+        --with-openssl=/opt/arch \
+        --without-zenmap
+
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+	rm "${pkgdir}"/opt/arch/bin/uninstall_*
+	install -dm755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+	install -m644 COPYING "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}

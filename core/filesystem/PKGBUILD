@@ -1,0 +1,17 @@
+pkgname=filesystem
+pkgver=1.0
+pkgrel=1
+pkgdesc="filesystem layout"
+arch=('any')
+license=('MIT')
+url="https://arch-osx.org"
+groups=('base')
+install=""
+
+package() {
+  cd "${pkgdir}"
+
+  for d in bin sbin etc include lib share share/man src; do
+    install -d -m755 opt/arch/$d
+  done
+}

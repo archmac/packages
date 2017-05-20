@@ -1,0 +1,15 @@
+--- lib/libalpm/remove.c.orig	2016-04-07 21:46:27.000000000 +0200
++++ lib/libalpm/remove.c	2016-04-07 21:51:16.000000000 +0200
+@@ -334,6 +334,12 @@
+ 		return 1;
+ 	}
+ 
++	if(strcmp(filepath, "/usr/") == 0 || strcmp(filepath, "/opt/") == 0) {
++		/* we don't touch /usr on OS X */
++		_alpm_log(handle, ALPM_LOG_DEBUG, _("ignoring '%s'\n"), filepath);
++		return 1;
++	}
++
+ 	/* If we fail write permissions due to a read-only filesystem, abort.
+ 	 * Assume all other possible failures are covered somewhere else */
+ 	if(_alpm_access(handle, NULL, filepath, W_OK) == -1) {

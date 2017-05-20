@@ -1,0 +1,16 @@
+pkgname=apple-gcc
+pkgver=4.2.1
+pkgrel=1
+pkgdesc="GNU compiler collection"
+arch=('x86_64')
+url="https://r.research.att.com/tools/"
+license=('GPL')
+options=('!strip' 'staticlibs')
+provides=('gcc=4.2.1')
+source=("https://r.research.att.com/tools/gcc-42-5666.3-darwin11.pkg")
+sha256sums=('2f3893b411f578bfa98a99646ecfea0ba14e1bff4e4f311d7e595936d0da065d')
+
+package() {
+  cd $srcdir
+  /bin/pax --insecure -rz -f usr.pkg/Payload -s ,./usr,$pkgdir/opt/arch,
+}

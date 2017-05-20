@@ -1,0 +1,33 @@
+pkgname=ngrep
+pkgver=1.45
+pkgrel=1
+pkgdesc="Network grep"
+arch=('x86_64')
+url="http://ngrep.sourceforge.net/"
+license=('GPL')
+source=("https://downloads.sourceforge.net/project/ngrep/ngrep/1.45/ngrep-1.45.tar.bz2"
+        "ngrep-fix-ipv6-support.patch")
+sha256sums=('aea6dd337da8781847c75b3b5b876e4de9c58520e0d77310679a979fc6402fa7'
+            'f1bcc0a344e5f454207254746cab5b1d216d3de3efaf08f59732f2182d42bbb1')
+
+build() {
+  sdk_path="$(xcodebuild -sdk -version | grep Path | grep Developer/SDKs/MacOSX10 | cut -d' ' -f2)"
+
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --disable-debug \
+              --disable-dependency-tracking \
+              --enable-ipv6 \
+              --prefix=/opt/arch \
+              --with-pcap-includes="${sdk_path}"/usr/include/pcap \
+              --disable-pcap-restart
+
+  # last line required to avoid segfaults
+  # see https://github.com/jpr5/ngrep/commit/e29fc29
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make install DESTDIR="${pkgdir}"
+}

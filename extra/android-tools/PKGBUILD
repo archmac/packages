@@ -1,0 +1,17 @@
+pkgname=android-tools
+pkgver=23.0.1
+pkgrel=1
+pkgdesc="Tools for the Android SDK"
+arch=('x86_64')
+url="https://developer.android.com/sdk"
+license=('custom')
+source=(https://dl.google.com/android/repository/platform-tools_r${pkgver}-macosx.zip)
+
+package() {
+    cd platform-tools
+    install -d -m755 $pkgdir/opt/arch/bin
+    install -m755 adb $pkgdir/opt/arch/bin
+    install -m755 fastboot $pkgdir/opt/arch/bin
+}
+
+sha256sums=('d2439f5de236c3831c048b678653c5955487351be8e196c65923b4eca5c47692')

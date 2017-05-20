@@ -1,0 +1,31 @@
+pkgname=sphinx
+pkgver=2.2.10
+pkgrel=1
+pkgdesc="Sphinx is a full-text search engine"
+arch=('x86_64')
+url="http://www.sphinxsearch.com"
+license=('custom')
+depends=('libc')
+makedepends=('mysql' 'postgresql' 'openssl')
+_commit=9b58e92c965cd7e3208247ace3cc00d173397f3c
+source=("http://sphinxsearch.com/files/$pkgname-$pkgver-release.tar.gz"
+        "git+https://github.com/snowballstem/snowball#commit=$_commit")
+
+build() {
+    cd "$srcdir/snowball"
+    make dist_libstemmer_c
+    tar xzf dist/libstemmer_c.tgz -C "$srcdir"/$pkgname-$pkgver-release
+
+	cd "$srcdir"/$pkgname-$pkgver-release
+	./configure --prefix=/opt/arch --localstatedir=/opt/arch/var/lib/sphinx --with-pgsql --with-mysql --with-libstemmer
+	make
+}
+
+package() {
+	cd "$srcdir"/$pkgname-$pkgver-release
+
+	make DESTDIR="$pkgdir" install
+}
+
+sha256sums=('054cb86e64bd48997d89386e1224d4405063d9857b2d7c33dc6cc1b9ef6df440'
+            'SKIP')

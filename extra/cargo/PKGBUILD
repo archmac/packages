@@ -1,0 +1,71 @@
+pkgname=cargo
+pkgver=0.16.0
+pkgrel=2
+pkgdesc='Rust package manager'
+url='http://crates.io/'
+arch=('x86_64' 'i686')
+license=('APACHE' 'MIT' 'custom')
+depends=('curl' 'rust')
+makedepends=('git' 'python' 'cmake' 'cargo')
+optdepends=('gcc: for compiling C source code with gcc'
+            'clang: for compiling C source code with clang')
+groups=('rust')
+options=('!emptydirs')
+source=("git+https://github.com/rust-lang/cargo.git#tag=$pkgver"
+        "git+https://github.com/rust-lang/rust-installer.git")
+md5sums=('SKIP'
+         'SKIP')
+
+prepare() {
+  # bootstrap
+  #curl -O https://s3.amazonaws.com/rust-lang-ci/cargo-builds/fbeea902d2c9a5be6d99cc35681565d8f7832592/cargo-nightly-x86_64-apple-darwin.tar.gz
+  #tar xvfz cargo-nightly-x86_64-apple-darwin.tar.gz
+  #cd cargo-nightly-x86_64-apple-darwin
+  #./install.sh --prefix=$srcdir/cargobootstrap
+  #cd ..
+
+  cd cargo
+
+  git submodule init
+  git config submodule.src/rust-installer.url "$srcdir"/rust-installer
+  git submodule update
+
+  sed -i -e 's^share/doc^share/licenses^g' Makefile.in
+}
+
+build() {
+  cd cargo
+
+  # bootstrap
+  #export PATH="$PATH:$srcdir/cargobootstrap/bin"
+
+  #export CARGO_HOME="$src/cargo_home"
+
+  # TODO: libssh2-sys crate fails to use vendored libssh2 if libssh2 package is installed
+
+  ./configure --prefix=/opt/arch --local-rust-root=/opt/arch --enable-optimize
+  make
+
+  install_name_tool -change {,/opt/arch/lib/}libhttp_parser.2.7.0.dylib $srcdir/cargo/target/x86_64-apple-darwin/release/cargo
+}
+
+package() {
+  cd cargo
+
+  make DESTDIR="$pkgdir" install
+
+  # Remove files that contains references to $srcdir or $pkgdir,
+  # or that conflicts with the rust package.
+  rm -f "$pkgdir/opt/arch/lib/rustlib/"{install.log,manifest-cargo,uninstall.sh}
+
+  install -d "$pkgdir/opt/arch/share/bash-completion/completions"
+  mv "$pkgdir/opt/arch/etc/bash_completion.d/cargo" \
+    "$pkgdir/opt/arch/share/bash-completion/completions/cargo"
+
+  install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname/"
+  for f in LICENSE-APACHE LICENSE-MIT LICENSE-THIRD-PARTY; do
+    install -m644 "$f" "$pkgdir/opt/arch/share/licenses/$pkgname/$f"
+  done
+}
+
+# vim:set ts=2 sw=2 et:

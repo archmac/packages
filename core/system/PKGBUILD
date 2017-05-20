@@ -1,0 +1,9 @@
+pkgname=system
+pkgver=10.11
+pkgrel=1
+pkgdesc="OS X system components meta package"
+arch=('any')
+url=""
+license=('MIT')
+#provides=('clang' 'gcc' 'libffi' 'curl' 'make' 'zlib' 'ncurses' 'openssl=0.9.8' 'readline')
+provides=('libc' 'clang=703.0.29' 'gcc' 'libffi' 'curl=7.43.0' 'make' 'zlib=1.2.5' 'ncurses=5.4.0' 'sh' 'bash=3.2.57' 'libxml2' 'python2=2.7.10' 'ruby=2.0.0' 'perl=5.18.2' 'krb5' 'tcl=8.5.0' 'tcl=8.4.0' 'pam' 'grep' 'bzip2')

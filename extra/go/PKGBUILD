@@ -1,0 +1,158 @@
+pkgname=('go' 'go-tools')
+epoch=2
+pkgver=1.8.1
+pkgrel=1
+arch=('x86_64')
+url='http://golang.org/'
+license=('BSD')
+#makedepends=('inetutils' 'git' 'go')
+options=('!strip' 'staticlibs')
+source=(https://storage.googleapis.com/golang/go1.8.1.src.tar.gz
+        https://storage.googleapis.com/golang/go1.8.1.darwin-amd64.tar.gz)
+noextract=("go1.8.1.darwin-amd64.tar.gz")
+sha256sums=("33daf4c03f86120fdfdc66bddf6bfff4661c7ca11c5da473e537f4d69b470e57"
+            "25b026fe2f4de7c80b227f69588b06b93787f5b5f134fbf2d652926c08c04bcd")
+_gourl=golang.org/x/tools/cmd
+
+prepare() {
+  cd $srcdir
+  mkdir -p gobootstrap
+  bsdtar -C gobootstrap -xz --strip-components 1 -f go1.8.1.darwin-amd64.tar.gz
+}
+
+build() {
+  export GOROOT_BOOTSTRAP="$srcdir/gobootstrap"
+
+  cd "$srcdir/go/src"
+  export GOROOT_FINAL="/opt/arch/lib/go"
+  export CGO_ENABLED=1
+
+  # Crosscompilation for various platforms. This is not strictly required as the
+  # compiler can generate libraries on the fly. Prebuilding the libs speeds up
+  # crosscompilation time.
+  #
+  # for os in darwin freebsd linux windows; do
+  #   for arch in 386 amd64 arm; do
+  #     export GOOS="$os"
+  #     export GOARCH="$arch"
+  #     bash make.bash --no-clean
+  #   done
+  # done
+
+  export GOOS=darwin
+  export GOARCH=amd64
+
+  bash make.bash --no-clean
+
+  rm -rf "$GOROOT_BOOTSTRAP"
+  unset GOROOT_BOOTSTRAP
+  export GOROOT="$srcdir/go"
+  export GOPATH="$srcdir"
+
+  # System-wide tools
+  for tool in godex godoc goimports gomvpkg gorename gotype; do
+    $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
+    $GOROOT/bin/go build -v -x -o $GOPATH/bin/$tool $_gourl/$tool
+  done
+
+  # Distribution tools
+  for tool in benchcmp bundle callgraph digraph eg fiximports html2article  present ssadump stress stringer ; do
+    $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
+    $GOROOT/bin/go build -v -x -o $GOPATH/pkg/tool/${GOOS}_$GOARCH/$tool golang.org/x/tools/cmd/$tool
+  done
+}
+
+check() {
+  cd "$pkgname"
+
+  export GOOS=darwin
+  export GOARCH=amd64
+
+  export GOROOT="$srcdir/$pkgname"
+  export GOBIN="$GOROOT/bin"
+  export PATH="$srcdir/$pkgname/bin:$PATH"
+
+  # bundle does not compile with 1.6
+  for tool in godoc goimports gomvpkg gorename gotype \
+    benchcmp callgraph digraph eg fiximports html2article present ssadump stress stringer; do
+    GOPATH="$srcdir" $GOROOT/bin/go test -v -x $_gourl/$tool
+  done
+
+  # TestSimpleMulticastListener will fail in standard chroot
+  cd src && bash run.bash --no-rebuild || true
+}
+
+package_go() {
+  pkgdesc='Compiler and tools for the Go programming language from Google'
+  optdepends=('mercurial: for fetching sources from mercurial repositories'
+              'git: for fetching sources from git repositories'
+              'bzr: for fetching sources from bazaar repositories'
+              'subversion: for fetching sources from subversion repositories'
+              'go-tools: godoc, goimports, gorename, and other tools.')
+  install="$pkgname.install"
+
+  cd "$pkgname"
+
+  export GOROOT="$srcdir/$pkgname"
+  export GOBIN="$GOROOT/bin"
+  export GOOS=darwin
+  export GOARCH=amd64
+
+  install -d -m755 "$pkgdir/opt/arch/share/licenses/go"
+  install -m644 LICENSE "$pkgdir/opt/arch/share/licenses/go/LICENSE"
+
+  mkdir -p "$pkgdir/opt/arch/"{share/go,lib/go,lib/go/pkg,lib/go/src,lib/go/site/src}
+
+  cp -r doc misc "$pkgdir/opt/arch/share/go"
+  ln -s /opt/arch/share/go/doc "$pkgdir/opt/arch/lib/go/doc"
+  cp -a bin "$pkgdir/opt/arch"
+  cp -a pkg/{include,${GOOS}_$GOARCH,tool} "$pkgdir/opt/arch/lib/go/pkg"
+  # The 'race' folder is not always generated for all architectures.
+  [ -d "pkg/${GOOS}_${GOARCH}_race" ] && cp -a pkg/${GOOS}_${GOARCH}_race "$pkgdir/opt/arch/lib/go/pkg"
+  cp -a "$GOROOT/src" "$pkgdir/opt/arch/lib/go/"
+  cp -a "$GOROOT/lib" "$pkgdir/opt/arch/lib/go/"
+
+  # This is to make `# go get golang.org/x/tour/gotour` and then running the
+  # gotour executable work out of the box.
+  #ln -sf /opt/arch/bin "$pkgdir/opt/arch/lib/go/bin"
+
+  install -d -m755 "$pkgdir/opt/arch/lib/go"
+  install -m644 VERSION "$pkgdir/opt/arch/lib/go/VERSION"
+
+  # For godoc
+  install -d -m755 "$pkgdir/opt/arch/lib/go"
+  install -m644 favicon.ico "$pkgdir/opt/arch/lib/go/favicon.ico"
+
+  # Clean Windows specific files.
+  rm -fv "$pkgdir"/opt/arch/lib/go/src/*.bat
+
+  # Strip manually since `strip` will not process Go's static libraries.
+  #for i in "$pkgdir/opt/arch/bin"/* \
+  #         "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"/*; do
+  #    strip -s "$i"
+  #done
+}
+
+package_go-tools() {
+  pkgdesc='Developer tools for the Go programming language (includes godoc)'
+  depends=('go>2:1.5.3-1')
+
+  GOOS=darwin
+  GOARCH=amd64
+
+  install -d -m755 "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 "$srcdir/src/$_gourl/../LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+
+  # System-wide tools
+  install -d -m755 "$pkgdir/opt/arch/bin"
+  install -p -m755 "$srcdir/bin"/* "$pkgdir/opt/arch/bin"
+
+  # Distribution tools
+  install -d -m755 "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
+  install -p -m755 "$srcdir/pkg/tool/${GOOS}_$GOARCH"/* "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
+
+  #for i in "$pkgdir/opt/arch/bin"/* \
+  #         "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"/*; do
+  #  strip -s "$i"
+  #done
+}

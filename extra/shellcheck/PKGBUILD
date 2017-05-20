@@ -1,0 +1,70 @@
+_hkgname=ShellCheck
+pkgname=shellcheck
+pkgver=0.4.4
+pkgrel=1
+pkgdesc="Shell script analysis tool"
+url="http://www.shellcheck.net"
+license=("GPL")
+arch=('x86_64')
+#depends=('libffi' 'gmp')
+#makedepends=("ghc=8.0.1" "haskell-json" "haskell-mtl" "haskell-parsec" "haskell-quickcheck"
+makedepends=("ghc=8.0.1" "cabal-install")
+source=("http://hackage.haskell.org/packages/archive/${_hkgname}/${pkgver}/${_hkgname}-${pkgver}.tar.gz")
+sha256sums=('6cc50790d25b6f330037c3612c21460aa75839cc32c65e10ea6b35f9f4488768')
+
+prepare() {
+    cd "${srcdir}/${_hkgname}-${pkgver}"
+
+    # set up sandbox
+    HOME="${PWD}"
+    cabal sandbox init
+    mkdir -p .cabal-sandbox/bin
+    export PATH="${srcdir}/.cabal-sandbox/bin:$PATH"
+
+    if [[ ! -d .cabal/packages ]]; then
+        cabal update
+    fi
+
+    # fetch needed tools that are not deps
+    #for tool in ""; do
+    #    cabal fetch $tool
+    #done
+
+    # fetch deps
+    cabal fetch $(cabal install --dependencies-only --dry-run | sed 1,2d | grep -v -e '--reinstall')
+}
+
+build() {
+    cd "${srcdir}/${_hkgname}-${pkgver}"
+
+    # install needed tools that are not deps
+    #for tool in ""; do
+    #    cabal install --jobs=$(nproc) --max-backjumps=100000 $tool
+    #done
+    #rm -rf .cabal-sandbox/*packages.conf.d/
+
+    # install deps
+    #cabal install --jobs=$(nproc) --max-backjumps=100000 --only-dependencies
+    cabal install --jobs=2 --max-backjumps=100000 --only-dependencies
+
+    cabal build --jobs=2
+}
+
+test() {
+    cd "${srcdir}/${_hkgname}-${pkgver}"
+    cabal test
+}
+
+package() {
+    cd "${srcdir}/${_hkgname}-${pkgver}"
+
+    cabal install --prefix=${pkgdir}/opt/arch
+
+    # No haskell library
+    rm -r "$pkgdir"/opt/arch/lib
+
+    rm -r "$pkgdir"/opt/arch/share/doc
+
+    install -d -m755 "$pkgdir"/opt/arch/share/man/man1
+    install -m644 shellcheck.1 "$pkgdir"/opt/arch/share/man/man1/shellcheck.1
+}

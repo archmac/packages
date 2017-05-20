@@ -1,0 +1,55 @@
+pkgname=pcre
+pkgver=8.38
+pkgrel=1
+pkgdesc='A library that implements Perl 5-style regular expressions'
+arch=('x86_64')
+url='http://www.pcre.org/'
+license=('BSD')
+#depends=('gcc-libs' 'readline' 'zlib' 'bzip2' 'bash')
+depends=('bash')
+validpgpkeys=('45F68D54BBE23FB3039B46E59766E084FB0F43D8') # Philip Hazel
+source=("ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$pkgname-$pkgver.tar.bz2"{,.sig}
+        '01-CVE-2016-1283.patch')
+md5sums=('00aabbfe56d5a48b270f999b508c5ad2'
+         'SKIP'
+         '722aba6455a3f0240eaa22289f0176a0')
+
+prepare() {
+  cd $pkgname-$pkgver
+  # apply patch from the source array (should be a pacman feature)
+  local filename
+  for filename in "${source[@]}"; do
+    if [[ "$filename" =~ \.patch$ ]]; then
+      msg2 "Applying patch $filename"
+      patch -p1 -N -i "$srcdir/$filename"
+    fi
+  done
+  :
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure \
+    --prefix=/opt/arch \
+    --enable-unicode-properties \
+    --enable-pcre16 \
+    --enable-pcre32 \
+    --enable-jit \
+    --enable-pcregrep-libz \
+    --enable-pcregrep-libbz2 \
+    --enable-pcretest-libreadline
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make -j1 check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+
+  install -d mm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENCE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+}

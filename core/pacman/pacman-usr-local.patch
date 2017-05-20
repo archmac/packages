@@ -1,0 +1,12 @@
+--- lib/libalpm/remove.c.orig	2016-04-08 18:01:54.000000000 +0200
++++ lib/libalpm/remove.c	2016-04-08 18:03:08.000000000 +0200
+@@ -461,6 +461,9 @@
+ 		} else if(files < 0) {
+ 			_alpm_log(handle, ALPM_LOG_DEBUG,
+ 					"keeping directory %s (could not count files)\n", file);
++		} else if(strcmp(file, "/opt/arch/") == 0 || strcmp(file, "/opt/") == 0) {
++			_alpm_log(handle, ALPM_LOG_DEBUG,
++					"keeping directory %s (OS X rootless)\n", file);
+ 		} else if(newpkg && alpm_filelist_contains(alpm_pkg_get_files(newpkg),
+ 					fileobj->name)) {
+ 			_alpm_log(handle, ALPM_LOG_DEBUG,

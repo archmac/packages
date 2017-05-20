@@ -1,0 +1,31 @@
+pkgname=glew
+pkgver=1.13.0
+pkgrel=1
+pkgdesc='OpenGL Extension Wrangler Library'
+arch=('x86_64')
+url="http://glew.sourceforge.net"
+license=('BSD' 'MIT' 'GPL')
+#depends=('libxmu' 'libxi' 'glu')
+source=(http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tgz)
+sha1sums=('d5b1c499f429aa91c466193b4e8ea94a84019e37')
+options=(!strip)
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed -i~ -e 's/Requires: @requireslib@//' glew.pc.in
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  make GLEW_PREFIX=/opt/arch all
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make GLEW_PREFIX=/opt/arch GLEW_DEST=$pkgdir/opt/arch install.all
+
+  install -d -m755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+  install -m644 LICENSE.txt "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+  install -d -m755 ${pkgdir}/opt/arch/share/doc/glew
+  install -m644 doc/* ${pkgdir}/opt/arch/share/doc/glew
+}

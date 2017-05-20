@@ -1,0 +1,51 @@
+pkgname=openvpn
+pkgver=2.3.10
+pkgrel=1
+pkgdesc="An easy-to-use, robust, and highly configurable VPN (Virtual Private Network)"
+arch=(x86_64)
+url="http://openvpn.net/index.php/open-source.html"
+depends=('tuntap' 'openssl' 'lzo')
+license=('custom')
+source=(http://swupdate.openvpn.net/community/releases/openvpn-${pkgver}.tar.gz
+        http://swupdate.openvpn.net/community/releases/openvpn-${pkgver}.tar.gz.asc)
+sha256sums=('f8b0b5b92e35bbca1db1a7e6b49e04639e45634e9accd460459b40b2c99ec8f6'
+            'SKIP')
+validpgpkeys=('03300E11FED16F59715F9996C29D97ED198D22A3')  # Samuli Seppänen
+
+build() {
+  cd "${srcdir}"/$pkgname-$pkgver
+  LZO_CFLAGS="-I/opt/arch/include" LZO_LIBS="-L/opt/arch/lib -llzo2" CFLAGS="$CFLAGS -DPLUGIN_LIBDIR=\\\"/opt/arch/lib/openvpn\\\"" ./configure \
+    --prefix=/opt/arch \
+    --sbindir=/opt/arch/bin \
+    --mandir=/opt/arch/share/man \
+    --disable-debug \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --with-crypto-library=openssl \
+    --enable-password-save
+  make
+}
+
+package() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  # Install openvpn
+  make DESTDIR="${pkgdir}" install
+  install -d -m755 "${pkgdir}"/opt/arch/etc/openvpn
+
+  # Install examples
+  install -d -m755 "${pkgdir}"/opt/arch/share/openvpn
+  sed -i -e 's#/etc/openvpn#/opt/arch/etc/openvpn#g' "sample/sample-config-files/openvpn-startup.sh"
+  cp -r sample/sample-config-files "${pkgdir}"/opt/arch/share/openvpn/examples
+
+  # Install license
+  install -d -m755 "${pkgdir}"/opt/arch/share/licenses/${pkgname}/
+  ln -sf /opt/arch/share/doc/${pkgname}/{COPYING,COPYRIGHT.GPL} "${pkgdir}"/opt/arch/share/licenses/${pkgname}/
+
+  # Install contrib
+  install -d -m755 "${pkgdir}"/opt/arch/share/openvpn/contrib
+  cp -r contrib "${pkgdir}"/opt/arch/share/openvpn
+
+  # We don't use PolarSSL, so this file is unnecessary and somewhat confusing.
+  rm "$pkgdir"/opt/arch/share/doc/openvpn/README.polarssl
+}

@@ -1,0 +1,52 @@
+pkgname=fakeroot
+pkgver=1.20.2
+pkgrel=1
+pkgdesc='Tool for simulating superuser privileges'
+arch=('x86_64')
+license=('GPL')
+url="http://packages.debian.org/fakeroot"
+groups=('base-devel')
+depends=()
+source=(http://ftp.debian.org/debian/pool/main/f/$pkgname/${pkgname}_${pkgver}.orig.tar.bz2
+        0002-OS-X-10.10-introduced-id_t-int-in-gs-etpriority.patch
+        0001-Implement-openat-2-wrapper-which-handles-optional-ar.patch
+        fakeroot-darwin-openat-wraptmp.patch
+        fakeroot-darwin-openat.patch)
+md5sums=('a4b4564a75024aa96c86e4d1017ac786'
+         '303823f943f46ba48d11e263641f1edb'
+         '8a0db3599d0300f0860ea33bb5cd09df'
+         '53b5443661c662b2e4ddf8cef1cf089e'
+         '25ece68bb4e16f53b9b0a15e225f63de')
+
+prepare() {
+  cd $pkgname-$pkgver
+
+  patch -p1 -i ../0002-OS-X-10.10-introduced-id_t-int-in-gs-etpriority.patch
+  patch -p1 -i ../0001-Implement-openat-2-wrapper-which-handles-optional-ar.patch
+  patch -p1 -i ../fakeroot-darwin-openat.patch
+}
+
+build() {
+  cd $pkgname-$pkgver
+
+  ./configure --prefix=/opt/arch \
+    --libdir=/opt/arch/lib/libfakeroot \
+    --disable-static \
+    --with-ipc=sysv \
+    --disable-dependency-tracking \
+    --disable-silent-rules
+
+  make wraptmpf.h
+  patch -p1 -i ../fakeroot-darwin-openat-wraptmp.patch
+
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+
+  # install README for sysv/tcp usage
+  install -d -m755 "$pkgdir"/opt/arch/share/doc/$pkgname
+  install -m644 README "$pkgdir"/opt/arch/share/doc/$pkgname/README
+}

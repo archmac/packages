@@ -1,0 +1,17 @@
+pkgname=ruby-install
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="Install Ruby, JRuby, Rubinius, MagLev, or mruby"
+arch=('any')
+depends=('libyaml' 'gdbm')
+url="https://github.com/postmodern/ruby-install"
+license=('MIT')
+
+source=("https://github.com/postmodern/${pkgname}/archive/v${pkgver}.tar.gz")
+sha256sums=('3cc90846ca972d88b601789af2ad9ed0a496447a13cb986a3d74a4de062af37d')
+
+package() {
+  cd "$srcdir/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" PREFIX=/opt/arch install
+}

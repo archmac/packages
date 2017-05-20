@@ -1,0 +1,73 @@
+pkgname=openssl
+_ver=1.0.2g
+# use a pacman compatible version scheme
+pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
+#pkgver=$_ver
+pkgrel=2
+pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
+arch=('x86_64')
+url='https://www.openssl.org'
+license=('custom:BSD')
+depends=()
+optdepends=('ca-certificates')
+options=('!makeflags')
+backup=('opt/arch/etc/ssl/openssl.cnf')
+install=openssl.install
+source=("https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz"
+        "https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz.asc"
+        'no-rpath.patch'
+        'ssl3-test-failure.patch'
+        'ca-dir.patch'
+        'openssl.install'
+        'c_keychain')
+md5sums=('f3c710c045cdee5fd114feb69feba7aa'
+         'SKIP'
+         'dc78d3d06baffc16217519242ce92478'
+         '62fc492252edd3283871632bb77fadbe'
+         'b27b6c7ccd673f7e5d1746986ba2b708'
+         'bc3c77f60629da02f568c79d739fe591'
+         '2a8eed46bd263940a07a2eda73b83191')
+validpgpkeys=('8657ABB260F056B1E5190839D9C4D26D0E604491')
+
+prepare() {
+    cd $srcdir/$pkgname-$_ver
+
+    # remove rpath: http://bugs.archlinux.org/task/14367
+    patch -p0 -i $srcdir/no-rpath.patch
+
+    # disable a test that fails when ssl3 is disabled
+    patch -p1 -i $srcdir/ssl3-test-failure.patch
+
+    # set ca dir to /etc/ssl by default
+    patch -p0 -i $srcdir/ca-dir.patch
+}
+
+build() {
+    cd $srcdir/$pkgname-$_ver
+
+    perl ./Configure --prefix=/opt/arch --openssldir=/opt/arch/etc/ssl no-ssl2 zlib-dynamic shared enable-cms darwin64-x86_64-cc enable-ec_nistp_64_gcc_128
+    #./Configure --prefix=/opt/arch --openssldir=/opt/arch/etc/ssl --libdir=/opt/arch/lib \
+    #    shared no-ssl3-method ${optflags} \
+    #    "${openssltarget}" \
+    #    "-Wa,--noexecstack ${CPPFLAGS} ${CFLAGS} ${LDFLAGS}"
+
+    make depend
+    make
+}
+
+check() {
+    cd $srcdir/$pkgname-$_ver
+    # the test fails due to missing write permissions in /etc/ssl
+    # revert this patch for make test
+    patch -p0 -R -i $srcdir/ca-dir.patch
+    make test
+    patch -p0 -i $srcdir/ca-dir.patch
+}
+
+package() {
+    cd $srcdir/$pkgname-$_ver
+    make INSTALL_PREFIX=$pkgdir MANDIR=/opt/arch/share/man MANSUFFIX=ssl install
+    install -m755 $srcdir/c_keychain $pkgdir/opt/arch/bin/c_keychain
+    install -d -m755 $pkgdir/opt/arch/share/licenses/$pkgname
+    install -m644 LICENSE $pkgdir/opt/arch/share/licenses/$pkgname/LICENSE
+}

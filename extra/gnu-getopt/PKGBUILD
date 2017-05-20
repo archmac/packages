@@ -1,0 +1,30 @@
+pkgname=gnu-getopt
+_pkgname=getopt
+pkgver=1.1.6
+pkgrel=1
+pkgdesc="Command-line option parsing library"
+arch=('x86_64')
+url="http://cyberelk.net/tim/software/xmlto/"
+license=('GPL')
+depends=('gettext')
+
+source=("http://frodo.looijaard.name/system/files/software/${_pkgname}/${_pkgname}-${pkgver}.tar.gz")
+sha256sums=('d0bf1dc642a993e7388a1cddfb9409bed375c21d5278056ccca3a0acd09dc5fe')
+
+build() {
+  cd "$srcdir/${_pkgname}-${pkgver}"
+
+  # TODO: OS X provided: isolate
+
+  # point to gettext
+  sed -i~ -e 's/CPPFLAGS=\(.*\)$/CPPFLAGS=\1 -I\/opt\/arch\/include/' Makefile
+  sed -i~ -e 's/LDFLAGS=\(.*\)$/LDFLAGS=\1 -L\/opt\/arch\/lib -lintl/' Makefile
+
+  make prefix=/opt/arch mandir=/opt/arch/share/man
+}
+
+package() {
+  cd "$srcdir/${_pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" prefix=/opt/arch mandir=/opt/arch/share/man install
+}

@@ -1,0 +1,56 @@
+pkgname=mercurial
+pkgver=4.1.1
+pkgrel=1
+pkgdesc="A scalable distributed SCM tool"
+arch=('i686' 'x86_64')
+url="https://www.mercurial-scm.org/"
+license=('GPL')
+depends=('python2')
+#optdepends=('tk: for the hgk GUI')
+backup=('opt/arch/etc/mercurial/hgrc')
+source=("https://www.mercurial-scm.org/release/${pkgname}-${pkgver}.tar.gz")
+md5sums=('7ed649e02aab5d5e532b4fe1617a2a26')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed -i -e 's#env python#env python2#' mercurial/lsprof.py
+}
+
+build() {
+  cd ${srcdir}/${pkgname}-${pkgver}/contrib/chg
+  make
+
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make build
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" PREFIX=/opt/arch install-bin
+
+  install -d ${pkgdir}/opt/arch/share/man/{man1,man5}
+  install -d ${pkgdir}/opt/arch/bin
+  install -m644 doc/hg.1 "${pkgdir}/opt/arch/share/man/man1"
+  install -m644 doc/{hgrc.5,hgignore.5} "${pkgdir}/opt/arch/share/man/man5"
+  install -m755 contrib/hgk "${pkgdir}/opt/arch/bin"
+  install -m755 -d "${pkgdir}/opt/arch/share/zsh/site-functions"
+  install -m644 contrib/zsh_completion "${pkgdir}/opt/arch/share/zsh/site-functions/_hg"
+  install -m755 -d "${pkgdir}/opt/arch/share/bash-completion/completions"
+  install -m644 contrib/bash_completion "${pkgdir}/opt/arch/share/bash-completion/completions/hg"
+  install -dm755 "${pkgdir}/opt/arch/share/emacs/site-lisp"
+  install -m644 contrib/{mq.el,mercurial.el} "${pkgdir}/opt/arch/share/emacs/site-lisp"
+
+  vimpath="${pkgdir}/opt/arch/share/vim/vimfiles"
+  install -dm755 "${vimpath}/syntax"
+  install -m644 contrib/vim/HGAnnotate.vim "${vimpath}/syntax/HGAnnotate.vim"
+
+  # install configuration file
+  install -m755 -d ${pkgdir}/opt/arch/etc/mercurial
+  # install -m644 contrib/sample.hgrc "${pkgdir}/opt/arch/etc/mercurial/hgrc"
+
+  # FS#38825 - Add certs config to package
+  echo -e "\n[web]\ncacerts = /opt/arch/etc/ssl/certs/ca-certificates.crt\n" >> "${pkgdir}/opt/arch/etc/mercurial/hgrc"
+
+  cd contrib/chg
+  make DESTDIR="${pkgdir}" PREFIX=/opt/arch HGPATH=/opt/arch/bin HG=/opt/arch/bin/hg install
+}

@@ -1,0 +1,36 @@
+pkgname=xmlto
+pkgver=0.0.28
+pkgrel=1
+pkgdesc="Convert xml to many other formats"
+arch=('x86_64')
+url="http://cyberelk.net/tim/software/xmlto/"
+license=('GPL')
+#depends=('libxslt')
+depends=('gnu-getopt')
+makedepends=('docbook-xsl')
+source=("https://fedorahosted.org/releases/x/m/${pkgname}/${pkgname}-${pkgver}.tar.bz2"
+        xmlto-net.patch)
+md5sums=('93bab48d446c826399d130d959fe676f'
+         'd56b2ee487c6401dcbea1a82680ca2aa')
+
+prepare() {
+  cd "$srcdir/${pkgname}-${pkgver}"
+  patch -p1 -i ../xmlto-net.patch
+}
+
+build() {
+  cd "$srcdir/${pkgname}-${pkgver}"
+  # OSX getopt does not support longopt
+  export GETOPT="/opt/arch/bin/getopt"
+  export XML_CATALOG_FILES="/opt/arch/etc/xml/catalog"
+
+  ./configure BASH=/bin/bash --prefix=/opt/arch \
+                             --mandir=/opt/arch/share/man
+  make
+}
+
+package() {
+  cd "$srcdir/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+}

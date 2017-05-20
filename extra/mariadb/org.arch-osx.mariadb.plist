@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Disabled</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>Label</key>
+  <string>org.arch-osx.mariadb</string>
+  <key>UserName</key>
+  <string>_mysql</string>
+  <key>GroupName</key>
+  <string>_mysql</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/arch/bin/mysqld</string>
+    <string>--pid-file=/opt/arch/var/lib/mysql/mariadbd.pid</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>WorkingDirectory</key>
+  <string>/opt/arch/var/lib/mysql</string>
+  <key>StandardOutPath</key>
+  <string>/opt/arch/var/lib/mysql/mariadbd.log</string>
+  <key>StandardErrorPath</key>
+  <string>/opt/arch/var/lib/mysql/mariadbd.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/arch/bin:/opt/arch/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>LC_ALL</key>
+    <string>en_US.UTF-8</string>
+  </dict>
+</dict>
+</plist>

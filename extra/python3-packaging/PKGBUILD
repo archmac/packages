@@ -1,0 +1,47 @@
+pkgbase=python3-packaging
+pkgname=(python3-packaging)
+_pkgname='packaging'
+pkgver=16.7
+pkgrel=1
+pkgdesc="Core utilities for Python packages"
+arch=('any')
+url="https://github.com/pypa/packaging"
+license=('Apache')
+makedepends=('python3-setuptools' 'python3-pyparsing' 'git')
+#checkdepends=('python3-pytest-runner' 'python2-pytest-runner' 'python-pretend' 'python2-pretend' 'python-coverage' 'python2-coverage')
+source=("https://pypi.python.org/packages/28/ad/4e6601d14b11bb300719a8bb6247f6ef5861467a692523c978a4e9e3981a/packaging-16.7.tar.gz")
+md5sums=('5bfeb52de8dee2fcc95a003b0ebe9011')
+
+#prepare() {
+#  cp -a packaging{,-py2}
+#}
+
+build() {
+  cd "$srcdir"/$_pkgname-$pkgver
+  python3 setup.py build
+
+  #cd "$srcdir"/packaging-py2
+  #python2 setup.py build
+}
+
+check() {
+  cd "$srcdir"/$_pkgname-$pkgver
+  python3 setup.py ptr
+
+  #cd "$srcdir"/packaging-py2
+  #python2 setup.py ptr
+}
+
+package_python3-packaging() {
+  depends=('python3-pyparsing' 'python3-six')
+
+  cd "$srcdir"/$_pkgname-$pkgver
+  python3 setup.py install --root "$pkgdir"
+}
+
+#package_python2-packaging() {
+#  depends=('python2-pyparsing' 'python2-six')
+#
+#  cd "$srcdir"/packaging-py2
+#  python2 setup.py install --root "$pkgdir"
+#}

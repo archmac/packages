@@ -1,0 +1,115 @@
+pkgbase=imagemagick
+pkgname=('imagemagick' 'imagemagick-doc')
+pkgver=6.9.8.0
+pkgrel=2
+arch=('i686' 'x86_64')
+url="http://www.imagemagick.org/"
+license=('custom')
+#makedepends=('libltdl' 'lcms2' 'libxt' 'fontconfig' 'libxext' 'ghostscript'
+#             'openexr' 'libwmf' 'librsvg' 'libxml2' 'liblqr' 'openjpeg2'
+#             'opencl-headers' 'opencl-icd-loader' 'libwebp' 'subversion' 'glu')
+makedepends=('lcms2' 'libxml2' 'openjpeg2')
+source=(http://www.imagemagick.org/download/ImageMagick-${pkgver%.*}-${pkgver##*.}.tar.xz{,.asc}
+        perlmagick.rpath.patch)
+sha1sums=('613cc1502edc9ffde43f80887776cc3fcc1fac71'
+          'SKIP'
+          'e143cf9d530fabf3b58023899b5cc544ba93daec')
+validpgpkeys=('D8272EF51DA223E4D05B466989AB63D48277377A')
+
+prepare() {
+  cd ImageMagick-${pkgver%.*}-${pkgver##*.}
+  sed -i -e '/AC_PATH_XTRA/d' configure.ac
+  #autoreconf --force --install
+  #patch -p0 -i "${srcdir}/perlmagick.rpath.patch"
+}
+
+build() {
+  cd ImageMagick-${pkgver%.*}-${pkgver##*.}
+  #[[ $CARCH = "i686" ]] && EXTRAOPTS="--with-gcc-arch=i686"
+  #[[ $CARCH = "x86_64" ]] && EXTRAOPTS="--with-gcc-arch=x86-64"
+  export CFLAGS="$CFLAGS -I/opt/arch/include"
+  export LDFLAGS="$LDFLAGS -L/opt/arch/lib"
+  export LIBS="-lz"
+
+  ./configure --prefix=/opt/arch --sysconfdir=/opt/arch/etc --mandir=/opt/arch/share/man \
+    --disable-osx-universal-binary \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --enable-shared \
+    --enable-static \
+    $EXTRAOPTS \
+    --with-modules \
+    --enable-hdri \
+    --with-lqr \
+    --with-openjp2 \
+    --without-gvc --without-djvu --without-autotrace \
+    --without-jbig --without-fpx --without-dps --without-fftw \
+    --enable-opencl \
+    --with-wmf --with-openexr --with-xml \
+    #--with-perl --with-perl-options="INSTALLDIRS=vendor" \
+    #--with-webp \
+    #--with-rsvg \
+    #--with-gslib --with-gs-font-dir=/opt/arch/share/fonts/Type1 \
+
+  make
+}
+
+check() {
+  cd ImageMagick-${pkgver%.*}-${pkgver##*.}
+#  make check
+}
+
+package_imagemagick() {
+  pkgdesc="An image viewing/manipulation program"
+  #depends=('libltdl' 'lcms2' 'libxt' 'fontconfig' 'libxext' 'liblqr' 'opencl-icd-loader')
+  optdepends=('imagemagick-doc: for additional information'
+              'ghostscript: for Ghostscript support' 
+              'openexr: for OpenEXR support' 
+	      'openjpeg2: for JP2 support' 
+              'libwmf: for WMF support' 
+              'librsvg: for SVG support' 
+              'libxml2: for XML support' 
+              'libpng: for PNG support' 
+	      'libwebp: for WEBP support')
+  backup=("opt/arch/etc/ImageMagick-${pkgver%%.*}/coder.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/colors.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/delegates.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/log.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/magic.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/mime.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/policy.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/quantization-table.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/thresholds.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/type.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/type-dejavu.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/type-ghostscript.xml"
+          "opt/arch/etc/ImageMagick-${pkgver%%.*}/type-windows.xml")
+  options=('!docs' 'libtool' '!emptydirs')
+
+  cd ImageMagick-${pkgver%.*}-${pkgver##*.}
+  make -j1 DESTDIR="${pkgdir}" install
+  install -dm755 "${pkgdir}/opt/arch/share/licenses/imagemagick/"
+  install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/imagemagick/LICENSE"
+  install -m644 NOTICE "${pkgdir}/opt/arch/share/licenses/imagemagick/NOTICE"
+
+#Cleaning
+  rm -f "${pkgdir}"/opt/arch/lib/*.la
+
+# template start; name=perl-binary-module-dependency; version=1;
+if [[ $(find "$pkgdir/opt/arch/lib/perl5/" -name "*.so") ]]; then
+	_perlver_min=$(perl -e '$v = $^V->{version}; print $v->[0].".".($v->[1]);')
+	_perlver_max=$(perl -e '$v = $^V->{version}; print $v->[0].".".($v->[1]+1);')
+	depends+=("perl>=$_perlver_min" "perl<$_perlver_max")
+fi
+# template end;
+}
+
+package_imagemagick-doc() {
+  pkgdesc="The ImageMagick documentation (utilities manuals and libraries API)"
+
+  cd ImageMagick-${pkgver%.*}-${pkgver##*.}
+  make DESTDIR="${pkgdir}" install-data-html
+  install -dm755 "${pkgdir}/opt/arch/share/licenses/imagemagick-doc/"
+  install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/imagemagick-doc/LICENSE"
+  install -m644 NOTICE "${pkgdir}/opt/arch/share/licenses/imagemagick-doc/NOTICE"
+}

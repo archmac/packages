@@ -1,0 +1,12 @@
+post_install() {
+  /sbin/kextload /Library/Extensions/{tun,tap}.kext || true
+}
+
+post_upgrade() {
+  pre_remove $1
+  post_install $1
+}
+
+pre_remove() {
+  /sbin/kextunload /Library/Extensions/{tun,tap}.kext || true
+}

@@ -1,0 +1,49 @@
+pkgname=libwebp
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="WebP library and conversion tools"
+arch=(x86_64 i686)
+url="https://developers.google.com/speed/webp/"
+license=(BSD)
+depends=(libpng libjpeg libtiff giflib)
+#makedepends=(freeglut mesa glu git)
+optdepends=('freeglut: vwebp viewer')
+source=("http://downloads.webmproject.org/releases/webp/libwebp-0.6.0.tar.gz")
+sha256sums=('c928119229d4f8f35e20113ffb61f281eda267634a8dc2285af4b0ee27cf2b40')
+validpgpkeys=('6B0E6B70976DE303EDF2F601F9C3D6BDB8232B5D')
+
+#pkgver() {
+#  cd $pkgname
+#  git describe --tags | sed 's/^v//;s/-/+/g'
+#}
+
+#prepare() {
+#  cd $pkgname-$pkgver
+#  NOCONFIGURE=1 ./autogen.sh
+#}
+
+build() {
+  cd $pkgname-$pkgver
+
+  ./configure --prefix=/opt/arch \
+     --enable-swap-16bit-csp \
+     --enable-experimental \
+     --enable-libwebp{mux,demux,decoder,extras} \
+     --disable-static
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname/"
+  install -Dm644 COPYING "$pkgdir/opt/arch/share/licenses/$pkgname/COPYING"
+}
+
+# vim:set ts=2 sw=2 et:

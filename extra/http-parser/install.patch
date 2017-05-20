@@ -1,0 +1,24 @@
+--- src/http-parser/Makefile.orig	2016-04-26 10:33:14.000000000 +0200
++++ src/http-parser/Makefile	2016-04-26 10:34:51.000000000 +0200
+@@ -123,13 +123,17 @@
+ 	ctags $^
+ 
+ install: library
+-	$(INSTALL) -D  http_parser.h $(INCLUDEDIR)/http_parser.h
+-	$(INSTALL) -D $(SONAME) $(LIBDIR)/$(SONAME)
++	$(INSTALL) -d  $(INCLUDEDIR)
++	$(INSTALL)     http_parser.h $(INCLUDEDIR)/http_parser.h
++	$(INSTALL) -d $(LIBDIR)
++	$(INSTALL)    $(SONAME) $(LIBDIR)/$(SONAME)
+ 	ln -s $(LIBDIR)/$(SONAME) $(LIBDIR)/libhttp_parser.$(SOEXT)
+ 
+ install-strip: library
+-	$(INSTALL) -D  http_parser.h $(INCLUDEDIR)/http_parser.h
+-	$(INSTALL) -D -s $(SONAME) $(LIBDIR)/$(SONAME)
++	$(INSTALL) -d  $(INCLUDEDIR)
++	$(INSTALL)     http_parser.h $(INCLUDEDIR)/http_parser.h
++	$(INSTALL) -d $(LIBDIR)
++	$(INSTALL)    -s $(SONAME) $(LIBDIR)/$(SONAME)
+ 	ln -s $(LIBDIR)/$(SONAME) $(LIBDIR)/libhttp_parser.$(SOEXT)
+ 
+ uninstall:

@@ -1,0 +1,11 @@
+--- lib/libalpm/util.c.orig	2016-04-20 11:25:59.000000000 +0200
++++ lib/libalpm/util.c	2016-04-20 11:26:20.000000000 +0200
+@@ -617,7 +617,7 @@
+ 		}
+ 
+ 		/* use fprintf instead of _alpm_log to send output through the parent */
+-		if(chroot(handle->root) != 0) {
++		if(strcmp(handle->root, "/") != 0 && chroot(handle->root) != 0) {
+ 			fprintf(stderr, _("could not change the root directory (%s)\n"), strerror(errno));
+ 			exit(1);
+ 		}

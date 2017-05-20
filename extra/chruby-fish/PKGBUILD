@@ -1,0 +1,16 @@
+pkgname=chruby-fish
+pkgver=0.8.1
+pkgrel=1
+pkgdesc="Wrapper around chruby to make it work with the Fish shell"
+arch=('any')
+url="https://github.com/JeanMertz/chruby-fish"
+license=('MIT')
+
+source=("https://github.com/JeanMertz/${pkgname}/archive/v${pkgver}.tar.gz")
+sha256sums=('1a0fa95d6be5958edca31a80de3594a563de6f7d09213418db895dda6724c271')
+
+package() {
+  cd "$srcdir/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" PREFIX=/opt/arch install
+}

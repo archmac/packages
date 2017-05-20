@@ -1,0 +1,39 @@
+pkgname=docker-machine
+pkgver=0.10.0
+pkgrel=1
+pkgdesc='Machine management for a container-centric world'
+arch=('i686' 'x86_64')
+url='https://github.com/docker/machine'
+license=('Apache')
+#depends=('gcc-libs')
+#optdepends=('net-tools: for VirtualBox support')
+#makedepends=('gcc-go' 'git')
+#optdepends=('net-tools: required for VirtualBox driver')
+source=("git+https://github.com/docker/machine.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+prepare() {
+  export GOPATH="$srcdir/build"
+  mkdir -p build/src
+  mv machine/vendor/* build/src/
+  mkdir -p build/src/github.com/docker
+  mv machine build/src/github.com/docker/machine
+}
+
+build() {
+  cd build/src/github.com/docker/machine
+  make build
+  #go build -o bin/docker-machine -gccgoflags "$CFLAGS $LDFLAGS" cmd/machine.go
+}
+
+package() {
+  cd build/src/github.com/docker/machine
+  install -dm755 "$pkgdir"/opt/arch/bin/
+  install -m755 bin/docker-machine "$pkgdir"/opt/arch/bin/docker-machine
+  install -dm755 "$pkgdir"/opt/arch/share/bash-completion/completions/
+  install -m644 contrib/completion/bash/docker-machine.bash "$pkgdir"/opt/arch/share/bash-completion/completions/docker-machine
+  install -dm755 "$pkgdir"/opt/arch/share/zsh/site-functions/
+  install -m644 contrib/completion/zsh/_docker-machine "$pkgdir"/opt/arch/share/zsh/site-functions/_docker-machine
+  install -dm755 "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}

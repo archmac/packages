@@ -1,0 +1,34 @@
+pkgname=libxslt
+pkgver=1.1.29
+pkgrel=1
+pkgdesc="XML stylesheet transformation library"
+arch=('i686' 'x86_64')
+url="http://xmlsoft.org/XSLT/"
+license=('custom')
+depends=('libxml2' 'libgcrypt')
+checkdepends=('docbook-xml' 'python2')
+source=("http://xmlsoft.org/sources/$pkgname-$pkgver.tar.gz")
+sha256sums=('b5976e3857837e7617b29f2249ebb5eeac34e249208d31f1fbf7a6ba7a4090ce')
+
+build() {
+  cd $pkgname-$pkgver
+  # https://bugzilla.gnome.org/show_bug.cgi?id=762967
+  sed -i -e 's/PYTHON_LIBS=.*/PYTHON_LIBS="-undefined dynamic_lookup"/g' configure
+  ./configure --disable-dependency-tracking --disable-silent-rules --prefix=/opt/arch --with-libxml-prefix=/opt/arch
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="${pkgdir}" install
+
+  install -d "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+  install -m644 COPYING "${pkgdir}/opt/arch/share/licenses/${pkgname}/"
+
+  rm -f "${pkgdir}"/opt/arch/lib/python*/site-packages/*.a
+}

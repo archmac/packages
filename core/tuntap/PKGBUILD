@@ -1,0 +1,18 @@
+pkgname=tuntap
+pkgver=20150118
+pkgrel=1
+pkgdesc="Virtual network interfaces for OS X"
+arch=('x86_64')
+url="http://tuntaposx.sourceforge.net/"
+license=('GPL')
+options=('!strip' 'staticlibs')
+install=tuntap.install
+source=("http://downloads.sourceforge.net/project/tuntaposx/tuntap/20150118/tuntap_20150118.tar.gz")
+sha256sums=('2f31ffece5ad349aaae0516c08e2f6bd569d61ba2ec54b27909ba71537e7b4ff')
+
+package() {
+  cd $srcdir
+  xar -x -f $srcdir/tuntap_20150118.pkg
+  /bin/pax --insecure -rz -f tap.pkg/Payload -s ,./Library,$pkgdir/Library,
+  /bin/pax --insecure -rz -f tun.pkg/Payload -s ,./Library,$pkgdir/Library,
+}

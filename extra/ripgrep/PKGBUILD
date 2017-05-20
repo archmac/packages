@@ -1,0 +1,40 @@
+pkgname=ripgrep
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="A search tool that combines the usability of ag with the raw speed of grep"
+arch=('i686' 'x86_64')
+url="https://github.com/BurntSushi/ripgrep"
+license=('MIT' 'UNLICENSE')
+#depends=('gcc-libs')
+makedepends=('cargo')
+source=("https://github.com/BurntSushi/$pkgname/archive/$pkgver.tar.gz")
+sha512sums=('924e7907daf719732f888c296ea8b110db77e144cd3f7858070aca44fba93d09731d9097dd7201a851f0581ced0f0d58a7ffef6aa7c998298834170661d80256')
+
+build() {
+  cd "$pkgname-$pkgver"
+  cargo build --release
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -dm755 "$pkgdir/opt/arch/bin"
+  install -m755 "target/release/rg" "$pkgdir/opt/arch/bin/rg"
+
+  install -dm755 "$pkgdir/opt/arch/share/bash-completion/completions"
+  install -m644 "target/release/build/ripgrep-"*/out/rg.bash-completion "$pkgdir/opt/arch/share/bash-completion/completions/rg"
+  install -dm755 "$pkgdir/opt/arch/share/zsh/site-functions"
+  install -m644 "target/release/build/ripgrep-"*/out/_rg "$pkgdir/opt/arch/share/zsh/site-functions/_rg"
+  install -dm755 "$pkgdir/opt/arch/share/fish/completions"
+  install -m644 "target/release/build/ripgrep-"*/out/rg.fish "$pkgdir/opt/arch/share/fish/completions/rg.fish"
+
+  install -dm755 "$pkgdir/opt/arch/share/man/man1"
+  install -m644 "doc/rg.1" "$pkgdir/opt/arch/share/man/man1/rg.1"
+  install -dm755 "$pkgdir/opt/arch/share/doc/${pkgname}"
+  install -m644 "README.md" "$pkgdir/opt/arch/share/doc/${pkgname}/README.md"
+
+  install -dm755 "$pkgdir/opt/arch/share/licenses/${pkgname}"
+  install -m644 "COPYING" "$pkgdir/opt/arch/share/licenses/${pkgname}/COPYING"
+  install -m644 "LICENSE-MIT" "$pkgdir/opt/arch/share/licenses/${pkgname}/LICENSE-MIT"
+  install -m644 "UNLICENSE" "$pkgdir/opt/arch/share/licenses/${pkgname}/UNLICENSE"
+}

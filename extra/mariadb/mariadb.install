@@ -1,0 +1,36 @@
+post_install(){
+  if [ ! -d '/opt/arch/var/lib/mysql' ]; then
+    mkdir -p /opt/arch/var/lib/mysql
+    chown _mysql:_mysql /opt/arch/var/lib/mysql
+    chmod u+rwx,go+rx /opt/arch/var/lib/mysql
+  fi
+
+  if [ ! -d '/opt/arch/var/run/mysqld' ]; then
+    mkdir -p /opt/arch/var/run/mysqld
+    chown _mysql:_mysql /opt/arch/var/run/mysqld
+    chmod u+rwx,go+rx /opt/arch/var/run/mysqld
+  fi
+
+  if [ ! -f "opt/arch/var/lib/mysql/mysql" ]; then
+    mysql_install_db --user=_mysql --basedir=/opt/arch --datadir=/opt/arch/var/lib/mysql
+  fi
+
+  echo
+  echo "MariaDB has been installed with 'Disabled' set to 'true'."
+  echo ""
+  echo "Start it manually with:"
+  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.arch-osx.mariadb.plist"
+  echo
+  echo "Access the command line tool with role postgres:"
+  echo "    mysql -u root"
+  echo
+  echo "To have it start on boot, change 'Disabled' to 'false' in the plist"
+  echo
+}
+
+post_upgrade(){
+  if [[ "$(vercmp $2 10.0)" -lt 0 ]]; then
+    echo ":: Major version update. Consider restarting mysqld and"
+    echo "   running mysql_upgrade afterwards."
+  fi
+}

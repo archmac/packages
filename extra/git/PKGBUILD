@@ -1,0 +1,123 @@
+pkgname=git
+pkgver=2.8.1
+pkgrel=1
+pkgdesc="the fast distributed version control system"
+arch=(x86_64)
+url="http://git-scm.com/"
+license=('GPL2')
+#depends=('curl' 'expat>=2.0' 'perl-error' 'perl>=5.14.0' 'openssl' 'pcre')
+depends=('openssl' 'pcre')
+#makedepends=('python2' 'emacs' 'libgnome-keyring' 'xmlto' 'asciidoc')
+makedepends=('asciidoc')
+optdepends=('tk: gitk and git gui'
+            'perl-libwww: git svn'
+            'perl-term-readkey: git svn'
+            'perl-mime-tools: git send-email'
+            'perl-net-smtp-ssl: git send-email TLS support'
+            'perl-authen-sasl: git send-email TLS support'
+            'python2: various helper scripts'
+            'subversion: git svn'
+            'cvsps2: git cvsimport'
+            'gnome-keyring: GNOME keyring credential helper')
+source=("https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz"
+        "https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.sign"
+        "https://www.kernel.org/pub/software/scm/git/git-htmldocs-$pkgver.tar.xz"
+        "https://www.kernel.org/pub/software/scm/git/git-manpages-$pkgver.tar.xz")
+noextract=("git-htmldocs-$pkgver.tar.xz"
+           "git-manpages-$pkgver.tar.xz")
+md5sums=('443b5e501eda9b8441331a8e61578e6a'
+         'SKIP'
+         'c82d66986e5265fe9bae7d548e73eff6'
+         '87bc202c6f6ae32c1c46c2dda3134ed1')
+validpgpkeys=('96E07AF25771955980DAD10020D04E5A713660A7') # Junio C Hamano
+
+build() {
+  export PYTHON_PATH='/usr/bin/python'
+  export PERL_PATH='/usr/bin/perl'
+  export NO_R_TO_GCC_LINKER="1"
+
+  cd "$srcdir/$pkgname-$pkgver"
+  make prefix=/opt/arch gitexecdir=/opt/arch/lib/git-core \
+    CFLAGS="$CFLAGS -I/opt/arch/include" LDFLAGS="$LDFLAGS -L/opt/arch/lib" \
+    USE_LIBPCRE=1 \
+    NO_OPENSSL=1 \
+    APPLE_COMMON_CRYPTO=1 \
+    NO_CROSS_DIRECTORY_HARDLINKS=1 \
+    MAN_BOLD_LITERAL=1 \
+    all #doc
+
+  #make -C contrib/emacs prefix=/opt/arch
+  make -C contrib/subtree prefix=/opt/arch gitexecdir=/opt/arch/lib/git-core all #doc
+  make -C contrib/credential/osxkeychain prefix=/opt/arch
+}
+
+check() {
+  export PYTHON_PATH='/usr/bin/python'
+  export PERL_PATH='/usr/bin/perl'
+  export NO_R_TO_GCC_LINKER="1"
+
+  cd "$srcdir/$pkgname-$pkgver"
+  local jobs
+  jobs=$(expr "$MAKEFLAGS" : '.*\(-j[0-9]*\).*') || true
+  local root_dir
+  root_dir="$(mktemp -d)"
+  # explicitly specify SHELL to avoid a test failure in t/t9903-bash-prompt.sh
+  # which is caused by 'git rebase' trying to use builduser's SHELL inside the
+  # build chroot (i.e.: /usr/bin/nologin)
+  SHELL=/bin/sh \
+  make prefix=/opt/arch gitexecdir=/opt/arch/lib/git-core \
+    CFLAGS="$CFLAGS -I/opt/arch/include" LDFLAGS="$LDFLAGS -L/opt/arch/lib" \
+    USE_LIBPCRE=1 \
+    NO_OPENSSL=1 \
+    APPLE_COMMON_CRYPTO=1 \
+    NO_CROSS_DIRECTORY_HARDLINKS=1 \
+    MAN_BOLD_LITERAL=1 \
+    NO_SVN_TESTS=y \
+    DEFAULT_TEST_TARGET=prove \
+    GIT_PROVE_OPTS="$jobs -Q" \
+    GIT_TEST_OPTS="--root=$root_dir" \
+    test
+}
+
+package() {
+  export PYTHON_PATH='/usr/bin/python'
+  export PERL_PATH='/usr/bin/perl'
+
+  cd "$srcdir/$pkgname-$pkgver"
+  make prefix=/opt/arch gitexecdir=/opt/arch/lib/git-core \
+    CFLAGS="$CFLAGS -I/opt/arch/include" LDFLAGS="$LDFLAGS -L/opt/arch/lib" \
+    USE_LIBPCRE=1 \
+    NO_OPENSSL=1 \
+    APPLE_COMMON_CRYPTO=1 \
+    NO_CROSS_DIRECTORY_HARDLINKS=1 \
+    MAN_BOLD_LITERAL=1 \
+    INSTALLDIRS=vendor DESTDIR="$pkgdir" install #install-doc
+
+  # bash completion
+  mkdir -p "$pkgdir"/opt/arch/share/bash-completion/completions/
+  install -m644 ./contrib/completion/git-completion.bash "$pkgdir"/opt/arch/share/bash-completion/completions/git
+  # fancy git prompt
+  mkdir -p "$pkgdir"/opt/arch/share/git/
+  install -m644 ./contrib/completion/git-prompt.sh "$pkgdir"/opt/arch/share/git/git-prompt.sh
+  # emacs
+  #make -C contrib/emacs prefix=/opt/arch DESTDIR="$pkgdir" install
+  (
+    cd contrib/credential/osxkeychain
+    install -m644 git-credential-osxkeychain $pkgdir/opt/arch/bin/git-credential-osxkeychain
+    make clean
+  )
+  # subtree installation
+  make -C contrib/subtree prefix=/opt/arch gitexecdir=/opt/arch/lib/git-core DESTDIR="$pkgdir" install #install-doc
+  # the rest of the contrib stuff
+  cp -a ./contrib/* $pkgdir/opt/arch/share/git/
+
+  # remove perllocal.pod, .packlist, and empty directories.
+  rm -rf "$pkgdir"/opt/arch/lib/perl5
+
+  install -d -m755 "$pkgdir"/opt/arch/share/man
+  bsdtar -C "$pkgdir"/opt/arch/share/man -xJf "$srcdir/git-manpages-$pkgver.tar.xz"
+  install -d -m755 "$pkgdir"/opt/arch/share/doc/git-doc
+  bsdtar -C "$pkgdir"/opt/arch/share/doc/git-doc -xJf "$srcdir/git-htmldocs-$pkgver.tar.xz"
+  find "$pkgdir/opt/arch/share/doc/git-doc" -name '*.html' -or -name '*.txt' -exec chmod 0644 {} \;
+  find "$pkgdir/opt/arch/share/doc/git-doc" -type d -exec chmod 0755 {} \;
+}

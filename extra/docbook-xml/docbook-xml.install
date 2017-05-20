@@ -1,0 +1,42 @@
+post_install() {
+  if [ -e opt/arch/etc/xml/catalog.preserve ]; then
+    mv opt/arch/etc/xml/catalog.preserve opt/arch/etc/xml/catalog
+  elif [ ! -e opt/arch/etc/xml/catalog ]; then
+    xmlcatalog --noout --create opt/arch/etc/xml/catalog
+  fi
+  xmlcatalog --noout --add "delegatePublic" \
+    "-//OASIS//ENTITIES DocBook XML" \
+    "file:///opt/arch/etc/xml/docbook-xml" \
+    opt/arch/etc/xml/catalog
+  xmlcatalog --noout --add "delegatePublic" \
+    "-//OASIS//DTD DocBook XML" \
+    "file:///opt/arch/etc/xml/docbook-xml" \
+    opt/arch/etc/xml/catalog
+  xmlcatalog --noout --add "delegateSystem" \
+    "http://www.oasis-open.org/docbook/" \
+    "file:///opt/arch/etc/xml/docbook-xml" \
+    opt/arch/etc/xml/catalog
+  xmlcatalog --noout --add "delegateURI" \
+    "http://www.oasis-open.org/docbook/" \
+    "file:///opt/arch/etc/xml/docbook-xml" \
+    opt/arch/etc/xml/catalog
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+pre_upgrade() {
+  if [ $(vercmp $2 4.5) -lt 0 ]; then
+    xmlcatalog --del "file:///opt/arch/etc/xml/docbook" opt/arch/etc/xml/catalog > opt/arch/etc/xml/catalog.preserve
+  fi
+}
+
+post_upgrade() {
+  if [ $(vercmp $2 4.5) -ge 0 ]; then
+    post_remove
+  fi
+  post_install
+}
+
+post_remove() {
+  xmlcatalog --noout --del file:///opt/arch/etc/xml/docbook-xml opt/arch/etc/xml/catalog
+}

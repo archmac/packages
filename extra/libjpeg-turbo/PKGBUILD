@@ -1,0 +1,54 @@
+pkgname=libjpeg-turbo
+pkgver=1.5.1
+pkgrel=1
+pkgdesc='JPEG image codec with accelerated baseline compression and decompression'
+url='http://libjpeg-turbo.virtualgl.org/'
+arch=('i686' 'x86_64')
+license=('custom')
+#makedepends=('nasm' 'jdk8-openjdk')
+validpgpkeys=('7D6293CC6378786E1B5C496885C7044E033FDE16')
+source=("http://downloads.sourceforge.net/project/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"{,.sig})
+sha256sums=('41429d3d253017433f66e3d472b8c7d998491d2f41caa7306b8d9a6f2a2c666c'
+            'SKIP')
+
+provides=('libjpeg=8.1.2' 'turbojpeg')
+conflicts=('libjpeg' 'turbojpeg')
+replaces=('libjpeg' 'turbojpeg')
+
+options=('!makeflags')
+
+prepare() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	sed -i -e 's/Szathmáry/Szathmary/g' java/org/libjpegturbo/turbojpeg/*.java
+}
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	export JNI_CFLAGS='-I/opt/arch/lib/jvm/default/include -I/opt/arch/lib/jvm/default/include/linux'
+	./configure \
+		--prefix=/opt/arch \
+		--mandir=/opt/arch/share/man \
+		--with-jpeg8 \
+		#--with-java \
+
+	make
+}
+
+check() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make test
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make \
+		DESTDIR="${pkgdir}" \
+		docdir="/opt/arch/share/doc/${pkgname}" \
+		exampledir="/opt/arch/share/doc/${pkgname}" \
+		install
+	
+	install -m644 jpegint.h "${pkgdir}/opt/arch/include" # required by other software
+
+	install -d "${pkgdir}/opt/arch/share/licenses/libjpeg-turbo"
+	ln -s ../../doc/libjpeg-turbo/README.md "${pkgdir}"/opt/arch/share/licenses/libjpeg-turbo
+}

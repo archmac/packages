@@ -1,0 +1,32 @@
+pkgname=keybase
+pkgdesc='CLI tool for GPG with keybase.io'
+pkgver=1.0.15
+_realver=1.0.15
+pkgrel=1
+arch=('x86_64')
+url='http://keybase.io/'
+license=('BSD')
+depends=('gnupg')
+makedepends=('go')
+source=("https://github.com/keybase/client/archive/v1.0.15.tar.gz#keybase")
+sha256sums=('6fe66b07772ca000879bda65cb9d112d2dbbc301d6afa4d4b46055d385f86e36')
+
+prepare() {
+  cd client-${pkgver}
+  mkdir -p .gopath/src/github.com/keybase
+  ln -sf "$PWD" .gopath/src/github.com/keybase/client
+  export GOPATH="$PWD/.gopath"
+}
+
+build() {
+  cd client-${pkgver}/go/keybase
+  go build -a -tags production github.com/keybase/client/go/keybase # -gccgoflags "$CFLAGS $LDFLAGS"
+}
+
+package() {
+  cd client-${pkgver}
+  install -d -m755 "$pkgdir"/opt/arch/bin
+  install -m755 go/keybase/keybase "$pkgdir"/opt/arch/bin/keybase
+  install -dm755 "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}

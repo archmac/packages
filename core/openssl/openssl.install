@@ -1,0 +1,10 @@
+cert_dir="opt/arch/etc/ssl"
+cert_file="cert.pem"
+
+post_upgrade() {
+    c_keychain
+}
+
+pre_remove() {
+    rm -f "$cert_dir/$cert_file"
+}

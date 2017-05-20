@@ -1,0 +1,25 @@
+pkgname=giflib
+pkgver=5.1.4
+pkgrel=1
+pkgdesc="A library for reading and writing gif images"
+url="http://sourceforge.net/projects/giflib/"
+arch=('i686' 'x86_64')
+license=('MIT')
+depends=('libc')
+makedepends=('xmlto' 'docbook-xml' 'docbook-xsl')
+source=(http://downloads.sourceforge.net/sourceforge/giflib/${pkgname}-${pkgver}.tar.bz2)
+md5sums=('2c171ced93c0e83bb09e6ccad8e3ba2b')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/opt/arch --disable-static --disable-dependency-tracking
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  install -dm755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+  install -m644 COPYING "${pkgdir}/opt/arch/share/licenses/${pkgname}/COPYING"
+}

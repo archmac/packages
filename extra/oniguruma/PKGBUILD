@@ -1,0 +1,27 @@
+pkgname=oniguruma
+pkgver=6.0.0
+pkgrel=1
+pkgdesc="A regular expressions library"
+arch=('x86_64')
+url="https://github.com/kkos/oniguruma"
+license=('BSD')
+options=(!libtool)
+source=("https://github.com/kkos/oniguruma/releases/download/v$pkgver/onig-$pkgver.tar.gz")
+sha256sums=('0cd75738a938faff4a48c403fb171e128eb9bbd396621237716dbe98c3ecd1af')
+
+build() {
+	cd "$srcdir"/onig-$pkgver
+	./configure --prefix=/opt/arch
+	make
+}
+
+package() {
+	cd "$srcdir"/onig-$pkgver
+	make DESTDIR="$pkgdir" install
+	install -dm755 "$pkgdir"/opt/arch/share/doc
+	cp -r doc "$pkgdir"/opt/arch/share/doc/$pkgname
+    install -d -m755 "$pkgdir"/opt/arch/share/licenses/$pkgname/
+	for licfile in COPYING INSTALL; do
+		install -m644 $licfile "$pkgdir"/opt/arch/share/licenses/$pkgname/$licfile
+	done
+}

@@ -1,0 +1,26 @@
+pkgname=fish
+pkgver=2.5.0
+pkgrel=1
+arch=('x86_64')
+url="https://fishshell.com"
+license=('GPL')
+depends=('pcre')
+source=(https://fishshell.com/files/${pkgver}/${pkgname}-${pkgver}.tar.gz
+        )
+sha256sums=('f8c0edadca2de379ccf305aeace660a9255fa2180c72e85e97705a24c256b2a5'
+    )
+
+prepare() {
+    cd $pkgname-$pkgver
+}
+
+build() {
+    cd $pkgname-$pkgver
+    ./configure --prefix=/opt/arch
+    make
+}
+
+package() {
+    cd $pkgname-$pkgver
+    make DESTDIR="$pkgdir" install
+}

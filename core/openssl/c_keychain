@@ -1,0 +1,2 @@
+#!/bin/bash
+security find-certificate -a -p /System/Library/Keychains/SystemRootCertificates.keychain | perl -e 'my $buf = ""; my $cert = 0; while (<>) { $cert = 1 if /^-----BEGIN CERTIFICATE-----$/; $buf .= $_ if $cert; $cert = 0 if /^-----END CERTIFICATE-----$/; /^-----END CERTIFICATE-----$/ and open(SSL, "| openssl x509 -inform pem -checkend 0 -noout") and print SSL $buf and close(SSL) and print "$buf" if $? == 0; $buf = "" if !$cert; }' > /opt/arch/etc/ssl/cert.pem

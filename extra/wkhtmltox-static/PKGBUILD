@@ -1,0 +1,22 @@
+pkgname=wkhtmltox-static
+pkgver=0.12.3
+pkgrel=1
+pkgdesc="Render HTML into PDF and various image formats"
+provides=(wkhtmltox wkhtmltopdf wkhtmltoimage)
+arch=('x86_64')
+url="http://tuntaposx.sourceforge.net/"
+license=('LGPL')
+options=('!strip' 'staticlibs')
+source=("http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_osx-cocoa-x86-64.pkg")
+sha256sums=('c8aa0f9456444847d08c6c772e2e0e4244813e6a2911eba6c940439df9abd0f0')
+
+prepare() {
+  cd $srcdir
+  /bin/pax --insecure -rz -f Payload -s ,./usr/local/share,$srcdir,
+}
+
+package() {
+  cd $srcdir/wkhtmltox-installer
+  install -d -m755 $pkgdir/opt/arch
+  bsdtar -C $pkgdir/opt/arch -xf app.tar.xz
+}

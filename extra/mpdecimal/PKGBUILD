@@ -1,0 +1,32 @@
+pkgname=mpdecimal
+pkgver=2.4.2
+pkgrel=1
+pkgdesc="Package for correctly-rounded arbitrary precision decimal floating point arithmetic"
+arch=('x86_64')
+url="http://www.bytereef.org/mpdecimal/index.html"
+license=('custom')
+depends=('libc')
+source=(http://www.bytereef.org/software/${pkgname}/releases/${pkgname}-${pkgver}.tar.gz)
+
+build() {
+  cd ${pkgname}-${pkgver}
+
+  ./configure --prefix=/opt/arch
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  #mv $pkgdir/opt/arch/lib/libmpdec{.so.${pkgver},.${pkgver}.dylib}
+  #rm $pkgdir/opt/arch/lib/libmpdec.so
+  #rm $pkgdir/opt/arch/lib/libmpdec.so.2
+  #ln -sf libmpdec.${pkgver}.dylib $pkgdir/opt/arch/lib/libmpdec.dylib
+  #ln -sf libmpdec.${pkgver}.dylib $pkgdir/opt/arch/lib/libmpdec.2.dylib
+
+  install -dm755 "${pkgdir}/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENSE.txt "${pkgdir}/opt/arch/share/licenses/$pkgname/LICENSE.txt"
+}
+
+sha256sums=('83c628b90f009470981cf084c5418329c88b19835d8af3691b930afccb7d79c7')

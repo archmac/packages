@@ -1,0 +1,35 @@
+pkgname=icu
+pkgver=57.1
+pkgrel=1
+pkgdesc="International Components for Unicode library"
+arch=(x86_64)
+url="http://www.icu-project.org/"
+license=('custom:icu')
+#depends=('gcc-libs>=4.7.1-5' 'sh')
+depends=('sh')
+#makedepends=('clang')
+source=(http://download.icu-project.org/files/${pkgname}4c/${pkgver}/${pkgname}4c-${pkgver//./_}-src.tgz)
+md5sums=('976734806026a4ef8bdd17937c8898b9')
+
+build() {
+  cd icu/source
+  ./configure --prefix=/opt/arch \
+              --sysconfdir=/opt/arch/etc \
+              --mandir=/opt/arch/share/man \
+              --sbindir=/opt/arch/bin
+  make
+}
+
+check() {
+  cd icu/source
+  make -k check # passes all
+}
+
+package() {
+  cd icu/source
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Install license
+  install -d -m755 ${pkgdir}/opt/arch/share/licenses/icu
+  install -m644 ${srcdir}/icu/license.html ${pkgdir}/opt/arch/share/licenses/icu/license.html
+}

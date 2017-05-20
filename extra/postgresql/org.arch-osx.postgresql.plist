@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Disabled</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>Label</key>
+  <string>org.arch-osx.postgresql</string>
+  <key>UserName</key>
+  <string>_postgres</string>
+  <key>GroupName</key>
+  <string>_postgres</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/arch/bin/postgres</string>
+    <string>-D</string>
+    <string>/opt/arch/var/lib/postgres/data</string>
+    <string>-r</string>
+    <string>/opt/arch/var/lib/postgres/server.log</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>WorkingDirectory</key>
+  <string>/opt/arch/var/lib/postgres</string>
+  <key>StandardErrorPath</key>
+  <string>/opt/arch/var/lib/postgres/server.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/arch/bin:/opt/arch/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>LC_ALL</key>
+    <string>en_US.UTF-8</string>
+  </dict>
+</dict>
+</plist>

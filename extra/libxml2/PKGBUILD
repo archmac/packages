@@ -1,0 +1,39 @@
+pkgname=libxml2
+pkgver=2.9.4
+pkgrel=1
+pkgdesc="XML parsing library, version 2"
+arch=(x86_64)
+license=('MIT')
+depends=('zlib' 'readline' 'ncurses')
+options=(!makeflags)
+url="http://www.xmlsoft.org/"
+source=(http://xmlsoft.org/sources/$pkgname-$pkgver.tar.gz)
+sha256sums=('ffb911191e509b966deb55de705387f14156e1a56b21824357cdf0053233633c')
+
+#TODO: add patches from https://github.com/Homebrew/homebrew-core/blob/master/Formula/libxml2.rb
+
+prepare() {
+    cd $pkgname-$pkgver
+    sed -i -e 's/libtoolize/glibtoolize/g' autogen.sh
+    ./autogen.sh
+}
+
+build() {
+    cd $pkgname-$pkgver
+    ./configure --disable-dependency-tracking --prefix=/opt/arch --without-python --without-lzma
+    make
+}
+
+check() {
+    cd $pkgname-$pkgver
+    make check
+}
+
+package() {
+    cd $pkgname-$pkgver
+    find doc -type f -exec chmod 0644 {} \;
+
+    make DESTDIR="${pkgdir}" install
+    install -dm755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+    install -m644 COPYING "${pkgdir}/opt/arch/share/licenses/${pkgname}/COPYING"
+}

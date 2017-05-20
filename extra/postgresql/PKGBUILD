@@ -1,0 +1,147 @@
+pkgbase=postgresql
+pkgname=('postgresql-libs' 'postgresql-docs' 'postgresql')
+pkgver=9.5.2
+_majorver=${pkgver%.*}
+pkgrel=1
+arch=('x86_64')
+url="http://www.postgresql.org/"
+license=('custom:PostgreSQL')
+makedepends=('krb5' 'libxml2' 'python2' 'perl' 'tcl>=8.5.0' 'openssl>=1.0.0')
+source=(http://ftp.postgresql.org/pub/source/v${pkgver}/postgresql-${pkgver}.tar.bz2
+        org.arch-osx.postgresql.plist)
+sha256sums=('f8d132e464506b551ef498719f18cfe9d777709c7a1589dc360afc0b20e47c41'
+            '7afd9b0abef06381510f8667a0e0d63f0c21d130073720c52b942b9a5531bfff')
+
+build() {
+  cd "${srcdir}/postgresql-${pkgver}"
+
+  export CFLAGS="$CFLAGS -I/opt/arch/include"
+  export LDFLAGS="$CFLAGS -L/opt/arch/lib"
+
+  ./configure \
+    --prefix=/opt/arch \
+    --mandir=/opt/arch/share/man \
+    --datadir=/opt/arch/share/postgresql \
+    --sysconfdir=/opt/arch/etc \
+    --disable-debug \
+    --with-bonjour \
+    --with-gssapi \
+    --with-libxml \
+    --with-libxslt \
+    --with-ldap \
+    --with-openssl \
+    --with-pam \
+    --with-perl PERL=/usr/bin/perl \
+    --with-python PYTHON=/usr/bin/python \
+    --with-system-tzdata=/usr/share/zoneinfo \
+    --with-tcl \
+    --with-uuid=e2fs \
+    --enable-nls \
+    --enable-dtrace \
+    --enable-thread-safety
+
+  make world
+}
+
+package_postgresql-libs() {
+  pkgdesc="Libraries for use with PostgreSQL"
+  depends=('krb5' 'openssl>=1.0.0' 'readline>=6.0')
+  provides=('postgresql-client')
+  conflicts=('postgresql-client')
+
+  cd "${srcdir}/postgresql-${pkgver}"
+
+  # install license
+  install -d -m755 "${pkgdir}/opt/arch/share/licenses/postgresql-libs"
+  install -m644 COPYRIGHT "${pkgdir}/opt/arch/share/licenses/postgresql-libs/LICENSE"
+
+  # install libs and non-server binaries
+  for dir in src/interfaces src/bin/pg_config src/bin/pg_dump src/bin/psql src/bin/scripts; do
+    make -C ${dir} DESTDIR="${pkgdir}" install
+  done
+
+  install -d -m755 "${pkgdir}"/opt/arch/share/man/man1
+  for util in pg_config pg_dump pg_dumpall pg_restore psql \
+      clusterdb createdb createlang createuser dropdb droplang dropuser pg_isready reindexdb vacuumdb; do
+    install -m644 doc/src/sgml/man1/${util}.1 "${pkgdir}"/opt/arch/share/man/man1/${util}.1
+  done
+
+  cd src/include
+
+  mkdir -p "${pkgdir}"/opt/arch/include/{libpq,postgresql/internal/libpq}
+
+  # these headers are needed by the public headers of the interfaces
+  install -m644 pg_config.h "${pkgdir}/opt/arch/include/"
+  install -m644 pg_config_os.h "${pkgdir}/opt/arch/include/"
+  install -m644 pg_config_ext.h "${pkgdir}/opt/arch/include/"
+  install -m644 postgres_ext.h "${pkgdir}/opt/arch/include/"
+  install -m644 libpq/libpq-fs.h "${pkgdir}/opt/arch/include/libpq/"
+  install -m644 pg_config_manual.h "${pkgdir}/opt/arch/include/"
+
+  # these headers are needed by the not-so-public headers of the interfaces
+  install -m644 c.h "${pkgdir}/opt/arch/include/postgresql/internal/"
+  install -m644 port.h "${pkgdir}/opt/arch/include/postgresql/internal/"
+  install -m644 postgres_fe.h "${pkgdir}/opt/arch/include/postgresql/internal/"
+  install -m644 libpq/pqcomm.h "${pkgdir}/opt/arch/include/postgresql/internal/libpq/"
+}
+
+package_postgresql-docs() {
+  pkgdesc="HTML documentation for PostgreSQL"
+  options=('docs')
+
+  cd "${srcdir}/postgresql-${pkgver}"
+
+  # install license
+  install -d -m755 "${pkgdir}/opt/arch/share/licenses/postgresql-docs"
+  install -m644 COPYRIGHT "${pkgdir}/opt/arch/share/licenses/postgresql-docs/LICENSE"
+
+  make -C doc/src/sgml DESTDIR="${pkgdir}" install-html
+  #chown -R root:wheel "${pkgdir}/opt/arch/share/doc/postgresql/html/"
+
+  # clean up
+  rmdir "${pkgdir}"/opt/arch/share/man/man{1,3,7}
+  rmdir "${pkgdir}"/opt/arch/share/man
+}
+
+package_postgresql() {
+  pkgdesc="A sophisticated object-relational DBMS"
+  depends=("postgresql-libs>=${pkgver}" 'krb5' 'libxml2' 'readline>=6.0' 'openssl>=1.0.0' 'pam')
+  optdepends=('python2: for PL/Python support'
+              'perl: for PL/Perl support'
+              'tcl: for PL/Tcl support'
+              'postgresql-old-upgrade: upgrade from previous major version using pg_upgrade')
+  options=('staticlibs')
+  install=postgresql.install
+  backup=(Library/LaunchDaemons/org.arch-osx.postgresql.plist)
+
+  cd "${srcdir}/postgresql-${pkgver}"
+
+  # install
+  make DESTDIR="${pkgdir}" install
+  make -C contrib DESTDIR="${pkgdir}" install
+  make -C doc/src/sgml DESTDIR="${pkgdir}" install-man
+
+  # we don't want these, they are in the -libs package
+  for dir in src/interfaces src/bin/pg_config src/bin/pg_dump src/bin/psql src/bin/scripts; do
+    make -C ${dir} DESTDIR="${pkgdir}" uninstall
+  done
+  for util in pg_config pg_dump pg_dumpall pg_restore psql \
+      clusterdb createdb createlang createuser dropdb droplang dropuser pg_isready reindexdb vacuumdb; do
+    rm "${pkgdir}"/opt/arch/share/man/man1/${util}.1
+  done
+
+  # install license
+  install -d -m755 "${pkgdir}/opt/arch/share/licenses/${pkgbase}"
+  install -m644 COPYRIGHT "${pkgdir}/opt/arch/share/licenses/${pkgbase}/LICENSE"
+
+  # clean up unneeded installed items
+  rm -rf "${pkgdir}/opt/arch/include/postgresql/internal"
+  rm -rf "${pkgdir}/opt/arch/include/libpq"
+  for header in pg_config.h pg_config_os.h pg_config_ext.h postgres_ext.h pg_config_manual.h; do
+    rm "${pkgdir}/opt/arch/include/${header}"
+  done
+  rmdir "${pkgdir}/opt/arch/share/doc/postgresql/html"
+
+  mkdir -p "$pkgdir"/Library/LaunchDaemons
+  install -m644 "$srcdir"/org.arch-osx.postgresql.plist "$pkgdir"/Library/LaunchDaemons
+}
