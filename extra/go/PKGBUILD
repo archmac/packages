@@ -1,23 +1,23 @@
 pkgname=('go' 'go-tools')
 epoch=2
-pkgver=1.8.1
+pkgver=1.8.3
 pkgrel=1
 arch=('x86_64')
 url='http://golang.org/'
 license=('BSD')
 #makedepends=('inetutils' 'git' 'go')
 options=('!strip' 'staticlibs')
-source=(https://storage.googleapis.com/golang/go1.8.1.src.tar.gz
-        https://storage.googleapis.com/golang/go1.8.1.darwin-amd64.tar.gz)
-noextract=("go1.8.1.darwin-amd64.tar.gz")
-sha256sums=("33daf4c03f86120fdfdc66bddf6bfff4661c7ca11c5da473e537f4d69b470e57"
-            "25b026fe2f4de7c80b227f69588b06b93787f5b5f134fbf2d652926c08c04bcd")
+source=(https://storage.googleapis.com/golang/go${pkgver}.src.tar.gz
+        https://storage.googleapis.com/golang/go${pkgver}.darwin-amd64.tar.gz)
+noextract=("go${pkgver}.darwin-amd64.tar.gz")
+sha256sums=("5f5dea2447e7dcfdc50fa6b94c512e58bfba5673c039259fd843f68829d99fa6"
+            "f20b92bc7d4ab22aa18270087c478a74463bd64a893a94264434a38a4b167c05")
 _gourl=golang.org/x/tools/cmd
 
 prepare() {
   cd $srcdir
   mkdir -p gobootstrap
-  bsdtar -C gobootstrap -xz --strip-components 1 -f go1.8.1.darwin-amd64.tar.gz
+  bsdtar -C gobootstrap -xz --strip-components 1 -f go${pkgver}.darwin-amd64.tar.gz
 }
 
 build() {

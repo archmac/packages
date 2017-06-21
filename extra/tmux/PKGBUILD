@@ -1,5 +1,5 @@
 pkgname=tmux
-pkgver=2.3
+pkgver=2.5
 pkgrel=1
 pkgdesc='A terminal multiplexer'
 url='http://tmux.github.io/'
@@ -9,7 +9,7 @@ license=('BSD')
 depends=('ncurses' 'libevent')
 source=(https://github.com/tmux/tmux/releases/download/$pkgver/tmux-$pkgver.tar.gz
 	LICENSE)
-md5sums=('fcfd1611d705d8b31df3c26ebc93bd3e'
+md5sums=('4a5d73d96d8f11b0bdf9b6f15ab76d15'
          '71601bc37fa44e4395580b321963018e')
 
 build() {
