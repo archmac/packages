@@ -1,6 +1,6 @@
 pkgname=gpgme
-pkgver=1.6.0
-pkgrel=2
+pkgver=1.9.0
+pkgrel=1
 pkgdesc="A C wrapper library for GnuPG"
 arch=('x86_64')
 url="http://www.gnupg.org/related_software/gpgme/"
@@ -9,7 +9,7 @@ depends=('libgpg-error' 'gnupg>=2')
 install=${pkgname}.install
 options=('!emptydirs')
 source=(ftp://ftp.gnupg.org/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2{,.sig})
-md5sums=('60d730d22e8065fd5de309e8b98e304b'
+md5sums=('1e00bb8ef04d1d05d5a0f19e143854c3'
          'SKIP')
 validpgpkeys=('D8692123C4065DEA5E0F3AB5249B39D24F25E3B6') # Werner Koch
 

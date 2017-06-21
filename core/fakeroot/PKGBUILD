@@ -1,5 +1,5 @@
 pkgname=fakeroot
-pkgver=1.20.2
+pkgver=1.21
 pkgrel=1
 pkgdesc='Tool for simulating superuser privileges'
 arch=('x86_64')
@@ -7,12 +7,12 @@ license=('GPL')
 url="http://packages.debian.org/fakeroot"
 groups=('base-devel')
 depends=()
-source=(http://ftp.debian.org/debian/pool/main/f/$pkgname/${pkgname}_${pkgver}.orig.tar.bz2
+source=(http://http.debian.net/debian/pool/main/f/$pkgname/${pkgname}_${pkgver}.orig.tar.gz
         0002-OS-X-10.10-introduced-id_t-int-in-gs-etpriority.patch
         0001-Implement-openat-2-wrapper-which-handles-optional-ar.patch
         fakeroot-darwin-openat-wraptmp.patch
         fakeroot-darwin-openat.patch)
-md5sums=('a4b4564a75024aa96c86e4d1017ac786'
+md5sums=('be5c9a0e516869fca4a6758105968e5a'
          '303823f943f46ba48d11e263641f1edb'
          '8a0db3599d0300f0860ea33bb5cd09df'
          '53b5443661c662b2e4ddf8cef1cf089e'
@@ -28,7 +28,9 @@ prepare() {
 
 build() {
   cd $pkgname-$pkgver
-
+  
+  export LIBTOOLIZE=glibtoolize
+  ./bootstrap
   ./configure --prefix=/opt/arch \
     --libdir=/opt/arch/lib/libfakeroot \
     --disable-static \
@@ -44,6 +46,7 @@ build() {
 
 package() {
   cd $pkgname-$pkgver
+  sed -i~ 's/SUBDIRS = .*/SUBDIRS =/' doc/Makefile # don't depend on po4a
   make DESTDIR="$pkgdir" install
 
   # install README for sysv/tcp usage

@@ -1,5 +1,5 @@
 pkgname=pinentry
-pkgver=0.9.7
+pkgver=1.0.0
 pkgrel=1
 pkgdesc='Collection of simple PIN or passphrase entry dialogs which utilize the Assuan protocol'
 url='http://gnupg.org/related_software/pinentry/'
@@ -8,7 +8,7 @@ license=('GPL')
 #depends=('ncurses' 'libcap' 'libassuan')
 depends=('libassuan')
 source=("ftp://ftp.gnupg.org/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2"{,.sig})
-sha1sums=('9bdcf5f4096aa8b26956afb0ecdd3d7849ffa0cd' 'SKIP')
+sha1sums=('85d9ac81ebad3fb082514c505c90c39a0456f1f6' 'SKIP')
 validpgpkeys=('D8692123C4065DEA5E0F3AB5249B39D24F25E3B6')
 
 install=pinentry.install

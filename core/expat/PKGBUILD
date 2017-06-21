@@ -1,13 +1,27 @@
 pkgname=expat
-pkgver=2.1.1
+pkgver=2.2.1
 pkgrel=1
 pkgdesc='An XML parser library'
 arch=('x86_64')
-url='http://expat.sourceforge.net/'
+url='https://libexpat.github.io'
 license=('custom')
 depends=('libc')
-source=(http://downloads.sourceforge.net/sourceforge/expat/$pkgname-$pkgver.tar.bz2)
-md5sums=('7380a64a8e3a9d66a9887b01d0d7ea81')
+source=(
+  http://downloads.sourceforge.net/sourceforge/expat/$pkgname-$pkgver.tar.bz2
+  fix_getrandom.patch
+)
+md5sums=(
+  'd9c3baeab58774cefc2f04faf29f2cf8'
+  '6d4101ae7ca51b1f07358feabe8710c4'
+)
+
+prepare() {
+  cd $pkgname-$pkgver
+  # Upstream commit from 18 Jun 2017 "configure.ac: Fix mis-detection of
+  # getrandom on Debian GNU/kFreeBSD (#50)"
+  # See https://github.com/libexpat/libexpat/commit/602e6c78ca750c082b72f8cdf4a38839b312959f
+  patch -p1 -i ../fix_getrandom.patch
+}
 
 build() {
   cd $pkgname-$pkgver
