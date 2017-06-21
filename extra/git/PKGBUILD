@@ -1,5 +1,5 @@
 pkgname=git
-pkgver=2.8.1
+pkgver=2.13.1
 pkgrel=1
 pkgdesc="the fast distributed version control system"
 arch=(x86_64)
@@ -25,10 +25,10 @@ source=("https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz"
         "https://www.kernel.org/pub/software/scm/git/git-manpages-$pkgver.tar.xz")
 noextract=("git-htmldocs-$pkgver.tar.xz"
            "git-manpages-$pkgver.tar.xz")
-md5sums=('443b5e501eda9b8441331a8e61578e6a'
+md5sums=('25ee4131d5398d32073b3ad7c39c4252'
          'SKIP'
-         'c82d66986e5265fe9bae7d548e73eff6'
-         '87bc202c6f6ae32c1c46c2dda3134ed1')
+         'ded893d057955ef6f181b0daa90b53d4'
+         '20ced60758fbc2548538bc5e9981f32c')
 validpgpkeys=('96E07AF25771955980DAD10020D04E5A713660A7') # Junio C Hamano
 
 build() {
