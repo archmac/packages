@@ -1,5 +1,5 @@
 pkgname=docker
-pkgver=17.03.0
+pkgver=17.05.0
 pkgrel=1
 pkgdesc='Pack, ship and run any application as a lightweight container'
 arch=('x86_64' 'i686')
