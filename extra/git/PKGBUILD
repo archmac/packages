@@ -1,6 +1,6 @@
 pkgname=git
 pkgver=2.13.1
-pkgrel=1
+pkgrel=3
 pkgdesc="the fast distributed version control system"
 arch=(x86_64)
 url="http://git-scm.com/"
@@ -111,11 +111,14 @@ package() {
   # the rest of the contrib stuff
   cp -a ./contrib/* $pkgdir/opt/arch/share/git/
 
+  # respect perl @INC
+  mv "$pkgdir"/opt/arch/lib/perl5{,/site_perl}
   # remove perllocal.pod, .packlist, and empty directories.
-  rm -rf "$pkgdir"/opt/arch/lib/perl5
+  rm -rf "$pkgdir"/opt/arch/Library
 
   install -d -m755 "$pkgdir"/opt/arch/share/man
   bsdtar -C "$pkgdir"/opt/arch/share/man -xJf "$srcdir/git-manpages-$pkgver.tar.xz"
+  chmod 0755 "$pkgdir"/opt/arch/share/man
   install -d -m755 "$pkgdir"/opt/arch/share/doc/git-doc
   bsdtar -C "$pkgdir"/opt/arch/share/doc/git-doc -xJf "$srcdir/git-htmldocs-$pkgver.tar.xz"
   find "$pkgdir/opt/arch/share/doc/git-doc" -name '*.html' -or -name '*.txt' -exec chmod 0644 {} \;
