@@ -1,6 +1,6 @@
 pkgname=git
 pkgver=2.13.1
-pkgrel=3
+pkgrel=4
 pkgdesc="the fast distributed version control system"
 arch=(x86_64)
 url="http://git-scm.com/"
@@ -112,7 +112,9 @@ package() {
   cp -a ./contrib/* $pkgdir/opt/arch/share/git/
 
   # respect perl @INC
-  mv "$pkgdir"/opt/arch/lib/perl5{,/site_perl}
+  mv "$pkgdir"/opt/arch/lib/perl5{,_site_perl}
+  mkdir -p "$pkgdir"/opt/arch/lib/perl5
+  mv "$pkgdir"/opt/arch/lib/perl5{_,/}site_perl
   # remove perllocal.pod, .packlist, and empty directories.
   rm -rf "$pkgdir"/opt/arch/Library
 
