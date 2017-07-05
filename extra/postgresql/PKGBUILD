@@ -2,7 +2,7 @@ pkgbase=postgresql
 pkgname=('postgresql-libs' 'postgresql-docs' 'postgresql')
 pkgver=9.5.2
 _majorver=${pkgver%.*}
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.postgresql.org/"
 license=('custom:PostgreSQL')
@@ -34,7 +34,7 @@ build() {
     --with-perl PERL=/usr/bin/perl \
     --with-python PYTHON=/usr/bin/python \
     --with-system-tzdata=/usr/share/zoneinfo \
-    --with-tcl \
+    --without-tcl \
     --with-uuid=e2fs \
     --enable-nls \
     --enable-dtrace \

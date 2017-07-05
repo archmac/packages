@@ -1,9 +1,9 @@
 pkgbase=mariadb
 #pkgname=('libmariadbclient' 'mariadb-clients' 'mytop' 'mariadb')
 pkgname=('libmariadbclient' 'mariadb-clients' 'mariadb')
-pkgver=10.1.13
+pkgver=10.1.25
 _pkgver=${pkgver/.a/a}
-pkgrel=2
+pkgrel=1
 arch=('x86_64')
 license=('GPL')
 url='http://mariadb.org/'
@@ -13,7 +13,7 @@ makedepends=('cmake' 'zlib' 'libxml2' 'openssl' 'pcre')
 source=(http://ftp.heanet.ie/mirrors/mariadb/mariadb-$pkgver/source/mariadb-$pkgver.tar.gz
         mariadb-post.sh
         org.arch-osx.mariadb.plist)
-sha256sums=('21e1c7da1421146c69f5e8077333aaac06778a87046a1943ee4f449fbcefc00d'
+sha256sums=('7205ecaa6f1bc16335ad88faa5c46be52b3ac628a5e795cb942a3f4335b2a0d6'
             '0e5f5fe0743d3112e3a45d3fdc52cb972dd2fd125f7c917b24515abcc3a27e03'
             '82e87b89904877eea4c9e476d649e36d103b2bfecf94e6488b9dc1211165fb30')
 
@@ -27,6 +27,9 @@ prepare() {
 build() {
   mkdir -p build
   cd build
+
+  CFLAGS="-I/opt/arch/include"
+  CXXFLAGS="-I/opt/arch/include"
 
   cmake ../$pkgbase-$_pkgver \
     -DCMAKE_AR=/usr/bin/ar \
@@ -55,20 +58,21 @@ build() {
     -DWITH_LIBWRAP=OFF \
     -DWITH_JEMALLOC=ON \
     -DCMAKE_EXE_LINKER_FLAGS='-L/opt/arch/lib -ljemalloc' \
+    -DCMAKE_C_FLAGS="$CFLAGS -DBIG_JOINS=1" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS -DBIG_JOINS=1" \
     -DWITH_EXTRA_CHARSETS=complex \
     -DWITH_EMBEDDED_SERVER=ON \
     -DWITH_ARCHIVE_STORAGE_ENGINE=1 \
     -DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
     -DWITH_INNOBASE_STORAGE_ENGINE=1 \
     -DPLUGIN_TOKUDB=NO \
+    #-DWITH_UNIT_TESTS=OFF \
     #-DWITH_PCRE=system \
     #-DWITH_PARTITION_STORAGE_ENGINE=1 \
     #-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
     #-DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
     #-DWITHOUT_PBXT_STORAGE_ENGINE=1 \
     #-DWITH_TOKUDB_STORAGE_ENGINE=1 \
-    #-DCMAKE_C_FLAGS="-fPIC $CFLAGS -fno-strict-aliasing -DBIG_JOINS=1 -fomit-frame-pointer -fno-delete-null-pointer-checks" \
-    #-DCMAKE_CXX_FLAGS="-fPIC $CXXFLAGS -fno-strict-aliasing -DBIG_JOINS=1 -felide-constructors -fno-rtti -fno-delete-null-pointer-checks" \
     #-DWITH_MYSQLD_LDFLAGS="-pie ${LDFLAGS},-z,now"
 
   sed -i~ -e 's#-id "libmysqlclient.18.dylib"#-id "/opt/arch/lib/libmysqlclient.18.dylib"#' \
