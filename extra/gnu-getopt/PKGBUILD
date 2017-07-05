@@ -1,10 +1,10 @@
 pkgname=gnu-getopt
 _pkgname=getopt
 pkgver=1.1.6
-pkgrel=1
+pkgrel=2
 pkgdesc="Command-line option parsing library"
 arch=('x86_64')
-url="http://cyberelk.net/tim/software/xmlto/"
+url="http://software.frodo.looijaard.name/getopt/"
 license=('GPL')
 depends=('gettext')
 
