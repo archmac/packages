@@ -5,12 +5,15 @@ dependencies:
     pre:
         - sudo mkdir -p /opt
         - sed -i~ -e '/^# Homebrew alternate path/ {N;N;d;}' ~/.bashrc
+        - sed -i~ -e '/^# Homebrew alternate path/ {N;N;d;}' ~/.bash_profile
         - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bashrc
+        - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bash_profile
         - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
         - curl -O http://download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
         - sudo tar -C / -xvpzf arch-osx-snapshot.tar.gz
-        - echo 'export PATH="/opt/arch/bin:opt/arch/sbin:$PATH"' >> ~/.bashrc
+        - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bashrc
+        - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bash_profile
         - sudo sed -i~ -e 's/^#Server/Server/' /opt/arch/etc/pacman.d/mirrorlist
         - pacman -Q
         - sudo pacman --sync --refresh --noprogressbar
