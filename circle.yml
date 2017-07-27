@@ -1,0 +1,13 @@
+machine:
+    xcode:
+        version: 8.3.3
+dependencies:
+    pre:
+        - sudo mkdir -p /opt
+        - sed -i~ -e '/^# Homebrew alternate path/ {N;N;d;}' ~/.bashrc
+        - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bashrc
+        - sudo rm -rf /usr/local/*
+        - sudo rm -rf /opt/*
+test:
+    override:
+        - diff -u <(git rev-list --first-parent master) <(git rev-list --first-parent $CIRCLE_SHA1) | sed -ne 's/^ //p' | head -1
