@@ -9,7 +9,13 @@ dependencies:
         - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
     override:
-        - true
+        - pwd
+database:
+    override:
+        - pwd
 compile:
     override:
         - .support/build $(.support/changes master "${CIRCLE_SHA1}")
+test:
+    override:
+        - pwd
