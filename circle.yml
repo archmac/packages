@@ -15,13 +15,10 @@ dependencies:
         - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bashrc
         - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bash_profile
         - sudo sed -i~ -e 's/^#Server/Server/' /opt/arch/etc/pacman.d/mirrorlist
-        - pacman -Q
+    override:
         - sudo pacman --sync --refresh --noprogressbar
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
-        - pacman -Q
-    override:
-        - pwd
 database:
     override:
         - pwd
