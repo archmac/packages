@@ -19,10 +19,18 @@ dependencies:
         - sudo pacman --sync --refresh --noprogressbar
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
+        - sudo pacman --sync --noprogressbar --noconfirm parallel
 database:
     override:
         - /usr/bin/true
 compile:
+    pre:
+        - mkdir -p "$CIRCLE_ARTIFACTS"/{packages,srcpackages,makepkglogs}
+        - sudo sed -i~ -e "s,^#PKGDEST=.*,PKGDEST=\"$CIRCLE_ARTIFACTS/packages\"," /opt/arch/etc/makepkg.conf
+        - sudo sed -i~ -e "s,^#SRCPKGDEST=.*,SRCPKGDEST=\"$CIRCLE_ARTIFACTS/srcpackages\"," /opt/arch/etc/makepkg.conf
+        - sudo sed -i~ -e "s,^#LOGDEST=.*,LOGDEST=\"$CIRCLE_ARTIFACTS/makepkglogs\"," /opt/arch/etc/makepkg.conf
+        # sudo sed -i~ -e "s,^#PACKAGER=.*,PACKAGER=\"CircleCI\"", /opt/arch/etc/makepkg.conf
+        # sudo sed -i~ -e "s,^#GPGKEY=.*,GPGKEY=\"\"", /opt/arch/etc/makepkg.conf
     override:
         - .support/build $(.support/changes master "${CIRCLE_SHA1}")
 test:
