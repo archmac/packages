@@ -1,0 +1,40 @@
+pkgname=gc
+pkgver=7.6.0
+pkgrel=1
+pkgdesc="A garbage collector for C and C++"
+arch=('i686' 'x86_64')
+url="http://www.hboehm.info/gc/"
+license=('GPL')
+#depends=('gcc-libs' 'libatomic_ops')
+depends=('libatomic_ops')
+source=(http://www.hboehm.info/gc/gc_source/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('a14a28b1129be90e55cd6f71127ffc5594e1091d5d54131528c24cd0c03b7d90')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+
+  sed -i~ -e 's#pkgdata#doc#' doc/doc.am
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+
+  #https://github.com/ivmai/bdwgc/issues/87
+  CXXFLAGS+=' -std=gnu++98' ./configure --prefix=/opt/arch --enable-cplusplus --disable-static
+  sed -i~ -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  make check
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  sed -i~ -e 's/GC_MALLOC 1L/gc 3/' doc/gc.man
+  install -m755 -d "${pkgdir}/opt/arch/share/man/man3"
+  install -m644 doc/gc.man "${pkgdir}/opt/arch/share/man/man3/gc.3"
+}
