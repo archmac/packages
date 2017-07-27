@@ -12,7 +12,8 @@ dependencies:
         - sudo tar -C / -xvpzf arch-osx-snapshot.tar.gz
         - echo 'export PATH="/opt/arch/bin:opt/arch/sbin:$PATH"' >> ~/.bashrc
         - sudo sed -i~ -e 's/^#Server/Server/' /opt/arch/etc/pacman.d/mirrorlist
-        - sudo pacman -Sy
+        - sudo pacman -Syuw
+        - sudo pacman -Su
     override:
         - pwd
 database:
