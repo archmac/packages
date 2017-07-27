@@ -8,6 +8,8 @@ dependencies:
         - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bashrc
         - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
-test:
+    override:
+        - true
+compile:
     override:
         - .support/build $(.support/changes master "${CIRCLE_SHA1}")
