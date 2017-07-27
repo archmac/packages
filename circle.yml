@@ -8,6 +8,11 @@ dependencies:
         - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bashrc
         - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
+        - curl -O http://download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
+        - sudo tar -C / -xvpzf arch-osx-snapshot.tar.gz
+        - echo 'export PATH="/opt/arch/bin:opt/arch/sbin:$PATH"' >> ~/.bashrc
+        - sudo sed -i~ -e 's/^#Server/Server/' /opt/arch/etc/pacman.d/mirrorlist
+        - sudo pacman -Sy
     override:
         - pwd
 database:
