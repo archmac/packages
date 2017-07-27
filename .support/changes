@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function base() {
+    diff -u <(git rev-list --first-parent "$1") <(git rev-list --first-parent "$2") | sed -ne 's/^ //p' | head -1
+}
+
+function packages() {
+    ls -1d -- */*
+}
+
+function changes() {
+    git diff --name-only "$1".."$2"
+}
+
+function pkg_changes() {
+    comm -12 <(changes "$1" "$2" | perl -ne '/^(.*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages)
+}
+
+current="$(git rev-parse HEAD)"
+
+pkg_changes "$(base "${1:-master}" "${2:-$current}")" "${2:-$current}"

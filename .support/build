@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for pkg in "$@"; do
+    echo "*** Building $pkg"
+    (cd "$pkg" && echo makepkg -sr)
+done
