@@ -1,0 +1,19 @@
+pkgname=foo
+pkgver=1.0.0
+pkgrel=1
+arch=('x86_64')
+license=('BSD')
+
+prepare() {
+    mkdir -p $pkgname-$pkgver
+}
+
+build() {
+    cd $pkgname-$pkgver
+    touch foo
+}
+
+package() {
+    cd $pkgname-$pkgver
+    install -m644 foo "$pkgdir/foo"
+}
