@@ -21,10 +21,10 @@ dependencies:
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
 database:
     override:
-        - pwd
+        - /usr/bin/true
 compile:
     override:
         - .support/build $(.support/changes master "${CIRCLE_SHA1}")
 test:
     override:
-        - pwd
+        - /usr/bin/true
