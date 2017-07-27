@@ -5,7 +5,7 @@ function base() {
 }
 
 function packages() {
-    ls -1d -- */*
+    find -- * -name PKGBUILD | sed 's#/PKGBUILD$##'
 }
 
 function changes() {
