@@ -2,5 +2,5 @@
 
 for pkg in "$@"; do
     echo "*** Building $pkg"
-    (cd "$pkg" && echo makepkg -sr)
+    (cd "$pkg" && makepkg --syncdeps --rmdeps --skippgpcheck --nocheck --install)
 done
