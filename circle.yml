@@ -10,8 +10,8 @@ dependencies:
         - sed -i~ -e '/^# chruby hooks/ {N;N;N;d;}' ~/.bash_profile
         - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
-        - curl -O http://download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
-        - sudo tar -C / -xvpzf arch-osx-snapshot.tar.gz
+        - curl -O http://download.arch-osx.org/snapshots/arch-osx-snapshot-20170728160026.tar.gz
+        - sudo tar -C / -xvpzf arch-osx-snapshot-20170728160026.tar.gz
         - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bashrc
         - echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.bash_profile
         - sudo sed -i~ -e 's/^#Server/Server/' /opt/arch/etc/pacman.d/mirrorlist
@@ -19,7 +19,7 @@ dependencies:
         - sudo pacman --sync --refresh --noprogressbar
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
-        - sudo pacman --sync --noprogressbar --noconfirm parallel
+        - sudo pacman --sync --noprogressbar --noconfirm base-devel parallel
 database:
     override:
         - /usr/bin/true
