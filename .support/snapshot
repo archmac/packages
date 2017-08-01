@@ -6,10 +6,12 @@ set -o pipefail
 
 new_root="${PWD}/tmproot"
 timestamp="$(date "+%Y%m%d%H%M%S")"
+tag="${1:-$timestamp}"
+out="${2:-snapshots}"
 
 sudo rm -rf "${new_root}"
 sudo mkdir -p "${new_root}"/opt/arch/var/lib/pacman
 sudo chown -R root:wheel "${new_root}"/opt
 sudo pacman --root "${new_root}" --cachedir "${new_root}"/opt/arch/var/cache/pacman/pkg --noscriptlet --sync --refresh --noconfirm --noprogress base gpgme expat xz openssl
-mkdir -p snapshots
-tar -C "${new_root}" -czf "snapshots/arch-osx-snapshot-${timestamp}".tar.gz .
+mkdir -p "${out}"
+tar -C "${new_root}" -czf "${out}/arch-osx-snapshot-${tag}".tar.gz .

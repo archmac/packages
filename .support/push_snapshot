@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-
-latest="$(find snapshots -name '*-snapshot-*.tar.gz' | sort | tail -1)"
-rsync -rvt "$latest" root@download.arch-osx.org:/srv/www/download.arch-osx.org/snapshots/
-ssh root@download.arch-osx.org ln -svf "${latest/snapshots\//}" /srv/www/download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz

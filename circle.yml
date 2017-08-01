@@ -21,6 +21,7 @@ dependencies:
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
         - sudo pacman --sync --noprogressbar --noconfirm base-devel parallel
 database:
+    # trusted pgp keyring for source check
     override:
         - /usr/bin/true
 compile:
@@ -34,5 +35,18 @@ compile:
     override:
         - .support/build $(.support/changes master "${CIRCLE_SHA1}")
 test:
+    # clean /opt/arch, install base snapshot, install packages
     override:
         - /usr/bin/true
+deployment:
+    package:
+        branch: master
+        owner: arch-osx
+        commands:
+            - .support/push package "${CIRCLE_ARTIFACTS}"
+    snapshot:
+        tag: /snapshot-.*/
+        owner: arch-osx
+        commands:
+            - .support/snapshot "${CIRCLE_REF}" "${CIRCLE_ARTIFACTS}"
+            - .support/push snapshot "${CIRCLE_ARTIFACTS}"
