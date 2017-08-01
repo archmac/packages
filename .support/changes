@@ -12,10 +12,47 @@ function changes() {
     git diff --name-only "$1".."$2"
 }
 
-function pkg_changes() {
-    comm -12 <(changes "$1" "$2" | perl -ne '/^(.*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages)
+function updates() {
+    comm -12 <(changes "$1" "$2" | perl -ne '/^(.*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages | sort | uniq)
 }
 
-current="$(git rev-parse HEAD)"
+function merge() {
+    test $(git show --no-patch --format="%P" "$1" | wc -w) -gt 1
+}
 
-pkg_changes "$(base "${1:-master}" "${2:-$current}")" "${2:-$current}"
+function parents() {
+    git show --summary --format="%P" "$1" | sed -e '/^$/d'
+}
+
+function topics() {
+    parents "$1" | sed -e 's/^[a-z0-9]* //'
+}
+
+function same() {
+    test "$(git rev-parse "$1") -eq $(git rev-parse "$2")"
+}
+
+function ancestor() {
+    git rev-list --first-parent "$1" | grep -q "$(git rev-parse "$2")"
+}
+
+# every non-merge commit on master shall build that commit's package and
+# publish it.
+# every commit on a branch shall build its packages since it was borne out of
+# master.
+# every merge commit on master shall build its parent branches packages, except
+# those from master since it has already been built.
+
+head="$(git rev-parse HEAD)"
+target="${1-master}"
+current="${2:-$head}"
+
+if ancestor master "${current}" && merge "${current}"; then
+    for parent in $(topics "${current}"); do
+        updates "$(base "${target}" "${parent}")" "${parent}"
+    done | sort | uniq
+elif ancestor master "${current}" && ! merge "${current}"; then
+    updates "${current}^" "${current}"
+elif ! ancestor master "${current}"; then
+    updates "$(base "${target}" "${current}")" "${current}"
+fi
