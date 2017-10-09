@@ -1,0 +1,56 @@
+pkgbase=apache-ant
+pkgname=(apache-ant)
+pkgdesc='A java-based build tool'
+pkgver=1.10.1
+pkgrel=1
+arch=('any')
+license=('APACHE')
+url='https://ant.apache.org/'
+source=("http://apache.mirrors.ovh.net/ftp.apache.org/dist//ant/binaries/apache-ant-1.10.1-bin.tar.bz2")
+sha1sums=(
+    '1f947bb30516a01d459ef5f6e8dbea9c62919022'
+)
+
+_ant_home=/opt/arch/share/${pkgbase}
+
+build() {
+    cd "${srcdir}/${pkgbase}-${pkgver}"
+    rm -f bin/*.{bat,cmd,dll,exe}
+    cat > 'ant.sh' <<EOS
+##!/bin/sh
+export ANT_HOME="$_ant_home"
+export LOCALCLASSPATH="/opt/arch/share/java/junit.jar"
+"$_ant_home/bin/ant" "\$@"
+EOS
+}
+
+package() {
+    cd "${srcdir}/${pkgbase}-${pkgver}"
+
+    install -dm755 "${pkgdir}${_ant_home}"
+
+    install -dm755 "${pkgdir}/opt/arch/etc/${pkgbase}"
+    cp -Rp etc/* "${pkgdir}/opt/arch/etc/${pkgbase}"
+    rm "${pkgdir}/opt/arch/etc/${pkgbase}/ant-bootstrap.jar"
+    ln -s /opt/arch/etc/${pkgbase} "${pkgdir}${_ant_home}/etc"
+
+    install -dm755 "${pkgdir}${_ant_home}/bin"
+    find bin \
+        -type f -a ! -name \*.bat -a ! -name \*.cmd \
+        -exec install -m755 {} "${pkgdir}${_ant_home}/bin" \;
+
+    install -dm755 "${pkgdir}/opt/arch/share/java/${pkgbase}"
+    install -m644 lib/*.jar "${pkgdir}/opt/arch/share/java/${pkgbase}"
+    ln -s /opt/arch/share/java/${pkgbase} "${pkgdir}${_ant_home}/lib"
+
+    cd "${srcdir}/${pkgbase}-${pkgver}"
+    install -dm755 "${pkgdir}/opt/arch/share/licenses/${pkgbase}"
+    install -m644 LICENSE NOTICE "${pkgdir}/opt/arch/share/licenses/${pkgbase}"
+
+    install -dm755 "$pkgdir/opt/arch/bin"
+    #for b in bin/*; do
+    #    ln -sf "../libexec/ant/$b" "$pkgdir/opt/arch/$b"
+    #done
+    #rm "$pkgdir/bin/ant"
+    install -m755 ant.sh "$pkgdir/opt/arch/bin/ant"
+}
