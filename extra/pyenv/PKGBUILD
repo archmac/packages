@@ -1,0 +1,22 @@
+pkgname=pyenv
+pkgver=1.1.5
+pkgrel=1
+pkgdesc='Python version management'
+arch=('any')
+url='https://github.com/yyuu/pyenv'
+license=('MIT')
+optdepends=('mercurial: to install dev builds')
+depends=()
+source=("https://github.com/pyenv/pyenv/archive/v${pkgver}.tar.gz")
+sha256sums=('438abaef82c7e044239822f9dedf0ca76aed43e46959997ccce1b99883e68452')
+
+package() {
+    mkdir -p "${pkgdir?}"/{opt/arch/share/pyenv,opt/arch/bin}
+    cd "${srcdir?}/$pkgname-$pkgver" || return
+    cp -a -- * "$pkgdir"/opt/arch/share/pyenv
+    ln -s /opt/arch/share/pyenv/libexec/pyenv "$pkgdir/opt/arch/bin/pyenv"
+
+    for bin in pyenv-{,un}install python-build; do
+        ln -s /opt/arch/share/pyenv/plugins/python-build/bin/"$bin" "$pkgdir/opt/arch/bin/$bin"
+    done
+}
