@@ -1,0 +1,72 @@
+version: 2
+
+jobs:
+    build:
+        macos:
+            xcode: "9.2.0"
+        steps:
+            - run:
+                name: Pristine macOS
+                command: |
+                    sudo mkdir -p /opt
+                    sudo rm -rf /usr/local/*
+                    sudo rm -rf /opt/*
+                    echo > ~/.bashrc
+                    echo > ~/.bash_profile
+                    echo > ~/.circlerc
+            - run:
+                name: Setup Arch
+                command: |
+                    curl -o /tmp/arch-snapshot.tar.gz http://download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
+                    sudo tar -C / -xvpzf /tmp/arch-snapshot.tar.gz
+                    sudo sed -i~ -e 's/^#Server =/Server =/' /opt/arch/etc/pacman.d/mirrorlist
+                    echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.archrc
+                    echo 'source ~/.archrc' | tee -a ~/.bashrc ~/.bash_profile > /dev/null
+            - run: 
+                name: Update Arch
+                command: |
+                    source ~/.archrc
+                    sudo pacman --sync --refresh --noprogressbar
+                    sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
+                    sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
+                    sudo pacman --sync --noprogressbar --noconfirm base-devel
+            - run:
+                name: Configure makepkg
+                command: |
+                    source ~/.archrc
+                    artifacts="/tmp/artifacts"
+                    mkdir -p "${artifacts}"/{packages,srcpackages,makepkglogs}
+                    sudo sed -i~ -e "s,^#PKGDEST=.*,PKGDEST=\"${artifacts}/packages\"," /opt/arch/etc/makepkg.conf
+                    sudo sed -i~ -e "s,^#SRCPKGDEST=.*,SRCPKGDEST=\"${artifacts}/srcpackages\"," /opt/arch/etc/makepkg.conf
+                    sudo sed -i~ -e "s,^#LOGDEST=.*,LOGDEST=\"${artifacts}/makepkglogs\"," /opt/arch/etc/makepkg.conf
+                    #sudo sed -i~ -e "s,^#PACKAGER=.*,PACKAGER=\"CircleCI\"", /opt/arch/etc/makepkg.conf
+                    #sudo sed -i~ -e "s,^#GPGKEY=.*,GPGKEY=\"\"", /opt/arch/etc/makepkg.conf
+            - checkout
+            - run:
+                name: Build packages
+                command: |
+                    source ~/.archrc
+                    .support/changes master "${CIRCLE_SHA1}"
+                    .support/build $(.support/changes master "${CIRCLE_SHA1}")
+            - store_artifacts:
+                path: /tmp/artifacts/packages
+            - store_artifacts:
+                path: /tmp/artifacts/makepkglogs
+    #    package:
+    #        branch: master
+    #        owner: arch-osx
+    #        commands:
+    #            - .support/push package "${CIRCLE_ARTIFACTS}"
+    #    snapshot:
+    #        tag: /snapshot-.*/
+    #        owner: arch-osx
+    #        commands:
+    #            - .support/snapshot "${CIRCLE_REF}" "${CIRCLE_ARTIFACTS}"
+    #            - .support/push snapshot "${CIRCLE_ARTIFACTS}"
+
+
+workflows:
+    version: 2
+    build:
+        jobs:
+            - build
