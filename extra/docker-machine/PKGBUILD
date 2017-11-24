@@ -1,5 +1,5 @@
 pkgname=docker-machine
-pkgver=0.12.1
+pkgver=0.13.0
 pkgrel=1
 pkgdesc='Machine management for a container-centric world'
 arch=('i686' 'x86_64')
