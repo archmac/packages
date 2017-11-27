@@ -1,0 +1,40 @@
+pkgname=docker-machine-driver-xhyve
+pkgver=0.3.3
+pkgrel=1
+_rev="7d92f74a8b9825e55ee5088b8bfa93b042badc47"
+pkgdesc='Driver plugin for xhyve/hyperkit'
+arch=('i686' 'x86_64')
+url='https://github.com/zchee/docker-machine-driver-xhyve'
+license=('BSD')
+#depends=('gcc-libs')
+#optdepends=('net-tools: for VirtualBox support')
+makedepends=('go' 'git')
+#optdepends=('net-tools: required for VirtualBox driver')
+source=("git+https://github.com/zchee/docker-machine-driver-xhyve.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+prepare() {
+  export GOPATH="$srcdir/build"
+  mkdir -p $srcdir/build/src/github.com/zchee
+  rm -f $srcdir/build/src/github.com/zchee/docker-machine-driver-xhyve
+  ln -s $srcdir/docker-machine-driver-xhyve build/src/github.com/zchee/docker-machine-driver-xhyve
+  cd $srcdir/docker-machine-driver-xhyve
+  git submodule update --init
+}
+
+build() {
+  export GO_LDFLAGS="-w -s -X 'github.com/zchee/docker-machine-driver-xhyve/xhyve.GitCommit=${_rev}'"
+  export GO_BUILD_TAGS="lib9p"
+
+  cd $srcdir/build/src/github.com/zchee/docker-machine-driver-xhyve
+  make build
+}
+
+package() {
+  cd $srcdir/build/src/github.com/zchee/docker-machine-driver-xhyve
+  install -dm755 "$pkgdir"/opt/arch/bin/
+  install -m755 bin/docker-machine-driver-xhyve "$pkgdir"/opt/arch/bin/docker-machine-driver-xhyve
+  chmod u+s "$pkgdir"/opt/arch/bin/docker-machine-driver-xhyve
+  install -dm755 "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}
