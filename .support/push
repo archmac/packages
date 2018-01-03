@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+case "$1" in
+    package)
+        src="${2:-core extra}"
+        # allow one package or dir, or list of either as args
+        # find out correct repo
+        # upload to proper repo, only if more recent
+        # repo-remove obsolete packages
+        # update repo once all package are uploaded/removed
+        # maybe build list of legit packages and build repo from that
+        # remove from fs only after repo update
+        # also, handle deltapkg
+        # also also, srcpkg
+        ;;
+    snapshot)
+        src="${2:-snapshots}"
+
+        latest="$(find "${src}" -name '*-snapshot-*.tar.gz' | sort | tail -1)"
+        rsync -rvt "$latest" root@download.arch-osx.org:/srv/www/download.arch-osx.org/snapshots/
+        # link latest only if more recent (increment)
+        #ssh root@download.arch-osx.org ln -svf "${latest/snapshots\//}" /srv/www/download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
+        # handle multiple kind of snapshots: base, base-devel (for CI), testing
+        ;;
+esac
