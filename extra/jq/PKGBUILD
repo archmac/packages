@@ -1,6 +1,6 @@
 pkgname=jq
 pkgver=1.5
-pkgrel=1
+pkgrel=2
 pkgdesc='Command-line JSON processor'
 arch=('x86_64')
 url='http://stedolan.github.io/jq/'
@@ -13,7 +13,7 @@ md5sums=('0933532b086bd8b6a41c1b162b1731f9')
 
 build() {
     cd "${pkgname}-${pkgver}"
-    ./configure --prefix=/opt/arch --disable-maintainer-mode
+    ./configure --prefix=/opt/arch --disable-maintainer-mode --with-oniguruma=/opt/arch
     make
 }
 
