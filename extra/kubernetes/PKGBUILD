@@ -1,0 +1,49 @@
+pkgname=kubernetes
+pkgver=1.9.1
+pkgrel=1
+pkgdesc="Container Cluster Manager for Docker"
+depends=('libc' 'bash')
+#makedepends=('go' 'rsync' 'go-bindata')
+makedepends=('go')
+arch=('x86_64')
+source=("$pkgname-$pkgver.tar.gz::https://dl.k8s.io/v$pkgver/kubernetes-src.tar.gz"
+)
+noextract=("$pkgname-$pkgver.tar.gz")
+url="http://kubernetes.io/"
+license=("APACHE")
+sha256sums=('625ebb79412bd12feccf12e8b6a15d9c71ea681b571f34deaa59fe6c9ba55935'
+)
+
+prepare() {
+    mkdir -p $srcdir/$pkgname-$pkgver
+    tar -xf $srcdir/$pkgname-$pkgver.tar.gz -C $srcdir/$pkgname-$pkgver
+}
+
+build() {
+    cd $srcdir/$pkgname-$pkgver
+
+    make -j1 kubectl
+    hack/generate-docs.sh
+}
+
+package() {
+    cd $srcdir/$pkgname-$pkgver
+
+    [ "$CARCH" = 'x86_64' ] && _kubearch=amd64
+
+    install -d -m755 $pkgdir/opt/arch/bin
+    binaries=(kubectl)
+    for bin in "${binaries[@]}"; do
+        install -m755 _output/local/bin/darwin/$_kubearch/$bin $pkgdir/opt/arch/bin/$bin
+    done
+
+    # install completions
+    #mkdir -p "$pkgdir"/opt/arch/share/bash-completion/completions/
+    #(unset DYLD_INSERT_LIBRARIES; $pkgdir/opt/arch/bin/kubectl completion bash) > "$pkgdir"/opt/arch/share/bash-completion/completions/kubectl
+    #mkdir -p "$pkgdir"/opt/arch/share/zsh/site-functions/
+    #(unset DYLD_INSERT_LIBRARIES; $pkgdir/opt/arch/bin/kubectl completion zsh) > "$pkgdir"/opt/arch/share/zsh/site-functions/_kubectl
+
+    # install manpages
+    install -d $pkgdir/opt/arch/share/man/man1/
+    install -pm 644 docs/man/man1/* $pkgdir/opt/arch/share/man/man1
+}
