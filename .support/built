@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+repository=""
+package=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -r)
+            repository=1
+            shift
+            ;;
+        -p)
+            package=1
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+    esac
+done
+
+eval "$(grep -e PKGEXT= -e SRCEXT= /opt/arch/etc/makepkg.conf)"
+
+for f in */*/*${PKGEXT}; do
+    echo -n "$f"
+    [[ -n ${repository} ]] && echo -n " ${f%%/*}"
+    [[ -n ${package}    ]] && echo -n " ${f%/*}"
+    echo
+done

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+target="${*:$#}"
+files=("${@:1:$# - 1}")
+name="sierra"
+arch="x86_64"
+
+for f in "${files[@]}"; do
+    dst="${target}/${f%%/*}/${name}/${arch}"
+    mkdir -p "$dst"
+    cp -v "${f}" "${dst}"
+done
