@@ -1,6 +1,6 @@
 ##
-## Arch OS X repository mirrorlist
+## ArchMac repository mirrorlist
 ##
 
 ## Worldwide
-#Server = http://download.arch-osx.org/packages/$repo/sierra/$arch
+#Server = http://download.archmac.org/packages/$repo/sierra/$arch

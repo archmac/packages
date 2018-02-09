@@ -19,7 +19,7 @@ post_install(){
   echo "MariaDB has been installed with 'Disabled' set to 'true'."
   echo ""
   echo "Start it manually with:"
-  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.arch-osx.mariadb.plist"
+  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.archmac.mariadb.plist"
   echo
   echo "Access the command line tool with role postgres:"
   echo "    mysql -u root"

@@ -16,7 +16,7 @@ post_install() {
   echo "PostgreSQL has been installed with 'Disabled' set to 'true'."
   echo ""
   echo "Start it manually with:"
-  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.arch-osx.postgresql.plist"
+  echo "    sudo launchctl load -w /Library/LaunchDaemons/org.archmac.postgresql.plist"
   echo
   echo "Access the command line tool with role postgres:"
   echo "    psql -U postgres"

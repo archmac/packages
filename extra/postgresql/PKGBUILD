@@ -2,15 +2,15 @@ pkgbase=postgresql
 pkgname=('postgresql-libs' 'postgresql-docs' 'postgresql')
 pkgver=9.5.2
 _majorver=${pkgver%.*}
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="http://www.postgresql.org/"
 license=('custom:PostgreSQL')
 makedepends=('krb5' 'libxml2' 'python2' 'perl' 'tcl>=8.5.0' 'openssl>=1.0.0')
 source=(http://ftp.postgresql.org/pub/source/v${pkgver}/postgresql-${pkgver}.tar.bz2
-        org.arch-osx.postgresql.plist)
+        org.archmac.postgresql.plist)
 sha256sums=('f8d132e464506b551ef498719f18cfe9d777709c7a1589dc360afc0b20e47c41'
-            '7afd9b0abef06381510f8667a0e0d63f0c21d130073720c52b942b9a5531bfff')
+            'dd5ab0f127feb9696f479ed1ebf7b994cc284e8accdfaedf02b334ed182ddc8c')
 
 build() {
   cd "${srcdir}/postgresql-${pkgver}"
@@ -112,7 +112,7 @@ package_postgresql() {
               'postgresql-old-upgrade: upgrade from previous major version using pg_upgrade')
   options=('staticlibs')
   install=postgresql.install
-  backup=(Library/LaunchDaemons/org.arch-osx.postgresql.plist)
+  backup=(Library/LaunchDaemons/org.archmac.postgresql.plist)
 
   cd "${srcdir}/postgresql-${pkgver}"
 
@@ -143,5 +143,5 @@ package_postgresql() {
   rmdir "${pkgdir}/opt/arch/share/doc/postgresql/html"
 
   mkdir -p "$pkgdir"/Library/LaunchDaemons
-  install -m644 "$srcdir"/org.arch-osx.postgresql.plist "$pkgdir"/Library/LaunchDaemons
+  install -m644 "$srcdir"/org.archmac.postgresql.plist "$pkgdir"/Library/LaunchDaemons
 }

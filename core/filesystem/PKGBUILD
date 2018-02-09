@@ -1,10 +1,10 @@
 pkgname=filesystem
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="filesystem layout"
 arch=('any')
 license=('MIT')
-url="https://arch-osx.org"
+url="https://www.archmac.org"
 groups=('base')
 install=""
 

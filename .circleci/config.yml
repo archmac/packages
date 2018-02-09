@@ -17,8 +17,8 @@ jobs:
             - run:
                 name: Setup Arch
                 command: |
-                    curl -o /tmp/arch-snapshot.tar.gz http://download.arch-osx.org/snapshots/arch-osx-snapshot.tar.gz
-                    sudo tar -C / -xvpzf /tmp/arch-snapshot.tar.gz
+                    curl -o /tmp/snapshot.tar.gz http://download.archmac.org/snapshots/archmac-snapshot.tar.gz
+                    sudo tar -C / -xvpzf /tmp/snapshot.tar.gz
                     sudo sed -i~ -e 's/^#Server =/Server =/' /opt/arch/etc/pacman.d/mirrorlist
                     echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.archrc
                     echo 'source ~/.archrc' | tee -a ~/.bashrc ~/.bash_profile > /dev/null

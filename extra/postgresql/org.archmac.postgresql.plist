@@ -7,7 +7,7 @@
   <key>KeepAlive</key>
   <true/>
   <key>Label</key>
-  <string>org.arch-osx.postgresql</string>
+  <string>org.archmac.postgresql</string>
   <key>UserName</key>
   <string>_postgres</string>
   <key>GroupName</key>
