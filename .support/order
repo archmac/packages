@@ -46,10 +46,6 @@ for a in "${order[@]}"; do
     done
 done
 
-echo ${#order[@]}
-echo ${#unordered[@]}
-echo ${#ordered[@]}
-
 for a in "${unordered[@]}"; do
     present=""
     if [[ ${#ordered[@]} -ne 0 ]]; then
