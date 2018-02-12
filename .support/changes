@@ -17,7 +17,7 @@ function updates() {
 }
 
 function merge() {
-    test $(git show --no-patch --format="%P" "$1" | wc -w) -gt 1
+    test "$(git show --no-patch --format="%P" "$1" | wc -w)" -gt 1
 }
 
 function parents() {
