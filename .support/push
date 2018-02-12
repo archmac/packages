@@ -9,6 +9,10 @@ src=("${@:1:$# - 1}")
 srv="${tgt%%:*}"
 dst="${tgt##*:}"
 
+if [[ ! -f "${src[0]}" ]]; then
+    exit
+fi
+
 rsync -rtOz -v "${src[@]}" "${tgt}"
 for repo in "${src[@]}"; do
     pushd "${repo}/.." > /dev/null
