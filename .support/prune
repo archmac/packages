@@ -13,5 +13,7 @@ for p in "${pkg[@]}"; do
     repo="${p%%/*}"
     path="${p%/*}"
     db="${path}/${repo}.db.tar.gz"
-    ssh "${srv}" repo-remove "${dst}${dst:+/}${db}" "${dst}${dst:+/}${p}"
+    p="${p##*/}"
+    p="${p/%-+([^-])-+([^-])-+([^-])/}"
+    ssh "${srv}" repo-remove "${dst}${dst:+/}${db}" "${p}"
 done
