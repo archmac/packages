@@ -1,11 +1,17 @@
 #!/bin/bash
 
+set -e
+set -u
+set -o pipefail
+
 function base() {
+    set +o pipefail
     diff -u <(git rev-list --first-parent "$1") <(git rev-list --first-parent "$2") | sed -ne 's/^ //p' | head -1
+    set -o pipefail
 }
 
 function packages() {
-    find -- * -name PKGBUILD | sed 's#/PKGBUILD$##'
+    git ls-tree -r --name-only "$1" | grep '/PKGBUILD$' | sed 's#/PKGBUILD$##'
 }
 
 function changes() {
@@ -13,7 +19,11 @@ function changes() {
 }
 
 function updates() {
-    comm -12 <(changes "$1" "$2" | perl -ne '/^(.*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages | sort | uniq)
+    comm -12 <(changes "$1" "$2" | perl -ne '/^([^.].*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages "$2" | sort | uniq)
+}
+
+function deletions() {
+    comm -23 <(changes "$1" "$2" | perl -ne '/^([^.].*?\/.*?)(?:\/|$)/ and print "$1\n"' | sort | uniq) <(packages "$2" | sort | uniq)
 }
 
 function merge() {
@@ -36,6 +46,37 @@ function ancestor() {
     git rev-list --first-parent "$1" | grep -q "$(git rev-parse "$2")"
 }
 
+base=""
+case "${1-}" in
+    -b)
+        base="1"
+        shift
+        ;;
+esac
+
+updated=""
+deleted=""
+case "${1-}" in
+    -u)
+        updated="1"
+        shift
+        ;;
+    -d)
+        deleted="1"
+        shift
+        ;;
+    *)
+        updated="1"
+        deleted="1"
+        ;;
+esac
+
+if [[ "${updated}" == "${deleted}" ]]; then
+    signs="1"
+else
+    signs=""
+fi
+
 # every non-merge commit on master shall build that commit's package and
 # publish it.
 # every commit on a branch shall build its packages since it was borne out of
@@ -50,10 +91,16 @@ current="${2:-$head}"
 
 if ancestor "${source}" "${current}" && merge "${current}"; then
     for parent in $(topics "${current}"); do
-        updates "$(base "${target}" "${parent}")" "${parent}"
+        if [[ -n ${base} ]]; then base "${target}" "${parent}"; fi
+        if [[ -n ${updated} ]]; then updates "$(base "${target}" "${parent}")" "${parent}" | sed "s/^/${signs:+U }/"; fi
+        if [[ -n ${deleted} ]]; then deletions "$(base "${target}" "${parent}")" "${parent}" | sed "s/^/${signs:+D }/"; fi
     done | sort | uniq
 elif ancestor "${source}" "${current}" && ! merge "${current}"; then
-    updates "${current}^" "${current}"
+    if [[ -n ${base} ]]; then git rev-parse "${current}^"; fi
+    if [[ -n ${updated} ]]; then updates "${current}^" "${current}" | sed "s/^/${signs:-U }/"; fi
+    if [[ -n ${deleted} ]]; then deletions "${current}^" "${current}" | sed "s/^/${signs:-D }/"; fi
 elif ! ancestor "${source}" "${current}"; then
-    updates "$(base "${target}" "${current}")" "${current}"
+    if [[ -n ${base} ]]; then base "${target}" "${current}"; fi
+    if [[ -n ${updated} ]]; then updates "$(base "${target}" "${current}")" "${current}" | sed "s/^/${signs:+U }/"; fi
+    if [[ -n ${deleted} ]]; then deletions "$(base "${target}" "${current}")" "${current}" | sed "s/^/${signs:+D }/"; fi
 fi

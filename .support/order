@@ -46,17 +46,15 @@ for a in "${order[@]}"; do
     done
 done
 
-echo ${#order[@]}
-echo ${#unordered[@]}
-echo ${#ordered[@]}
-
 for a in "${unordered[@]}"; do
     present=""
-    for b in "${ordered[@]}"; do
-        if [[ "${a}" == "${b}" ]]; then
-            present="1"
-        fi
-    done
+    if [[ ${#ordered[@]} -ne 0 ]]; then
+        for b in "${ordered[@]}"; do
+            if [[ "${a}" == "${b}" ]]; then
+                present="1"
+            fi
+        done
+    fi
     if [[ -z "${present}" ]]; then
         ordered[${#ordered[@]}]="${a}"
     fi

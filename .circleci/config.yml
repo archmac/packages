@@ -35,17 +35,24 @@ jobs:
                 name: Build packages
                 command: |
                     source ~/.archrc
-                    .support/changes origin/master "${CIRCLE_SHA1}" | .support/order
-                    .support/build $(.support/changes origin/master "${CIRCLE_SHA1}" | .support/order)
+                    .support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order
+                    .support/build $(.support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order)
             - run:
                 name: Copy packages
                 command: |
                     source ~/.archrc
                     .support/copy $(.support/built) /tmp/workspace/packages
+            - run:
+                name: Mark package deletions
+                command: |
+                    source ~/.archrc
+                    .support/changes -d origin/master "${CIRCLE_SHA1}" | .support/order
+                    .support/deleted $(.support/changes -b -d origin/master "${CIRCLE_SHA1}") | tee /tmp/workspace/deletions
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                     - packages
+                    - deletions
             - store_artifacts:
                 path: /tmp/workspace/packages
     push:
@@ -73,6 +80,10 @@ jobs:
                     cat >> ~/.ssh/known_hosts <<'EOF'
                     download.archmac.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRDDd1wxRN9dSZ9VS4P2UVsQE+IpO3jj3FUtOQcFVtzQnBRBucTXZ99/8masCy6gxAZ7JdY1+JxZKuiVmXuT6fP7JHedRUBuyR3hHtLFM1y6GRaJoJV0SBhgD8T4YT/yVk7TK/TIeUMon39XSdPcwD1aJMGCUB2NUClnXVfzElSoc+sabJepdH8ZfNeS+ChZpU/JvAjRKkjMlqW1GAsO5KmNPe9kgmM81weklYI36NImVaauBqgHZLVEbThSpKx59OLATXUFRuhBMAchcvbXGSUqfx3CiKtt3CSscsMAv40q648ohBVdGZ0XEdbNa6HSNKDTzmsllCFi6oSIWNGGMP
                     EOF
+            - run:
+                name: Remove packages
+                command: |
+                    .support/prune $(cat /tmp/workspace/deletions) upload@download.archmac.org:packages
             - run:
                 name: Upload packages
                 command: |
