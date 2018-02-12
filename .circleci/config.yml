@@ -41,8 +41,8 @@ jobs:
                 name: Build packages
                 command: |
                     source ~/.archrc
-                    .support/changes master "${CIRCLE_SHA1}"
-                    .support/build $(.support/changes master "${CIRCLE_SHA1}")
+                    .support/changes origin/master "${CIRCLE_SHA1}"
+                    .support/build $(.support/changes origin/master "${CIRCLE_SHA1}")
             - run:
                 name: Copy packages
                 command: |
