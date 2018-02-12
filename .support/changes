@@ -97,8 +97,8 @@ if ancestor "${source}" "${current}" && merge "${current}"; then
     done | sort | uniq
 elif ancestor "${source}" "${current}" && ! merge "${current}"; then
     if [[ -n ${base} ]]; then git rev-parse "${current}^"; fi
-    if [[ -n ${updated} ]]; then updates "${current}^" "${current}" | sed "s/^/${signs:-U }/"; fi
-    if [[ -n ${deleted} ]]; then deletions "${current}^" "${current}" | sed "s/^/${signs:-D }/"; fi
+    if [[ -n ${updated} ]]; then updates "${current}^" "${current}" | sed "s/^/${signs:+U }/"; fi
+    if [[ -n ${deleted} ]]; then deletions "${current}^" "${current}" | sed "s/^/${signs:+D }/"; fi
 elif ! ancestor "${source}" "${current}"; then
     if [[ -n ${base} ]]; then base "${target}" "${current}"; fi
     if [[ -n ${updated} ]]; then updates "$(base "${target}" "${current}")" "${current}" | sed "s/^/${signs:+U }/"; fi
