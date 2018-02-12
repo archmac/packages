@@ -9,8 +9,14 @@ files=("${@:1:$# - 1}")
 name="sierra"
 arch="x86_64"
 
+mkdir -p "${target}"
+
+if [ "${#files[@]}" -eq 0 ]; then
+    exit
+fi
+
 for f in "${files[@]}"; do
     dst="${target}/${f%%/*}/${name}/${arch}"
-    mkdir -p "$dst"
+    mkdir -p "${dst}"
     cp -v "${f}" "${dst}"
 done

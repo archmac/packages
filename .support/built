@@ -26,6 +26,9 @@ done
 eval "$(grep -e PKGEXT= -e SRCEXT= /opt/arch/etc/makepkg.conf)"
 
 for f in */*/*${PKGEXT}; do
+    if [[ "$f" == "*/*/*${PKGEXT}" ]]; then
+        break
+    fi
     echo -n "$f"
     [[ -n ${repository} ]] && echo -n " ${f%%/*}"
     [[ -n ${package}    ]] && echo -n " ${f%/*}"
