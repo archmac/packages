@@ -3,7 +3,7 @@ version: 2
 jobs:
     build:
         macos:
-            xcode: "9.2.0"
+            xcode: "8.3.3"
         steps:
             - run:
                 name: Pristine macOS
@@ -56,7 +56,7 @@ jobs:
                 path: /tmp/workspace/packages
     push:
         macos:
-            xcode: "9.2.0"
+            xcode: "8.3.3"
         steps:
             - run:
                 name: Pristine macOS
