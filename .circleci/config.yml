@@ -35,7 +35,7 @@ jobs:
                 name: Build packages
                 command: |
                     source ~/.archrc
-                    .support/changes origin/master "${CIRCLE_SHA1}" | .support/order
+                    .support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order
                     .support/build $(.support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order)
             - run:
                 name: Copy packages
@@ -46,6 +46,7 @@ jobs:
                 name: Mark package deletions
                 command: |
                     source ~/.archrc
+                    .support/changes -d origin/master "${CIRCLE_SHA1}" | .support/order
                     .support/deleted origin/master $(.support/changes -d origin/master "${CIRCLE_SHA1}") | tee /tmp/workspace/deletions
             - persist_to_workspace:
                 root: /tmp/workspace
