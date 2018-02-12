@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+order=(
+    core/filesystem
+    core/system
+    core/gettext
+    core/glibtool
+    core/autoconf
+    core/automake
+    core/pkg-config
+    core/bash
+    core/xz
+    core/openssl
+    core/libarchive
+    core/asciidoc
+    core/fakeroot
+    core/libgpg-error
+    core/libgcrypt
+    core/libassuan
+    core/libksba
+    core/pth
+    core/npth
+    core/pinentry
+    core/gnupg
+    core/pacman
+    core/pacman-mirrorlist
+    extra/libxml2
+)
+
+unordered=($(cat))
+ordered=()
+
+for a in "${order[@]}"; do
+    for b in "${unordered[@]}"; do
+        if [[ "${a}" == "${b}" ]]; then
+            ordered[${#ordered[@]}]="${a}"
+        fi
+    done
+done
+
+echo ${#order[@]}
+echo ${#unordered[@]}
+echo ${#ordered[@]}
+
+for a in "${unordered[@]}"; do
+    present=""
+    for b in "${ordered[@]}"; do
+        if [[ "${a}" == "${b}" ]]; then
+            present="1"
+        fi
+    done
+    if [[ -z "${present}" ]]; then
+        ordered[${#ordered[@]}]="${a}"
+    fi
+done
+
+for a in "${ordered[@]}"; do
+    echo "${a}"
+done
