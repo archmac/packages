@@ -36,7 +36,7 @@ jobs:
                 command: |
                     source ~/.archrc
                     .support/changes origin/master "${CIRCLE_SHA1}" | .support/order
-                    .support/build $(.support/changes origin/master "${CIRCLE_SHA1}" | .support/order)
+                    .support/build $(.support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order)
             - run:
                 name: Copy packages
                 command: |
