@@ -1,5 +1,6 @@
 pkgname=docker
-pkgver=17.05.0
+pkgver=17.11.0
+_rev='1caf76ce6baa889133ece59fab3c36aaf143d4ef'
 pkgrel=1
 pkgdesc='Pack, ship and run any application as a lightweight container'
 arch=('x86_64' 'i686')
@@ -9,24 +10,53 @@ license=('Apache')
 makedepends=('git' 'go')
 # don't strip binaries! A sha1 is used to check binary consistency.
 options=('!strip')
-source=("git+https://github.com/docker/docker.git#tag=v$pkgver-ce")
+source=("git+https://github.com/docker/docker-ce.git#tag=v$pkgver-ce")
 md5sums=('SKIP')
 
+# create a fake go path directory and pushd into it
+# $1 real directory
+# $2 gopath directory
+_fake_gopath_pushd() {
+  mkdir -p "$GOPATH/src/${2%/*}"
+  rm -f "$GOPATH/src/$2"
+  ln -s "$1" "$GOPATH/src/$2"
+  pushd  "$GOPATH/src/$2" >/dev/null
+}
+
+_fake_gopath_popd() {
+  popd >/dev/null
+}
+
 build() {
-  # docker
-  msg2 'Building docker'
-  cd "$srcdir"/docker
-  export AUTO_GOPATH=1 #DOCKER_BUILDTAGS='seccomp'
-  hack/make.sh dynbinary-client
-  # man pages
-  #man/md2man-all.sh 2>/dev/null
+  cd "$srcdir"
+
+  export GOPATH="$srcdir"
+  export PATH="$GOPATH/bin:$PATH"
+
+  msg2 'Building client'
+  _fake_gopath_pushd $srcdir/docker-ce/components/cli github.com/docker/cli
+  #DISABLE_WARN_OUTSIDE_CONTAINER=1 make VERSION=$pkgver-ce dynbinary
+  go build -o docker \
+           -ldflags "-X github.com/docker/cli/cli.GitCommit=${_rev} -X github.com/docker/cli/cli.Version=${pkgver}-ce" \
+           github.com/docker/cli/cmd/docker
+  _fake_gopath_popd
+
+  ### docker man pages
+  #msg2 'Building man pages'
+  #mkdir -p src/github.com/spf13
+  #ln -rsfT cobra src/github.com/spf13/cobra
+  ## use docker-ce cli version because they mess up with man dir
+  #_fake_gopath_pushd docker-ce/components/cli github.com/docker/cli
+  #make manpages 2>/dev/null
+  #_fake_gopath_popd
 }
 
 package() {
+  cd $srcdir/docker-ce/components/cli
+
   # docker binary
-  cd docker
   install -dm755 "$pkgdir/opt/arch/bin"
-  install -m755 "bundles/latest/dynbinary-client/docker" "$pkgdir/opt/arch/bin/docker"
+  install -m755 "docker" "$pkgdir/opt/arch/bin/docker"
 
   # completion
   install -dm755 "$pkgdir/opt/arch/share/bash-completion/completions/"
@@ -35,6 +65,8 @@ package() {
   install -m644 'contrib/completion/zsh/_docker' "$pkgdir/opt/arch/share/zsh/site-functions/_docker"
   install -dm755 "$pkgdir/opt/arch/share/fish/vendor_completions.d/"
   install -m644 'contrib/completion/fish/docker.fish' "$pkgdir/opt/arch/share/fish/vendor_completions.d/docker.fish"
+
+  cd $srcdir/docker-ce/components/engine
 
   # vim syntax
   install -dm755 "$pkgdir/opt/arch/share/vim/vimfiles/syntax/"
