@@ -9,7 +9,7 @@ src=("${@:1:$# - 1}")
 srv="${tgt%%:*}"
 dst="${tgt##*:}"
 
-if [[ ! -f "${src[0]}" ]]; then
+if [[ ! -e "${src[0]}" ]]; then
     exit
 fi
 
