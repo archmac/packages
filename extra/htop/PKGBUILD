@@ -1,6 +1,6 @@
 pkgname=htop
 pkgver=2.0.2
-pkgrel=3
+pkgrel=5
 pkgdesc="Interactive process viewer"
 arch=('x86_64')
 url="http://hisham.hm/htop/"

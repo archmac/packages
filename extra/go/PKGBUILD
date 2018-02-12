@@ -1,7 +1,7 @@
 pkgname=('go' 'go-tools')
 epoch=2
 pkgver=1.9.4
-pkgrel=1
+pkgrel=3
 arch=('x86_64')
 url='http://golang.org/'
 license=('BSD')

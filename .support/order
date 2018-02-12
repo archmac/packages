@@ -29,6 +29,7 @@ order=(
     core/pacman
     core/pacman-mirrorlist
     extra/libxml2
+    extra/go
 )
 
 unordered=($(cat))
