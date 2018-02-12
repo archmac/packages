@@ -30,7 +30,7 @@ build() {
     --prefix=/opt/arch \
     --localstatedir=/opt/arch/var/lib/vim \
     --with-features=huge \
-    --with-compiledby='Arch OS X' \
+    --with-compiledby='archmac' \
     --enable-acl \
     --with-x=no \
     --disable-gui \

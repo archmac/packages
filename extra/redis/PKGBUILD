@@ -1,6 +1,6 @@
 pkgname=redis
 pkgver=3.0.7
-pkgrel=1
+pkgrel=2
 pkgdesc='Advanced key-value store'
 arch=('x86_64')
 url='http://redis.io/'
@@ -12,12 +12,12 @@ install=redis.install
 source=(http://download.redis.io/releases/redis-$pkgver.tar.gz
         redis.conf-sane-defaults.patch
         redis-2.8.11-use-system-jemalloc.patch
-        org.arch-osx.redis.plist
+        org.archmac.redis.plist
         )
 md5sums=('84ed3f486e7a6f0ebada6917370f3532'
          '051f072d6fe378b29799a0333d979f1d'
          '4a10f51be7e7eac5160044c57361e7c3'
-         '3dd49fda5e65f2e13bb7a40a97c353f3')
+         '61444950e9e1bf107c9a74364b7aeb0d')
 
 prepare() {
   cd $pkgname-$pkgver
@@ -46,5 +46,5 @@ package() {
   ln -sf redis-server $pkgdir/opt/arch/bin/redis-sentinel
 
   mkdir -p "$pkgdir"/Library/LaunchDaemons
-  install -m644 "$srcdir"/org.arch-osx.redis.plist "$pkgdir"/Library/LaunchDaemons
+  install -m644 "$srcdir"/org.archmac.redis.plist "$pkgdir"/Library/LaunchDaemons
 }

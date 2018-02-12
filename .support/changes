@@ -45,14 +45,15 @@ function ancestor() {
 
 head="$(git rev-parse HEAD)"
 target="${1-master}"
+source="${3-${target}}"
 current="${2:-$head}"
 
-if ancestor master "${current}" && merge "${current}"; then
+if ancestor "${source}" "${current}" && merge "${current}"; then
     for parent in $(topics "${current}"); do
         updates "$(base "${target}" "${parent}")" "${parent}"
     done | sort | uniq
-elif ancestor master "${current}" && ! merge "${current}"; then
+elif ancestor "${source}" "${current}" && ! merge "${current}"; then
     updates "${current}^" "${current}"
-elif ! ancestor master "${current}"; then
+elif ! ancestor "${source}" "${current}"; then
     updates "$(base "${target}" "${current}")" "${current}"
 fi
