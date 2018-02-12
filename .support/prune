@@ -9,6 +9,10 @@ pkg=("${@:1:$# - 1}")
 srv="${tgt%%:*}"
 dst="${tgt##*:}"
 
+if [[ "${#pkg[@]}" -eq 0 ]]; then
+    exit
+fi
+
 for p in "${pkg[@]}"; do
     repo="${p%%/*}"
     path="${p%/*}"
