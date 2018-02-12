@@ -24,7 +24,7 @@ for repo in "${src[@]}"; do
         packages=("${path}"/*${PKGEXT})
         packages=("${packages[@]/#/${dst}${dst:+/}}")
         echo "*** ${db}"
-        ssh "${srv}" repo-add -R "${dst}${dst:+/}${db}" "${packages[@]}"
+        ssh "${srv}" repo-add "${dst}${dst:+/}${db}" "${packages[@]}"
     done
     popd > /dev/null
 done
