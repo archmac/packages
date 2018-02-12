@@ -1,14 +1,14 @@
 pkgbase=apache-ant
 pkgname=(apache-ant)
 pkgdesc='A java-based build tool'
-pkgver=1.10.1
+pkgver=1.10.2
 pkgrel=1
 arch=('any')
 license=('APACHE')
 url='https://ant.apache.org/'
-source=("http://apache.mirrors.ovh.net/ftp.apache.org/dist//ant/binaries/apache-ant-1.10.1-bin.tar.bz2")
+source=("http://apache.mirrors.ovh.net/ftp.apache.org/dist//ant/binaries/apache-ant-${pkgver}-bin.tar.bz2")
 sha1sums=(
-    '1f947bb30516a01d459ef5f6e8dbea9c62919022'
+    'bc67d9bb5656382ace23f5647799fb77397cbcb5'
 )
 
 _ant_home=/opt/arch/share/${pkgbase}
