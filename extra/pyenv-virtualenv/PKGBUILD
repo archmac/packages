@@ -1,0 +1,24 @@
+pkgname=pyenv-virtualenv
+pkgver=1.1.1
+pkgrel=2
+pkgdesc="pyenv plugin to manage virtualenv (a.k.a. python-virtualenv)"
+arch=('any')
+url="https://github.com/pyenv/pyenv-virtualenv"
+license=('MIT')
+depends=('pyenv' 'bash')
+source=("https://github.com/pyenv/$pkgname/archive/v$pkgver.tar.gz")
+sha256sums=('8589805444bc6be2746d2cf1ea76fb47fd43783d3d80e4955604b758189ca510')
+
+package() {
+  mkdir -p "${pkgdir?}"/{opt/arch/share/pyenv/plugins/pyenv-virtualenv,opt/arch/bin}
+  cd "${srcdir?}/$pkgname-$pkgver"
+  cp -a -- * "$pkgdir"/opt/arch/share/pyenv/plugins/pyenv-virtualenv
+
+  for bin in $pkgdir/opt/arch/share/pyenv/plugins/pyenv-virtualenv/bin/*; do
+    ln -s /opt/arch/share/pyenv/plugins/pyenv-virtualenv/bin/"$(basename $bin)" "$pkgdir/opt/arch/bin/$(basename $bin)"
+  done
+
+  # License
+  mkdir -p "$pkgdir"/opt/arch/share/licenses/pyenv-virtualenv
+  cp LICENSE "$pkgdir"/opt/arch/share/licenses/pyenv-virtualenv
+}
