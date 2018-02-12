@@ -6,6 +6,7 @@ pkgrel=3
 arch=('x86_64')
 url="http://www.postgresql.org/"
 license=('custom:PostgreSQL')
+depends=('readline')
 makedepends=('krb5' 'libxml2' 'python2' 'perl' 'tcl>=8.5.0' 'openssl>=1.0.0')
 source=(http://ftp.postgresql.org/pub/source/v${pkgver}/postgresql-${pkgver}.tar.bz2
         org.archmac.postgresql.plist)

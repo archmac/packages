@@ -7,6 +7,7 @@ pkgrel=2
 arch=('x86_64')
 license=('GPL')
 url='http://mariadb.org/'
+depends=('jemalloc' 'readline')
 #makedepends=('cmake' 'zlib' 'libaio' 'libxml2' 'openssl' 'pcre' 'jemalloc'
 #             'lz4' 'boost' 'libevent')
 makedepends=('cmake' 'zlib' 'libxml2' 'openssl' 'pcre')
