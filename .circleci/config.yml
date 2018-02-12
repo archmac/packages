@@ -30,12 +30,6 @@ jobs:
                     sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
                     sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
                     sudo pacman --sync --noprogressbar --noconfirm base-devel
-            - run:
-                name: Configure makepkg
-                command: |
-                    source ~/.archrc
-                    artifacts="/tmp/artifacts"
-                    mkdir -p "${artifacts}"/{packages,srcpackages,makepkglogs}
             - checkout
             - run:
                 name: Build packages
