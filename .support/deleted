@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+ref="$1"
+shift
+packages=("$@")
+name="sierra"
+arch="x86_64"
+
+eval "$(grep -e PKGEXT= -e SRCEXT= /opt/arch/etc/makepkg.conf)"
+
+if [[ "${#packages[@]}" -eq 0 ]]; then
+    exit
+fi
+
+tmpdir=$(mktemp -d)
+for package in "${packages[@]}"; do
+    path="${package%%/*}/${name}/${arch}"
+    git show "${ref}:${package}/PKGBUILD" > "${tmpdir}/PKGBUILD"
+    (cd "${tmpdir}" && makepkg --packagelist) | sed -e "s,^,${path}/," -e "s,$,${PKGEXT},"
+done

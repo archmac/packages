@@ -9,6 +9,8 @@ src=("${@:1:$# - 1}")
 srv="${tgt%%:*}"
 dst="${tgt##*:}"
 
+eval "$(grep -e PKGEXT= -e SRCEXT= /opt/arch/etc/makepkg.conf)"
+
 if [[ ! -f "${src[0]}" ]]; then
     exit
 fi
@@ -19,7 +21,7 @@ for repo in "${src[@]}"; do
     repo="${repo##*/}"
     for path in "${repo}"/*/*; do
         db="${path}/${repo}.db.tar.gz"
-        packages=("${path}"/*.pkg.tar.gz)
+        packages=("${path}"/*${PKGEXT})
         packages=("${packages[@]/#/${dst}${dst:+/}}")
         echo "*** ${db}"
         ssh "${srv}" repo-add -R "${dst}${dst:+/}${db}" "${packages[@]}"
