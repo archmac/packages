@@ -47,7 +47,7 @@ jobs:
                 command: |
                     source ~/.archrc
                     .support/changes -d origin/master "${CIRCLE_SHA1}" | .support/order
-                    .support/deleted origin/master $(.support/changes -d origin/master "${CIRCLE_SHA1}") | tee /tmp/workspace/deletions
+                    .support/deleted $(.support/changes -b -d origin/master "${CIRCLE_SHA1}") | tee /tmp/workspace/deletions
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
