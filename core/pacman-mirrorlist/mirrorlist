@@ -3,4 +3,4 @@
 ##
 
 ## Worldwide
-#Server = http://download.archmac.org/packages/$repo/sierra/$arch
+Server = https://download.archmac.org/packages/$repo/sierra/$arch

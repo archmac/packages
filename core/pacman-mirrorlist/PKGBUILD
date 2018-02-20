@@ -1,5 +1,5 @@
 pkgname=pacman-mirrorlist
-pkgver=20180209
+pkgver=20180220
 pkgrel=1
 pkgdesc="ArchMac mirror list for use by pacman"
 arch=('any')
@@ -13,4 +13,4 @@ package() {
   install -m644 $srcdir/mirrorlist $pkgdir/opt/arch/etc/pacman.d/
 }
 
-md5sums=('25fdd65a55cba26e7768bd072ca6be5e')
+md5sums=('214140b529ac3c9e0ec6d6692244761f')
