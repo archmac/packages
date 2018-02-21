@@ -30,6 +30,9 @@ order=(
     core/pacman-mirrorlist
     extra/libxml2
     extra/go
+    extra/libffi
+    extra/swig
+    extra/llvm
 )
 
 unordered=($(cat))
