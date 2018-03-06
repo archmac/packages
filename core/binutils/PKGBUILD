@@ -1,0 +1,59 @@
+pkgname=binutils
+pkgver=2.30
+pkgrel=1
+pkgdesc='A set of programs to assemble and manipulate binary and object files'
+arch=(x86_64)
+url='http://www.gnu.org/software/binutils/'
+license=(GPL)
+groups=('base-devel')
+#depends=('glibc>=2.26' zlib)
+#checkdepends=(dejagnu bc)
+options=(staticlibs !distcc !ccache)
+source=(https://ftp.gnu.org/gnu/binutils/binutils-$pkgver.tar.xz{,.sig}
+        )
+validpgpkeys=(3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F)
+md5sums=('ffc476dd46c96f932875d1b2e27e929f'
+         'SKIP'
+)
+
+prepare() {
+    mkdir -p binutils-build
+}
+
+build() {
+   export CFLAGS="$CFLAGS -I/opt/arch/include"
+   export LDFLAGS="$CFLAGS -L/opt/arch/lib"
+
+  cd binutils-build
+
+  "$srcdir/binutils-$pkgver/configure" \
+    --enable-deterministic-archives \
+    --program-prefix=g \
+    --prefix=/opt/arch \
+    --disable-werror \
+    --enable-interwork \
+    --enable-multilib \
+    --enable-64-bit-bfd \
+    --enable-targets=all
+
+  make
+}
+
+check() {
+  cd binutils-build
+
+  # unset LDFLAGS as testsuite makes assumptions about which ones are active
+  # ignore failures in gold testsuite...
+  make -k LDFLAGS="" check || true
+}
+
+package() {
+  cd binutils-build
+  make prefix="$pkgdir/opt/arch" tooldir="$pkgdir/opt/arch" install
+
+  # Remove unwanted files
+  rm -f "$pkgdir"/opt/arch/share/man/man1/{dlltool,nlmconv,windres,windmc}*
+
+  # Remove unprefixed files
+  rm -f "$pkgdir"/opt/arch/bin/{ar,dlltool,nm,objcopy,objdump,ranlib,readelf,strip}
+}

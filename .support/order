@@ -28,8 +28,12 @@ order=(
     core/gnupg
     core/pacman
     core/pacman-mirrorlist
+    core/binutils
     extra/libxml2
     extra/go
+    extra/libffi
+    extra/swig
+    extra/llvm
 )
 
 unordered=($(cat))

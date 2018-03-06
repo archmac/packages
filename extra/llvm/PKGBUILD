@@ -1,0 +1,141 @@
+pkgname=('llvm')
+pkgver=4.0.1
+pkgrel=3
+_ocaml_ver=4.04.1
+pkgdesc="Low Level Virtual Machine"
+arch=('i686' 'x86_64')
+url="http://llvm.org/"
+license=('custom:University of Illinois/NCSA Open Source License')
+depends=('perl')
+#makedepends=('cmake' 'libffi' 'python2' "ocaml=$_ocaml_ver" 'python-sphinx'
+#             'ocaml-ctypes' 'ocaml-findlib' 'libedit' 'swig')
+makedepends=('cmake' 'swig' 'binutils' 'libffi')
+# Use gcc-multilib to build 32-bit compiler-rt libraries on x86_64 (FS#41911)
+#makedepends_x86_64=('gcc-multilib')
+provides=('llvm-libs' 'lld' 'lldb' 'clang' 'clang-tools-extra' 'clang-analyzer')
+
+options=('staticlibs')
+source=(https://releases.llvm.org/$pkgver/llvm-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/cfe-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/clang-tools-extra-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/compiler-rt-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/libcxx-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/libunwind-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/lld-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/lldb-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/openmp-$pkgver.src.tar.xz{,.sig}
+        https://releases.llvm.org/$pkgver/polly-$pkgver.src.tar.xz{,.sig}
+        )
+sha256sums=('da783db1f82d516791179fe103c71706046561f7972b18f0049242dee6712b51'
+            'SKIP'
+            '61738a735852c23c3bdbe52d035488cdb2083013f384d67c1ba36fabebd8769b'
+            'SKIP'
+            '35d1e64efc108076acbe7392566a52c35df9ec19778eb9eb12245fc7d8b915b6'
+            'SKIP'
+            'a3c87794334887b93b7a766c507244a7cdcce1d48b2e9249fc9a94f2c3beb440'
+            'SKIP'
+            '520a1171f272c9ff82f324d5d89accadcec9bc9f3c78de11f5575cdb99accc4c'
+            'SKIP'
+            '3b072e33b764b4f9b5172698e080886d1f4d606531ab227772a7fc08d6a92555'
+            'SKIP'
+            '63ce10e533276ca353941ce5ab5cc8e8dcd99dbdd9c4fa49f344a212f29d36ed'
+            'SKIP'
+            '8432d2dfd86044a0fc21713e0b5c1d98e1d8aad863cf67562879f47f841ac47b'
+            'SKIP'
+            'ec693b170e0600daa7b372240a06e66341ace790d89eaf4a843e8d56d5f4ada4'
+            'SKIP'
+            'b443bb9617d776a7d05970e5818aa49aa2adfb2670047be8e9f242f58e84f01a'
+            'SKIP'
+            )
+validpgpkeys=('B6C8F98282B944E3B0D5C2530FC3042E345AD05D'
+              '11E521D646982372EB577A1F8F0871F202119294')
+
+prepare() {
+  cd "$srcdir/llvm-$pkgver.src"
+  mkdir -p build
+
+  ln -sf "$srcdir/cfe-$pkgver.src" tools/clang
+  ln -sf "$srcdir/clang-tools-extra-$pkgver.src" tools/clang/tools/extra
+  ln -sf "$srcdir/openmp-$pkgver.src" projects/openmp
+  ln -sf "$srcdir/libcxx-$pkgver.src" projects/libcxx
+  ln -sf "$srcdir/libunwind-$pkgver.src" projects/libunwind
+  ln -sf "$srcdir/lld-$pkgver.src" tools/lld
+  ln -sf "$srcdir/polly-$pkgver.src" tools/polly
+  ln -sf "$srcdir/lldb-$pkgver.src" tools/lldb
+  ln -sf "$srcdir/compiler-rt-$pkgver.src" projects/compiler-rt
+}
+
+build() {
+  cd "$srcdir/llvm-$pkgver.src/build"
+
+  cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/opt/arch \
+    -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_INCLUDE_DOCS=OFF \
+    -DLLVM_ENABLE_RTTI=ON \
+    -DLLVM_ENABLE_EH=ON \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DWITH_POLLY=ON \
+    -DLINK_POLLY_INTO_TOOLS=ON \
+    -DLLVM_TARGETS_TO_BUILD=all \
+    -DLIBOMP_ARCH=x86_64 \
+    -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON \
+    -DLLVM_CREATE_XCODE_TOOLCHAIN=ON \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLVM_ENABLE_LIBCXX=ON \
+    -DLLDB_RELOCATABLE_PYTHON=ON \
+    -DPYTHON_LIBRARY="$(/usr/bin/python-config --prefix)/lib/libpython2.7.dylib" \
+    -DPYTHON_INCLUDE_DIR="$(/usr/bin/python-config --prefix)/include/python2.7" \
+    -DLLDB_CODESIGN_IDENTITY='' \
+    -DLLVM_ENABLE_FFI=ON \
+    -DFFI_INCLUDE_DIR="$(pkg-config --variable=includedir libffi)" \
+    -DFFI_LIBRARY_DIR="$(pkg-config --variable=libdir libffi)" \
+    -DLLVM_BINUTILS_INCDIR=/opt/arch/include \
+    ..
+
+    #-DLLVM_BUILD_TESTS=ON \
+    #-DLLVM_BUILD_DOCS=ON \
+    #-DLLVM_ENABLE_SPHINX=OFF \
+    #-DLLVM_ENABLE_DOXYGEN=OFF \
+    #-DSPHINX_WARNINGS_AS_ERRORS=OFF \
+
+  make
+  #make ocaml_doc
+}
+
+check() {
+  cd "$srcdir/llvm-$pkgver.src/build"
+  make check-{llvm,clang,clang-tools,lld}
+}
+
+package() {
+  cd "$srcdir/llvm-$pkgver.src"
+
+  make -C build DESTDIR="$pkgdir" install
+  #make -C build DESTDIR="$pkgdir" install-xcode-toolchain
+
+  # Remove bundled six library
+  rm "$pkgdir/opt/arch/lib/python2.7/site-packages/six.py"
+
+  # Compile Python scripts
+  python -m compileall "$pkgdir/opt/arch/lib/python2.7/site-packages/lldb"
+  python -O -m compileall "$pkgdir/opt/arch/lib/python2.7/site-packages/lldb"
+
+  # Move analyzer scripts out of /opt/arch/libexec
+  mv "$pkgdir"/opt/arch/libexec/{ccc,c++}-analyzer "$pkgdir/opt/arch/lib/clang/"
+  rmdir "$pkgdir/opt/arch/libexec"
+  sed -i~ -e 's|libexec|lib/clang|' "$pkgdir/opt/arch/bin/scan-build"
+
+  # Install Python bindings
+  install -d "$pkgdir/opt/arch/lib/python2.7/site-packages"
+  cp -a tools/clang/bindings/python/clang "$pkgdir/opt/arch/lib/python2.7/site-packages/"
+
+  # Compile Python scripts
+  python -m compileall "$pkgdir"
+  python -O -m compileall "$pkgdir"
+
+  install -m755 -d "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENSE.TXT "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+}
