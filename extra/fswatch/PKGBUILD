@@ -1,0 +1,22 @@
+pkgname=fswatch
+pkgver=1.11.2
+pkgrel=1
+pkgdesc='Monitor a directory for changes and run a shell command'
+arch=('x86_64')
+url='https://github.com/emcrisostomo/fswatch'
+license=('GPL')
+source=("https://github.com/emcrisostomo/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz")
+sha256sums=('b7dadb84848ce666aac0311f9b4c739fbfee6a90c6097807a1f45ad4367294c2')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    ./configure --prefix=/opt/arch --disable-dependency-tracking --disable-silent-rules
+    make
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+    install -d -m755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+    install -m644 COPYING "${pkgdir}/opt/arch/share/licenses/${pkgname}/COPYING"
+}
