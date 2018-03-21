@@ -1,5 +1,5 @@
 pkgname=gpgme
-pkgver=1.9.0
+pkgver=1.10.0
 pkgrel=1
 pkgdesc="A C wrapper library for GnuPG"
 arch=('x86_64')
@@ -8,9 +8,11 @@ license=('LGPL')
 depends=('libgpg-error' 'gnupg>=2')
 install=${pkgname}.install
 options=('!emptydirs')
-source=(ftp://ftp.gnupg.org/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2{,.sig})
-md5sums=('1e00bb8ef04d1d05d5a0f19e143854c3'
-         'SKIP')
+source=(https://www.gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2{,.sig})
+sha256sums=(
+  '1a8fed1197c3b99c35f403066bb344a26224d292afc048cfdfc4ccd5690a0693'
+  'SKIP'
+)
 validpgpkeys=('D8692123C4065DEA5E0F3AB5249B39D24F25E3B6') # Werner Koch
 
 build() {

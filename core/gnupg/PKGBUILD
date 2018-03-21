@@ -1,5 +1,5 @@
 pkgname=gnupg
-pkgver=2.1.21
+pkgver=2.2.5
 pkgrel=1
 pkgdesc='Complete and free implementation of the OpenPGP standard'
 url='http://www.gnupg.org/'
@@ -12,12 +12,17 @@ optdepends=('libldap: gpg2keys_ldap'
 #          'pinentry' 'bzip2' 'readline' 'gnutls' 'sqlite')
 depends=('pth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
          'pinentry' 'readline')
-validpgpkeys=('D8692123C4065DEA5E0F3AB5249B39D24F25E3B6'
-              '46CC730865BB5C78EBABADCF04376F3EE0856959'
-              '031EC2536E580D8EA286A9F22071B08A33BD3F06'
-              'D238EA65D64C67ED4C3073F28A861B1C7EFD60D9')
+validpgpkeys=(
+  'D8692123C4065DEA5E0F3AB5249B39D24F25E3B6'
+  '46CC730865BB5C78EBABADCF04376F3EE0856959'
+  '031EC2536E580D8EA286A9F22071B08A33BD3F06'
+  'D238EA65D64C67ED4C3073F28A861B1C7EFD60D9'
+)
 source=("https://gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2"{,.sig})
-sha1sums=('1852c066bc21893bc52026ead78edf50fdf15e13' 'SKIP')
+sha256sums=(
+  '3fa189a32d4fb62147874eb1389047c267d9ba088f57ab521cb0df46f08aef57'
+  'SKIP'
+)
 
 install=gnupg.install
 
@@ -55,7 +60,4 @@ check() {
 package() {
     cd "${srcdir}/${pkgname}-${pkgver}"
     LDFLAGS="${LDFLAGS} -lresolv" make DESTDIR="${pkgdir}" install
-    ln -s gpg2 "${pkgdir}"/opt/arch/bin/gpg
-    ln -s gpgv2 "${pkgdir}"/opt/arch/bin/gpgv
-    ln -s gpg2.1.gz "${pkgdir}"/opt/arch/share/man/man1/gpg.1.gz
 }

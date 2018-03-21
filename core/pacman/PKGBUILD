@@ -1,6 +1,6 @@
 pkgname=pacman
 pkgver=5.0.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -17,21 +17,25 @@ replaces=('pacman-contrib')
 backup=(opt/arch/etc/pacman.conf opt/arch/etc/makepkg.conf)
 #options=('strip' 'debug')
 options=('strip')
-source=(https://sources.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
-        pacman-usr.patch
-        pacman-usr-local.patch
-        pacman-tmp-scriptlet.patch
-        pacman-lazy-chroot.patch
-        pacman.conf.x86_64
-        makepkg.conf)
-md5sums=('f36f5e7e95a89436febe1bcca874fc33'
-         'SKIP'
-         '252b1c5636a7aef8ef9f2a1d823c72ef'
-         'de81e1c96bf2f239bccbac95615fcf33'
-         '1566454cbabb535e36017a00e0eef370'
-         '9b39ae4bc416d3f794c9d3ba85fcc29d'
-         '2ced2a6763ae7708fac9c8b387035de6'
-         '042510cf3c31e432c24557dbbfa31cc1')
+source=(
+  https://sources.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
+  pacman-usr.patch
+  pacman-usr-local.patch
+  pacman-tmp-scriptlet.patch
+  pacman-lazy-chroot.patch
+  pacman.conf.x86_64
+  makepkg.conf
+)
+sha256sums=(
+  'dfd36086ad68564bcd977f4a1fafe51dd328acd4a95093ac4bf1249be9c41f0e'
+  'SKIP'
+  '689d02182ca2aef4adfc6efa9d0fcecc0402a31fea461e4c2a57bc725bb97fdd'
+  'dcf9280a74af19ce84adee2a691b37b79ee7b2543968eccb51df411f6babce9c'
+  '8fd668217dac6c1086b8658de0534a5ca080a97ed684c12519df666aeb653e7a'
+  '261468877f7b7cdfa597c34f66ea8f12adde6d37e76b8c5019f13b4fe82c6f3d'
+  '42c190510e576734365ed55271ddcf616845555f406c3d7a03c8a548ac9af12e'
+  '3b380092065991eea4d1f95affee93c88ca8cf55315c4f596a1ff43d4ba165de'
+)
 validpgpkeys=('6645B0A8C7005E78DB1D7864F99FFE0FEAE999BD')  # Allan McRae <allan@archlinux.org>
 
 
@@ -53,6 +57,7 @@ build() {
   export LIBCURL_LIBS="-lcurl"
   #export LIBSSL_CFLAGS="-I${bootstrap_dir/include"
   #export LIBSSL_LIBS="-lssl"
+  export BASH_SHELL=/opt/arch/bin/bash
 
   ./configure --prefix=/opt/arch --sysconfdir=/opt/arch/etc \
     --localstatedir=/opt/arch/var --enable-doc \

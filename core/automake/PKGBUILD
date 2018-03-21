@@ -1,5 +1,5 @@
 pkgname=automake
-pkgver=1.15
+pkgver=1.16
 pkgrel=1
 pkgdesc="A GNU tool for automatically creating Makefiles"
 arch=('any')
@@ -10,9 +10,11 @@ depends=()
 makedepends=('autoconf')
 checkdepends=('dejagnu' 'python' 'gcc-fortran' 'java-environment' 'vala' 'emacs' 'cscope')
 install=automake.install
-source=(ftp://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig})
-md5sums=('9a1ddb0e053474d9d1105cfe39b0c48d'
-         'SKIP')
+source=(https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig})
+sha256sums=(
+  'f98f2d97b11851cbe7c2d4b4eaef498ae9d17a3c2ef1401609b7b4ca66655b8a'
+  'SKIP'
+)
 validpgpkeys=('E1622F96D2BB4E58018EEF9860F906016E407573')   # Stefano Lattarini
 
 prepare() {
