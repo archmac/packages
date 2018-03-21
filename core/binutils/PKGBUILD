@@ -1,6 +1,6 @@
 pkgname=binutils
 pkgver=2.30
-pkgrel=1
+pkgrel=2
 pkgdesc='A set of programs to assemble and manipulate binary and object files'
 arch=(x86_64)
 url='http://www.gnu.org/software/binutils/'
@@ -12,8 +12,9 @@ options=(staticlibs !distcc !ccache)
 source=(https://ftp.gnu.org/gnu/binutils/binutils-$pkgver.tar.xz{,.sig}
         )
 validpgpkeys=(3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F)
-md5sums=('ffc476dd46c96f932875d1b2e27e929f'
-         'SKIP'
+sha256sums=(
+  '8c3850195d1c093d290a716e20ebcaa72eda32abf5e3d8611154b39cff79e9ea'
+  'SKIP'
 )
 
 prepare() {

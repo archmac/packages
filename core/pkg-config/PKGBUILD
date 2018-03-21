@@ -1,6 +1,6 @@
 pkgname=pkg-config
 pkgver=0.29.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A system for managing library compile/link flags"
 arch=('x86_64')
 url="http://pkgconfig.freedesktop.org/wiki/"
@@ -10,9 +10,11 @@ depends=()
 provides=("pkgconfig=${pkgver}")
 conflicts=('pkgconfig')
 replaces=('pkgconfig')
-source=(http://pkgconfig.freedesktop.org/releases/${pkgname}-${pkgver}.tar.gz{,.asc})
-md5sums=('f6e931e319531b736fadc017f470e68a'
-         'SKIP')
+source=(https://pkgconfig.freedesktop.org/releases/${pkgname}-${pkgver}.tar.gz{,.asc})
+sha256sums=(
+  '6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591'
+  'SKIP'
+)
 validpgpkeys=('6B99CE97F17F48C27F722D71023A4420C7EC6914')  # Dan Nicholson
 
 build() {

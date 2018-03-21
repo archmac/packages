@@ -1,15 +1,16 @@
 pkgname=openvpn
-pkgver=2.4.3
+pkgver=2.4.5
 pkgrel=1
 pkgdesc="An easy-to-use, robust, and highly configurable VPN (Virtual Private Network)"
 arch=(x86_64)
 url="http://openvpn.net/index.php/open-source.html"
 depends=('tuntap' 'openssl' 'lzo')
 license=('custom')
-source=(http://swupdate.openvpn.net/community/releases/openvpn-${pkgver}.tar.gz
-        http://swupdate.openvpn.net/community/releases/openvpn-${pkgver}.tar.gz.asc)
-sha256sums=('cee3d3ca462960a50a67c0ebd186e01b6d13db70275205663695152c9aca8579'
-            'SKIP')
+source=(https://swupdate.openvpn.net/community/releases/openvpn-${pkgver}.tar.gz{,.asc})
+sha256sums=(
+  '43c0a363a332350f620d1cd93bb431e082bedbc93d4fb872f758650d53c1d29e'
+  'SKIP'
+)
 validpgpkeys=('03300E11FED16F59715F9996C29D97ED198D22A3')  # Samuli Seppänen
 
 build() {

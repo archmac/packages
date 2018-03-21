@@ -1,5 +1,5 @@
 pkgname=openssl
-_ver=1.0.2l
+_ver=1.0.2n
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 #pkgver=$_ver
@@ -13,20 +13,23 @@ optdepends=('ca-certificates')
 options=('!makeflags')
 backup=('opt/arch/etc/ssl/openssl.cnf')
 install=openssl.install
-source=("https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz"
-        "https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz.asc"
-        'no-rpath.patch'
-        'ssl3-test-failure.patch'
-        'ca-dir.patch'
-        'openssl.install'
-        'c_keychain')
-md5sums=('f85123cd390e864dfbe517e7616e6566'
-         'SKIP'
-         'dc78d3d06baffc16217519242ce92478'
-         '62fc492252edd3283871632bb77fadbe'
-         'b27b6c7ccd673f7e5d1746986ba2b708'
-         'bc3c77f60629da02f568c79d739fe591'
-         '2a8eed46bd263940a07a2eda73b83191')
+source=(
+  "https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz"{,.asc}
+  'no-rpath.patch'
+  'ssl3-test-failure.patch'
+  'ca-dir.patch'
+  'openssl.install'
+  'c_keychain'
+)
+sha256sums=(
+  '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe'
+  'SKIP'
+  '754d6107a306311e15a1db6a1cc031b81691c8b9865e8809ac60ca6f184c957c'
+  'c54ae87c602eaa1530a336ab7c6e22e12898e1941012349c153e52553df64a13'
+  'bd1dd077ef6d4d8fde1c19064a8c84d7d196e311738fb45f6a3a18d471371b4b'
+  '24c038cbdeb04536464a58ecc76abd16b46493c47ee35341dc56a83b8aba7dbb'
+  '796d9145ff31b4c678f382ac9f5a4fc982f1b605f90e9f0419482ce8a93187aa'
+)
 validpgpkeys=('8657ABB260F056B1E5190839D9C4D26D0E604491')
 
 prepare() {
