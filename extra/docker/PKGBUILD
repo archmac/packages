@@ -1,6 +1,6 @@
 pkgname=docker
-pkgver=17.11.0
-_rev='1caf76ce6baa889133ece59fab3c36aaf143d4ef'
+pkgver=18.02.0
+_rev='fc4de447b563498eb4da89f56fb858bbe761d91b'
 pkgrel=1
 pkgdesc='Pack, ship and run any application as a lightweight container'
 arch=('x86_64' 'i686')
