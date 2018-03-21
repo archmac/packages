@@ -1,5 +1,5 @@
 pkgname=kubernetes
-pkgver=1.9.1
+pkgver=1.9.5
 pkgrel=1
 pkgdesc="Container Cluster Manager for Docker"
 depends=('libc' 'bash')
@@ -11,7 +11,7 @@ source=("$pkgname-$pkgver.tar.gz::https://dl.k8s.io/v$pkgver/kubernetes-src.tar.
 noextract=("$pkgname-$pkgver.tar.gz")
 url="http://kubernetes.io/"
 license=("APACHE")
-sha256sums=('625ebb79412bd12feccf12e8b6a15d9c71ea681b571f34deaa59fe6c9ba55935'
+sha256sums=('a02261fb0e1d70feb95af36d404ad247ee46103b84748a5fec8b906648f68e0f'
 )
 
 prepare() {
