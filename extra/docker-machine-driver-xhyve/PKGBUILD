@@ -1,6 +1,6 @@
 pkgname=docker-machine-driver-xhyve
 pkgver=0.3.3
-pkgrel=1
+pkgrel=2
 _rev="7d92f74a8b9825e55ee5088b8bfa93b042badc47"
 pkgdesc='Driver plugin for xhyve/hyperkit'
 arch=('i686' 'x86_64')
@@ -27,7 +27,7 @@ build() {
   export GO_BUILD_TAGS="lib9p"
 
   cd $srcdir/build/src/github.com/zchee/docker-machine-driver-xhyve
-  make build
+  env CGO_CFLAGS_ALLOW="-arch|x86_64|-fmessage-length=152|-fdiagnostics-show-note-include-stack|-fmacro-backtrace-limit=0" CGO_LDFLAGS_ALLOW="-arch|x86_64" make build
 }
 
 package() {
