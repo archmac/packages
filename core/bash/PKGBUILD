@@ -2,7 +2,7 @@ pkgname=bash
 _basever=4.4
 _patchlevel=012
 pkgver=$_basever.$_patchlevel
-pkgrel=2
+pkgrel=3
 pkgdesc='The GNU Bourne Again shell'
 arch=('x86_64')
 license=('GPL')
@@ -41,8 +41,10 @@ build() {
   #export CFLAGS="${CFLAGS} ${_bashconfig[@]}"
 
   ./configure --prefix=/opt/arch \
-              --with-curses --enable-readline \
-              --without-bash-malloc --with-installed-readline
+              --with-curses \
+              --enable-readline \
+              --with-included-gettext \
+              --without-bash-malloc
   make
 }
 
