@@ -5,6 +5,7 @@ set -u
 set -o pipefail
 
 order=(
+    core/pacman
     core/filesystem
     core/system
     core/gettext
@@ -26,7 +27,6 @@ order=(
     core/npth
     core/pinentry
     core/gnupg
-    core/pacman
     core/pacman-mirrorlist
     core/binutils
     extra/libxml2

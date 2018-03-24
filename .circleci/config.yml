@@ -35,6 +35,10 @@ jobs:
                 name: Build packages
                 command: |
                     source ~/.archrc
+                    sudo sed -i '' -e 's,# gettext initialization,export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH",' /opt/arch/bin/makepkg
+                    which bash
+                    echo "==== $PATH ***"
+                    echo $SHELL
                     .support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order
                     .support/build $(.support/changes -u origin/master "${CIRCLE_SHA1}" | .support/order)
             - run:

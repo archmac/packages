@@ -46,6 +46,10 @@ prepare() {
   patch -p0 < ../pacman-usr-local.patch
   patch -p0 < ../pacman-tmp-scriptlet.patch
   patch -p0 < ../pacman-lazy-chroot.patch
+
+  echo "===== $PATH"
+  sed -i '' -e 's/case $BASH_SHELL in/echo "==== $PATH ===="; case $BASH_SHELL in/' configure
+  sed -i '' -e 's,# gettext initialization,export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH",' scripts/makepkg.sh.in
 }
 
 build() {
@@ -57,6 +61,7 @@ build() {
   export LIBCURL_LIBS="-lcurl"
   #export LIBSSL_CFLAGS="-I${bootstrap_dir/include"
   #export LIBSSL_LIBS="-lssl"
+  #export BASH_SHELL=/opt/arch/bin/bash
 
   ./configure --prefix=/opt/arch --sysconfdir=/opt/arch/etc \
     --localstatedir=/opt/arch/var --enable-doc \
