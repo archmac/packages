@@ -1,6 +1,6 @@
 pkgbase=vim
 pkgname=(vim vim-runtime)
-pkgver=8.0.0648
+pkgver=8.0.1729
 _versiondir=80
 pkgrel=1
 arch=(x86_64)
@@ -9,7 +9,7 @@ url='http://www.vim.org'
 #makedepends=(gpm python2 python ruby libxt desktop-file-utils gtk2 gtk3 lua gawk tcl)
 makedepends=()
 source=(vim-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.gz)
-sha1sums=('9216b5b9cb89bf43a9797505379e3f63a2f46344')
+sha1sums=('ac223e4aee946ae1fc90a491eb1eaf0e592a7329')
 
 prepare() {
   cd vim-$pkgver/src
