@@ -1,5 +1,5 @@
 pkgname=nodejs
-pkgver=5.11.0
+pkgver=9.11.1
 pkgrel=1
 pkgdesc='Evented I/O for V8 javascript'
 arch=('x86_64')
@@ -8,8 +8,8 @@ license=('MIT')
 depends=('openssl' 'zlib' 'icu' 'libuv' 'http-parser') # 'v8')
 #makedepends=('python2' 'procps-ng')
 optdepends=('npm: nodejs package manager')
-source=("http://nodejs.org/dist/v$pkgver/node-v$pkgver.tar.gz")
-sha256sums=('ef41b01a9e49de5a5d160071166f911d0bc9ff6a0bd0e88ea4863df572d95e91')
+source=("http://nodejs.org/dist/v$pkgver/node-v$pkgver.tar.xz")
+sha256sums=('23dc3d133924f5c7453c479d5eceb3b6af932415cb67d99798c313573d9b9d4c')
 
 #prepare() {
 #  cd node-v$pkgver
@@ -35,16 +35,16 @@ build() {
     --shared-openssl \
     --shared-openssl-includes=/opt/arch/include/openssl \
     --shared-openssl-libpath=/opt/arch/lib \
+    --shared-zlib \
+    --shared-zlib-includes=/opt/arch/include \
+    --shared-zlib-libpath=/opt/arch/lib \
+    --shared-libuv \
+    --shared-libuv-includes=/opt/arch/include \
+    --shared-libuv-libpath=/opt/arch/lib \
+    --shared-http-parser \
+    --shared-http-parser-includes=/opt/arch/include \
+    --shared-http-parser-libpath=/opt/arch/lib \
     #--with-intl=system-icu \
-    #--shared-zlib \
-    #--shared-zlib-includes=/opt/arch/include \
-    #--shared-zlib-libpath=/opt/arch/lib \
-    #--shared-libuv \
-    #--shared-libuv-includes=/opt/arch/include \
-    #--shared-libuv-libpath=/opt/arch/lib \
-    #--shared-http-parser \
-    #--shared-http-parser-includes=/opt/arch/include \
-    #--shared-http-parser-libpath=/opt/arch/lib \
     # --shared-v8
 
   make
