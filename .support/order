@@ -18,6 +18,7 @@ order=(
     core/libarchive
     core/asciidoc
     core/fakeroot
+    core/readline
     core/libgpg-error
     core/libgcrypt
     core/libassuan
