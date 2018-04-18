@@ -35,6 +35,11 @@ order=(
     extra/libffi
     extra/swig
     extra/llvm
+    extra/http-parser
+    extra/icu
+    extra/libuv
+    extra/nodejs
+    extra/npm
 )
 
 unordered=($(cat))
