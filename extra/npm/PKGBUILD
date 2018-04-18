@@ -1,5 +1,5 @@
 pkgname=npm
-pkgver=3.8.7
+pkgver=5.8.0
 pkgrel=1
 pkgdesc='A package manager for javascript'
 arch=('any')
@@ -12,23 +12,21 @@ provides=('nodejs-node-gyp')
 makedepends=('git')
 optdepends=('python2: for node-gyp')
 options=('!emptydirs')
-source=("git+https://github.com/npm/npm.git#tag=v$pkgver")
-md5sums=('SKIP')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/npm/npm/archive/v$pkgver.tar.gz")
+sha256sums=('0fb2d5c07382f3c08b00e139afba859d251fe8e99b56425c77297ac3f49f7fe5')
 
 build() {
-  cd npm
+  cd $pkgname-$pkgver
   make
 }
 
 package() {
-  cd npm
+  cd $pkgname-$pkgver
   make NPMOPTS="--prefix=\"$pkgdir/opt/arch\"" install
 
-  # Why 777? :/
+  # Non-deterministic race in npm gives 777 permissions to random directories.
+  # See https://github.com/npm/npm/issues/9359 for details.
   chmod -R u=rwX,go=rX "$pkgdir"
-
-  # Fix files owned by nobody:
-  chown -R `whoami` "$pkgdir/opt/arch/lib/node_modules"
 
   # Fix wrong symlinks
   for _dir in man1 man5 man7; do
@@ -41,8 +39,11 @@ package() {
 
   # Provide node-gyp executable
   cp "$pkgdir"/opt/arch/lib/node_modules/npm/bin/node-gyp-bin/node-gyp "$pkgdir"/opt/arch/bin/node-gyp
-  sed -i -e 's|"`dirname "$0"`/../../|"`dirname "$0"`/../lib/node_modules/npm/|' "$pkgdir"/opt/arch/bin/node-gyp
+  sed -i '' -e 's|"`dirname "$0"`/../../|"`dirname "$0"`/../lib/node_modules/npm/|' "$pkgdir"/opt/arch/bin/node-gyp
+
+  install -dm755 "$pkgdir"/opt/arch/share/bash-completion/completions
+  node "$srcdir"/npm-$pkgver/bin/npm-cli.js completion > "$pkgdir"/opt/arch/share/bash-completion/completions/npm
 
   install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
-  install -m644 "$srcdir/npm/LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+  install -m644 "$srcdir/$pkgname-$pkgver/LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }

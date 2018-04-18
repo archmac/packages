@@ -1,5 +1,5 @@
 pkgname=http-parser
-pkgver=2.7.0
+pkgver=2.8.1
 pkgrel=1
 pkgdesc="Parser for HTTP Request/Response written in C"
 arch=('x86_64')
@@ -7,29 +7,33 @@ url="https://github.com/nodejs/http-parser"
 license=('MIT')
 depends=('libc')
 makedepends=('git')
-source=("git+https://github.com/nodejs/http-parser.git#tag=v$pkgver"
-        "install.patch")
-sha256sums=('SKIP'
-            'b2b0aa71f6db9983fdaaeffb59fcf2854a09259fbaa7ffc838740244c7f3556e')
+source=(
+  "https://github.com/nodejs/http-parser/archive/v${pkgver}.tar.gz"
+  install.patch
+)
+sha256sums=(
+  '51615f68b8d67eadfd2482decc63b3e55d749ce0055502bbb5b0032726d22d96'
+  'c0eb1a42fa899203bebafcd6dc8920042345f89264b12eeb2ec85bc65921aca6'
+)
 
 prepare() {
-  cd $pkgname
+  cd $pkgname-$pkgver
   patch -Np2 < ../install.patch
   sed -i -e 's|-Werror||' Makefile
 }
 
 build() {
-  cd $pkgname
+  cd $pkgname-$pkgver
   make library
 }
 
 check() {
-  cd $pkgname
+  cd $pkgname-$pkgver
   make test
 }
 
 package() {
-  cd $pkgname
+  cd $pkgname-$pkgver
   make PREFIX="$pkgdir/opt/arch" install
 
   install -dm755 \
