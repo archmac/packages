@@ -1,24 +1,26 @@
 --- src/http-parser/Makefile.orig	2016-04-26 10:33:14.000000000 +0200
 +++ src/http-parser/Makefile	2016-04-26 10:34:51.000000000 +0200
-@@ -123,13 +123,17 @@
+@@ -131,14 +131,18 @@
  	ctags $^
  
  install: library
--	$(INSTALL) -D  http_parser.h $(INCLUDEDIR)/http_parser.h
--	$(INSTALL) -D $(SONAME) $(LIBDIR)/$(SONAME)
-+	$(INSTALL) -d  $(INCLUDEDIR)
-+	$(INSTALL)     http_parser.h $(INCLUDEDIR)/http_parser.h
-+	$(INSTALL) -d $(LIBDIR)
-+	$(INSTALL)    $(SONAME) $(LIBDIR)/$(SONAME)
- 	ln -s $(LIBDIR)/$(SONAME) $(LIBDIR)/libhttp_parser.$(SOEXT)
+-	$(INSTALL) -D  http_parser.h $(DESTDIR)$(INCLUDEDIR)/http_parser.h
+-	$(INSTALL) -D $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
++	$(INSTALL) -d  $(DESTDIR)$(INCLUDEDIR)
++	$(INSTALL)     http_parser.h $(DESTDIR)$(INCLUDEDIR)/http_parser.h
++	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
++	$(INSTALL)    $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
+ 	ln -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
+ 	ln -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SOLIBNAME).$(SOEXT)
  
  install-strip: library
--	$(INSTALL) -D  http_parser.h $(INCLUDEDIR)/http_parser.h
--	$(INSTALL) -D -s $(SONAME) $(LIBDIR)/$(SONAME)
-+	$(INSTALL) -d  $(INCLUDEDIR)
-+	$(INSTALL)     http_parser.h $(INCLUDEDIR)/http_parser.h
-+	$(INSTALL) -d $(LIBDIR)
-+	$(INSTALL)    -s $(SONAME) $(LIBDIR)/$(SONAME)
- 	ln -s $(LIBDIR)/$(SONAME) $(LIBDIR)/libhttp_parser.$(SOEXT)
+-	$(INSTALL) -D  http_parser.h $(DESTDIR)$(INCLUDEDIR)/http_parser.h
+-	$(INSTALL) -D -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
++	$(INSTALL) -d  $(DESTDIR)$(INCLUDEDIR)
++	$(INSTALL)     http_parser.h $(DESTDIR)$(INCLUDEDIR)/http_parser.h
++	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
++	$(INSTALL)    -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
+ 	ln -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
+ 	ln -s $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SOLIBNAME).$(SOEXT)
  
  uninstall:
