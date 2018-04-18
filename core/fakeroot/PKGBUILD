@@ -7,7 +7,7 @@ license=('GPL')
 url="http://packages.debian.org/fakeroot"
 groups=('base-devel')
 depends=()
-source=(http://http.debian.net/debian/pool/main/f/$pkgname/${pkgname}_${pkgver}.orig.tar.gz
+source=(https://mirrors.ocf.berkeley.edu/debian/pool/main/f/$pkgname/${pkgname}_${pkgver}.orig.tar.gz
         0002-OS-X-10.10-introduced-id_t-int-in-gs-etpriority.patch
         0001-Implement-openat-2-wrapper-which-handles-optional-ar.patch
         fakeroot-darwin-openat-wraptmp.patch

@@ -1,6 +1,6 @@
 pkgname=libssh2
 pkgver=1.8.0
-pkgrel=2
+pkgrel=3
 pkgdesc="A library implementing the SSH2 protocol as defined by Internet Drafts"
 url="https://www.libssh2.org/"
 arch=('i686' 'x86_64')
@@ -11,8 +11,10 @@ makedepends=('zlib')
 validpgpkeys=('27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2'   # Daniel Stenberg
               '914C533DF9B2ADA2204F586D78E11C6B279D5C91')  # Daniel Stenberg (old key)
 source=("https://www.libssh2.org/download/$pkgname-$pkgver.tar.gz"{,.asc})
-md5sums=('3d1147cae66e2959ea5441b183de1b1c'
-         'SKIP')
+sha256sums=(
+  '39f34e2f6835f4b992cafe8625073a88e5a28ba78f83e8099610a7b3af4676d4'
+  'SKIP'
+)
 
 build() {
   cd "$pkgname-$pkgver"

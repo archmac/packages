@@ -9,7 +9,7 @@ depends=()
 #options=('strip' 'debug' 'libtool')
 options=('strip' 'libtool')
 #provides=('libarchive.so')
-source=("http://libarchive.org/downloads/$pkgname-$pkgver.tar.gz")
+source=("https://libarchive.org/downloads/$pkgname-$pkgver.tar.gz")
 md5sums=('d2af45480aa5b0db5b5f3919cd0ea65e')
 
 build() {

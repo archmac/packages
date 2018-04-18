@@ -1,5 +1,5 @@
 pkgname=libgcrypt
-pkgver=1.7.7
+pkgver=1.8.2
 pkgrel=1
 pkgdesc="General purpose cryptographic library based on the code from GnuPG"
 arch=(i686 x86_64)
@@ -9,9 +9,11 @@ depends=('libgpg-error>=1.10-2')
 options=('!emptydirs')
 install=$pkgname.install
 # https://www.gnupg.org/download/integrity_check.html
-source=(ftp://ftp.gnupg.org/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2{,.sig})
-sha1sums=('ea4ae1a4dba51f15095319419d7b42a0bf160384'
-          'SKIP')
+source=(https://www.gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2{,.sig})
+sha256sums=(
+  'c8064cae7558144b13ef0eb87093412380efa16c4ee30ad12ecb54886a524c07'
+  'SKIP'
+)
 validpgpkeys=('031EC2536E580D8EA286A9F22071B08A33BD3F06' # "NIIBE Yutaka (GnuPG Release Key) <gniibe@fsij.org>"
               'D8692123C4065DEA5E0F3AB5249B39D24F25E3B6') # Werner Koch
 
