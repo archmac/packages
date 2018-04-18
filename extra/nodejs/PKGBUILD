@@ -1,6 +1,6 @@
 pkgname=nodejs
 pkgver=9.11.1
-pkgrel=1
+pkgrel=2
 pkgdesc='Evented I/O for V8 javascript'
 arch=('x86_64')
 url='http://nodejs.org/'
@@ -41,9 +41,9 @@ build() {
     --shared-libuv \
     --shared-libuv-includes=/opt/arch/include \
     --shared-libuv-libpath=/opt/arch/lib \
-    --shared-http-parser \
-    --shared-http-parser-includes=/opt/arch/include \
-    --shared-http-parser-libpath=/opt/arch/lib \
+    #--shared-http-parser \
+    #--shared-http-parser-includes=/opt/arch/include \
+    #--shared-http-parser-libpath=/opt/arch/lib \
     #--with-intl=system-icu \
     # --shared-v8
 
