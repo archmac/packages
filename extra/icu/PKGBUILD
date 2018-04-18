@@ -1,5 +1,5 @@
 pkgname=icu
-pkgver=57.1
+pkgver=61.1
 pkgrel=1
 pkgdesc="International Components for Unicode library"
 arch=(x86_64)
@@ -8,8 +8,16 @@ license=('custom:icu')
 #depends=('gcc-libs>=4.7.1-5' 'sh')
 depends=('sh')
 #makedepends=('clang')
-source=(http://download.icu-project.org/files/${pkgname}4c/${pkgver}/${pkgname}4c-${pkgver//./_}-src.tgz)
-md5sums=('976734806026a4ef8bdd17937c8898b9')
+source=(http://download.icu-project.org/files/${pkgname}4c/${pkgver}/${pkgname}4c-${pkgver//./_}-src.tgz{,.asc})
+md5sums=(
+  '68fe38999fef94d622bd6843d43c0615'
+  'SKIP'
+)
+validpgpkeys=(
+  'BA90283A60D67BA0DD910A893932080F4FB419E3' #  "Steven R. Loomis (filfla-signing) <srloomis@us.ibm.com>"
+  '9731166CD8E23A83BEE7C6D3ACA5DBE1FD8FABF1' #  "Steven R. Loomis (ICU Project) <srl@icu-project.org>"
+  'FFA9129A180D765B7A5BEA1C9B432B27D1BA20D7' # "Fredrik Roubert <fredrik@roubert.name>"
+)
 
 build() {
   cd icu/source
