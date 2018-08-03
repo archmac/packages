@@ -1,12 +1,12 @@
 pkgname=git
-pkgver=2.13.1
-pkgrel=4
+pkgver=2.18.0
+pkgrel=1
 pkgdesc="the fast distributed version control system"
 arch=(x86_64)
 url="http://git-scm.com/"
 license=('GPL2')
 #depends=('curl' 'expat>=2.0' 'perl-error' 'perl>=5.14.0' 'openssl' 'pcre')
-depends=('openssl' 'pcre')
+depends=('openssl' 'pcre2')
 #makedepends=('python2' 'emacs' 'libgnome-keyring' 'xmlto' 'asciidoc')
 makedepends=('asciidoc')
 optdepends=('tk: gitk and git gui'
@@ -19,17 +19,25 @@ optdepends=('tk: gitk and git gui'
             'subversion: git svn'
             'cvsps2: git cvsimport'
             'gnome-keyring: GNOME keyring credential helper')
-source=("https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz"
-        "https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.sign"
-        "https://www.kernel.org/pub/software/scm/git/git-htmldocs-$pkgver.tar.xz"
-        "https://www.kernel.org/pub/software/scm/git/git-manpages-$pkgver.tar.xz")
-noextract=("git-htmldocs-$pkgver.tar.xz"
-           "git-manpages-$pkgver.tar.xz")
-md5sums=('25ee4131d5398d32073b3ad7c39c4252'
-         'SKIP'
-         'ded893d057955ef6f181b0daa90b53d4'
-         '20ced60758fbc2548538bc5e9981f32c')
-validpgpkeys=('96E07AF25771955980DAD10020D04E5A713660A7') # Junio C Hamano
+source=(
+    "https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.xz"
+    "https://www.kernel.org/pub/software/scm/git/git-$pkgver.tar.sign"
+    "https://www.kernel.org/pub/software/scm/git/git-htmldocs-$pkgver.tar.xz"
+    "https://www.kernel.org/pub/software/scm/git/git-manpages-$pkgver.tar.xz"
+)
+noextract=(
+    "git-htmldocs-$pkgver.tar.xz"
+    "git-manpages-$pkgver.tar.xz"
+)
+sha256sums=(
+    '8b40be383a603147ae29337136c00d1c634bdfdc169a30924a024596a7e30e92'
+    'SKIP'
+    '5b70d9b1f86aad464ae172040eb87da83058c00581388af6f60b050214912efc'
+    '9ae3be95e63379597164c79c9018e84b7ef6964da923e5689dbc307693266096'
+)
+validpgpkeys=(
+    '96E07AF25771955980DAD10020D04E5A713660A7' # Junio C Hamano
+)
 
 build() {
   export PYTHON_PATH='/usr/bin/python'
@@ -111,10 +119,6 @@ package() {
   # the rest of the contrib stuff
   cp -a ./contrib/* $pkgdir/opt/arch/share/git/
 
-  # respect perl @INC
-  mv "$pkgdir"/opt/arch/lib/perl5{,_site_perl}
-  mkdir -p "$pkgdir"/opt/arch/lib/perl5
-  mv "$pkgdir"/opt/arch/lib/perl5{_,/}site_perl
   # remove perllocal.pod, .packlist, and empty directories.
   rm -rf "$pkgdir"/opt/arch/Library
 
