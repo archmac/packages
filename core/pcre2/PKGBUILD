@@ -1,6 +1,6 @@
 pkgname=pcre2
 pkgver=10.31
-pkgrel=1
+pkgrel=2
 pkgdesc='A library that implements Perl 5-style regular expressions. 2nd version'
 arch=('x86_64')
 url='http://www.pcre.org/'
@@ -32,8 +32,8 @@ package() {
   cd $pkgname-$pkgver
   make DESTDIR="$pkgdir" install
 
-  install -m755 -d "$pkgdir/usr/share/licenses/$pkgname"
-  install -m644 LICENCE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -m755 -d "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENCE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:
