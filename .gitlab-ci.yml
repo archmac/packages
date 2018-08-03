@@ -15,7 +15,7 @@ build:
     script:
         # Pristine macOS
         - sudo mkdir -p /opt
-        #- sudo rm -rf /usr/local/*
+        - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
         - echo > ~/.bashrc
         - echo > ~/.bash_profile
@@ -32,6 +32,8 @@ build:
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
         - sudo pacman --sync --noprogressbar --noconfirm base-devel
+        # Handle GitLab CI artifacts
+        - sudo pacman --sync --noprogressbar --noconfirm gitlab-runner
         # Build Packages
         - .support/changes -u origin/master "${CI_COMMIT_SHA}" | .support/order
         - .support/build $(.support/changes -u origin/master "${CI_COMMIT_SHA}" | .support/order)
@@ -53,7 +55,7 @@ push:
     script:
         # Pristine macOS
         - sudo mkdir -p /opt
-        #- sudo rm -rf /usr/local/*
+        - sudo rm -rf /usr/local/*
         - sudo rm -rf /opt/*
         - echo > ~/.bashrc
         - echo > ~/.bash_profile
