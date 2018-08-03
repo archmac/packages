@@ -1,0 +1,23 @@
+pkgname=test-package
+pkgver=1.0
+pkgrel=1
+pkgdesc='Dummy package for tooling tests'
+arch=('x86_64')
+url='https://archmac.org'
+license=('MIT')
+depends=()
+makedepends=()
+source=()
+md5sums=()
+
+build() {
+    mkdir -p "${pkgname}-${pkgver}"
+    cd "${pkgname}-${pkgver}"
+    touch LICENSE
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    install -d -m755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+    install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/${pkgname}/COPYING"
+}
