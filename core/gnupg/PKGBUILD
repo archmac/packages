@@ -1,6 +1,6 @@
 pkgname=gnupg
 pkgver=2.2.5
-pkgrel=1
+pkgrel=2
 pkgdesc='Complete and free implementation of the OpenPGP standard'
 url='http://www.gnupg.org/'
 license=('GPL')
@@ -10,7 +10,7 @@ optdepends=('libldap: gpg2keys_ldap'
 #makedepends=('libldap' 'libusb-compat')
 # depends=('pth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
 #          'pinentry' 'bzip2' 'readline' 'gnutls' 'sqlite')
-depends=('pth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
+depends=('npth' 'libgpg-error' 'libgcrypt' 'libksba' 'libassuan'
          'pinentry' 'readline')
 validpgpkeys=(
   'D8692123C4065DEA5E0F3AB5249B39D24F25E3B6'
