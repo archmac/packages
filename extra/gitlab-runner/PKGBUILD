@@ -1,0 +1,16 @@
+pkgname=gitlab-runner
+pkgver=11.1.0
+pkgrel=1
+pkgdesc='Run tests and send the results to GitLab'
+arch=('x86_64')
+url='https://gitlab.com/gitlab-org/gitlab-runner'
+license=('MIT')
+depends=()
+makedepends=()
+source=("https://gitlab-runner-downloads.s3.amazonaws.com/v${pkgver}/binaries/gitlab-runner-darwin-amd64")
+sha256sums=('c7f7a11a376a1fce7c8ed789ed1c4bf50fcc6935fff00e021a93bb90d5940276')
+
+package() {
+    install -d -m755 "${pkgdir}/opt/arch/bin"
+    install -m755 "${srcdir}/gitlab-runner-darwin-amd64" "${pkgdir}/opt/arch/bin/gitlab-runner"
+}
