@@ -13,13 +13,15 @@ depends=(
   'xvid'
 )
 makedepends=(
-#  'nasm'
+  'nasm'
   'pkg-config'
 )
 source=("https://ffmpeg.org/releases/ffmpeg-4.0.2.tar.xz")
 sha256sums=('a95c0cc9eb990e94031d2183f2e6e444cc61c99f6f182d1575c433d62afb2f97')
 
 build() {
+  export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"
+
   cd ffmpeg
 
   ./configure \

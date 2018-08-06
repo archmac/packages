@@ -29,6 +29,8 @@ prepare() {
 }
 
 build() {
+  export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"
+
   for _b in 8 10; do (
     cd build-${_b}bit
     ../${pkgbase}/configure \
