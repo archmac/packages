@@ -1,0 +1,25 @@
+pkgname=youtube-dl
+pkgver=2018.08.04
+pkgrel=1
+pkgdesc='Download videos from YouTube (and more sites)'
+arch=('x86_64')
+url='https://rg3.github.io/youtube-dl/'
+license=('custom')
+#depends=('python')
+makedepends=()
+source=("https://github.com/rg3/youtube-dl/releases/download/2018.08.04/youtube-dl-2018.08.04.tar.gz")
+sha256sums=('f582dc699e88699f0f9db9ba9188c1d072a10c630b319426622ffab5704a9dc1')
+
+package() {
+    cd "${srcdir}/youtube-dl"
+    install -d -m755 "${pkgdir}/opt/arch/bin"
+    install -m755 youtube-dl "${pkgdir}/opt/arch/bin/youtube-dl"
+    install -d -m755 "${pkgdir}/opt/arch/share/man/man1"
+    install -m644 youtube-dl.1 "${pkgdir}/opt/arch/share/man/man1"
+    install -d -m755 "${pkgdir}/opt/arch/share/bash-completion/completions"
+    install -m644 youtube-dl.bash-completion "${pkgdir}/opt/arch/share/bash-completion/completions/youtube-dl.bash-completions"
+    install -d -m755 "${pkgdir}/opt/arch/share/zsh/site-functions"
+    install -m644 youtube-dl.zsh "${pkgdir}/opt/arch/share/zsh/site-functions/_youtube-dl"
+    install -d -m755 "${pkgdir}/opt/arch/share/licenses/youtube-dl"
+    install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/LICENSE"
+}
