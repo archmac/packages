@@ -48,6 +48,7 @@ order=(
     extra/luajit
     extra/xvidcore
     extra/libx264
+    extra/xvidcore
     extra/lame
 )
 
