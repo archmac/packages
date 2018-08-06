@@ -7,9 +7,9 @@ license=('GPL')
 #depends=('glibc')
 makedepends=(
   'git'
-  'ffmpeg'
-  'l-smash'
-  'nasm'
+#  'ffmpeg'
+#  'l-smash'
+#  'nasm'
 )
 _commit='e9a5903edf8ca59ef20e6f4894c196f135af735e'
 source=("git+https://git.videolan.org/git/x264.git#commit=${_commit}")
