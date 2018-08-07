@@ -9,8 +9,8 @@ license=('GPL3')
 depends=(
   'lame'
   'xz'
-  'x264'
-  'xvid'
+  'libx264'
+  'xvidcore'
 )
 makedepends=(
   'nasm'
