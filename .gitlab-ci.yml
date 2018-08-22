@@ -32,6 +32,10 @@ build:
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
         - sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
         - sudo pacman --sync --noprogressbar --noconfirm base-devel
+        # Update certs
+        - curl https://download.archmac.org/certs/cert.pem | sudo tee /opt/arch/etc/ssl/cert.pem > /dev/null
+        - shasum -a256 /opt/arch/etc/ssl/cert.pem
+        - sudo sed -i~ -e 's:/usr/bin/curl:/usr/bin/curl -k -s --cacert /opt/arch/etc/ssl/cert.pem:' /opt/arch/etc/makepkg.conf
         # Handle GitLab CI artifacts
         - sudo pacman --sync --noprogressbar --noconfirm gitlab-runner
         # Build Packages
