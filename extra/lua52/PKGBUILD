@@ -7,18 +7,22 @@ url='http://www.lua.org/'
 depends=('readline')
 license=('MIT')
 options=('!emptydirs')
-source=(http://www.lua.org/ftp/lua-$pkgver.tar.gz
-#        liblua.so.patch
-        lua.pc
-        LICENSE)
-md5sums=('913fdb32207046b273fdb17aad70be13'
-#         '94ca7c5e6ec32ef8491041d88193f12d'
-         '8c6ccf96a34dcbb999468abd9cf2d8c4'
-         '0e2bd67b909b9ff673da844ca3480df2')
+source=(
+    http://www.lua.org/ftp/lua-$pkgver.tar.gz
+    liblua.so.patch
+    lua.pc
+    LICENSE
+)
+sha256sums=(
+    b9e2e4aad6789b3b63a056d442f7b39f0ecfca3ae0f1fc0ae4e9614401b69f4b
+    80dfd453768e10aec7657e95b57f4e8775b50d2e01a51f5f023e937c352dd675
+    8c57684fd87a731898f4d32a280901516c02d9109c9b5b945325aaca05b8c5dc
+    e8b12ba279d7eb06abcab8aad6f43eb289451113b832d09865c22fdeb6faad29
+)
 
 prepare() {
   cd lua-$pkgver
-  #patch -p1 -i ../liblua.so.patch
+  patch -p1 -i ../liblua.so.patch
 
   sed -e "s/%VER%/${pkgver%.*}/g;s/%REL%/$pkgver/g" ../lua.pc > lua.pc
   sed -i~ -e 's/llua/llua5.2/' -e 's/\/include/\/include\/lua5.2/' lua.pc
@@ -36,7 +40,7 @@ package() {
 
   make \
     TO_BIN='lua5.2 luac5.2' \
-    TO_LIB="liblua5.2.a" \
+    TO_LIB="liblua5.2.a liblua5.2.so liblua5.2.so.5.2 liblua5.2.so.$pkgver" \
     INSTALL_TOP="$pkgdir"/opt/arch \
     INSTALL_INC="$pkgdir"/opt/arch/include/lua5.2 \
     INSTALL_MAN="$pkgdir"/opt/arch/share/man/man1 \
@@ -52,7 +56,7 @@ package() {
 
   ln -s liblua5.2.so "$pkgdir"/opt/arch/lib/liblua.so.5.2
   ln -s liblua5.2.so "$pkgdir"/opt/arch/lib/liblua.so.$pkgver
- 
+
   cd "$pkgdir"/opt/arch/share/man/man1
   mv lua.1 lua5.2.1
   mv luac.1 luac5.2.1
