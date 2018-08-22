@@ -14,6 +14,7 @@ sha256sums=('9859d44d336f9b023a79a3026bb6a558b2ea346107ab4eadba58236048650690')
 build() {
   cd "msgpack-${pkgver}"
   cmake -DCMAKE_INSTALL_PREFIX=/opt/arch \
+        -DCMAKE_INSTALL_NAME_DIR=/opt/arch/lib \
         -DCMAKE_BUILD_TYPE=None \
         -DMSGPACK_CXX11=ON \
         -DMSGPACK_BUILD_EXAMPLES=OFF \
