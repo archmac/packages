@@ -41,6 +41,10 @@ order=(
     extra/nodejs
     extra/npm
     extra/unibilium
+    extra/lua
+    extra/lua51
+    extra/lua52
+    extra/luajit
 )
 
 unordered=($(cat))
