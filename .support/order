@@ -49,7 +49,6 @@ order=(
     extra/xvidcore
     extra/nasm
     extra/libx264
-    extra/xvidcore
     extra/lame
 )
 
