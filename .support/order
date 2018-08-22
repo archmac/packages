@@ -40,6 +40,7 @@ order=(
     extra/libuv
     extra/nodejs
     extra/npm
+    extra/unibilium
 )
 
 unordered=($(cat))
