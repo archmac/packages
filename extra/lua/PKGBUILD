@@ -8,18 +8,22 @@ url='http://www.lua.org/'
 depends=('readline')
 license=('MIT')
 options=('!emptydirs')
-source=(https://www.lua.org/ftp/lua-$pkgver.tar.gz
-#        liblua.so.patch
-        lua.pc
-        LICENSE)
-sha1sums=('79790cfd40e09ba796b01a571d4d63b52b1cd950'
-#          'c2b025588fb9d8e81812a12a5d3c11b2e995cb78'
-          'ea184f12de6cc7aa2c09182a8afa6c65ad909c7f'
-          '05f5f3b7bef0258bd617c505b8992de639af4551')
+source=(
+    https://www.lua.org/ftp/lua-$pkgver.tar.gz
+    liblua.so.patch
+    lua.pc
+    LICENSE
+)
+sha256sums=(
+    f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c
+    9b053d9e1227d3db3b14c4604b431d9664bdf7b88253caa7d08b9c2c07f17305
+    8c57684fd87a731898f4d32a280901516c02d9109c9b5b945325aaca05b8c5dc
+    142fb08b41a807b192b4b2c166696a1830a1c97967e5099ad0e579bf500e1da4
+)
 
 prepare() {
   cd lua-$pkgver
-#  patch -p1 -i ../liblua.so.patch
+  patch -p1 -i ../liblua.so.patch
 
   sed -e "s/%VER%/$_majorver/g;s/%REL%/$pkgver/g" ../lua.pc > lua.pc
 }
@@ -35,15 +39,16 @@ package() {
   cd lua-$pkgver
 
   make \
+    TO_LIB="liblua.a liblua.so liblua.so.$_majorver liblua.so.$pkgver" \
     INSTALL_TOP="$pkgdir"/opt/arch \
     INSTALL_MAN="$pkgdir"/opt/arch/share/man/man1 \
     install
-  ln -sf /opt/arch/bin/lua "$pkgdir"/opt/arch/bin/lua$_majorver
-  ln -sf /opt/arch/bin/luac "$pkgdir"/opt/arch/bin/luac$_majorver
+  ln -sf lua "$pkgdir"/opt/arch/bin/lua$_majorver
+  ln -sf luac "$pkgdir"/opt/arch/bin/luac$_majorver
 
   install -dm755 "$pkgdir"/opt/arch/lib/pkgconfig
   install -m644 lua.pc "$pkgdir"/opt/arch/lib/pkgconfig/${pkgname}53.pc
-  ln -sf /opt/arch/lib/pkgconfig/${pkgname}53.pc "$pkgdir"/opt/arch/lib/pkgconfig/$pkgname.pc
+  ln -sf ${pkgname}53.pc "$pkgdir"/opt/arch/lib/pkgconfig/$pkgname.pc
 
   install -d "$pkgdir"/opt/arch/share/doc/$pkgname
   install -m644 doc/*.{gif,png,css,html} "$pkgdir"/opt/arch/share/doc/$pkgname
