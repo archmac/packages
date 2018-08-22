@@ -14,14 +14,14 @@ sha256sums=('2ebe9c8972c378040c9b8505f5fb40a0c64d990cd68be6a62989362b18294d0a')
 build() {
   cd "libmpack-lua-${pkgver}"
 
-  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.1 -c lmpack.c -o lmpack.o
-  gcc -shared -lmpack -o mpack.so.5.1 lmpack.o
+  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.1 -I/opt/arch/include -c lmpack.c -o lmpack.o
+  gcc -shared -undefined dynamic_lookup -L/opt/arch/lib -lmpack -o mpack.so.5.1 lmpack.o
 
-  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.2 -c lmpack.c -o lmpack.o
-  gcc -shared -lmpack -o mpack.so.5.2 lmpack.o
+  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.2 -I/opt/arch/include -c lmpack.c -o lmpack.o
+  gcc -shared -undefined dynamic_lookup -L/opt/arch/lib -lmpack -o mpack.so.5.2 lmpack.o
 
   gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include -c lmpack.c -o lmpack.o
-  gcc -shared -lmpack -o mpack.so.5.3 lmpack.o
+  gcc -shared -undefined dynamic_lookup -L/opt/arch/lib -lmpack -o mpack.so.5.3 lmpack.o
 }
 
 package_lua51-mpack() {
@@ -29,9 +29,9 @@ package_lua51-mpack() {
   depends+=('lua51')
 
   cd "libmpack-lua-${pkgver}"
-  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.1
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.1"
   install -m755 mpack.so.5.1 "${pkgdir}/opt/arch/lib/lua/5.1/mpack.so"
-  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}"
   install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
 }
 
@@ -40,9 +40,9 @@ package_lua52-mpack() {
   depends+=('lua52')
 
   cd "libmpack-lua-${pkgver}"
-  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.2
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.2"
   install -m755 mpack.so.5.2 "${pkgdir}/opt/arch/lib/lua/5.2/mpack.so"
-  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}"
   install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
 }
 
@@ -51,9 +51,9 @@ package_lua-mpack() {
   depends+=('lua')
 
   cd "libmpack-lua-${pkgver}"
-  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.3
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.3"
   install -m755 mpack.so.5.3 "${pkgdir}/opt/arch/lib/lua/5.3/mpack.so"
-  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}"
   install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
 }
 
