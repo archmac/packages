@@ -11,7 +11,7 @@ sha512sums=('6e30edafcacfb580b410bc6749ed7fe8f18b3be0cb98959339853e77bc3ec0cda6d
 build() {
   cd "$srcdir/$pkgname-$pkgver"
 
-  make
+  make PREFIX=/opt/arch 
 }
 
 package() {
