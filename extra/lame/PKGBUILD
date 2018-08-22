@@ -1,0 +1,34 @@
+pkgname=lame
+pkgver=3.100
+pkgrel=2
+pkgdesc='A high quality MPEG Audio Layer III (MP3) encoder'
+arch=('x86_64')
+url='http://lame.sourceforge.net/'
+#depends=('ncurses')
+#makedepends=('nasm')
+license=('LGPL')
+source=("https://downloads.sourceforge.net/lame/lame-${pkgver}.tar.gz")
+sha256sums=('ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e')
+
+prepare() {
+  cd lame-${pkgver}
+
+  sed -i~ '/lame_init_old/d' include/libmp3lame.sym
+}
+
+build() {
+  cd lame-${pkgver}
+
+  ./configure \
+    --prefix='/opt/arch' \
+    --enable-nasm \
+    --enable-shared
+  make
+}
+
+package() {
+  cd lame-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+}
+# vim: ts=2 sw=2 et:

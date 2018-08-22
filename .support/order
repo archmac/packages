@@ -46,6 +46,10 @@ order=(
     extra/lua51
     extra/lua52
     extra/luajit
+    extra/xvidcore
+    extra/nasm
+    extra/libx264
+    extra/lame
 )
 
 unordered=($(cat))
