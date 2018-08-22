@@ -28,7 +28,7 @@ build() {
     --prefix='/opt/arch' \
     --enable-hardcoded-tables \
     --enable-avresample \
-    --enable-lzma \
+    --disable-lzma \
     --enable-shared \
     --enable-pthreads \
     --enable-version3
