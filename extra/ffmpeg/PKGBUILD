@@ -40,7 +40,7 @@ build() {
 package() {
   cd ffmpeg-${pkgver}
 
-  make DESTDIR="${pkgdir}" -C ffmpeg install install-man
+  make DESTDIR="${pkgdir}" install install-man
 }
 
 # vim: ts=2 sw=2 et:
