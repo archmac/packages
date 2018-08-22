@@ -1,0 +1,60 @@
+pkgbase=lua-mpack
+pkgname=(lua51-mpack lua52-mpack lua-mpack)
+pkgver=1.0.7
+pkgdesc="libmpack lua binding"
+pkgrel=2
+arch=('x86_64')
+url='https://github.com/libmpack/libmpack-lua'
+depends=('libmpack')
+makedepends=('lua51' 'lua52' 'lua')
+license=('MIT')
+source=("libmpack-lua-${pkgver}.tar.gz::https://github.com/libmpack/libmpack-lua/archive/${pkgver}.tar.gz")
+sha256sums=('2ebe9c8972c378040c9b8505f5fb40a0c64d990cd68be6a62989362b18294d0a')
+
+build() {
+  cd "libmpack-lua-${pkgver}"
+
+  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.1 -c lmpack.c -o lmpack.o
+  gcc -shared -lmpack -o mpack.so.5.1 lmpack.o
+
+  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include/lua5.2 -c lmpack.c -o lmpack.o
+  gcc -shared -lmpack -o mpack.so.5.2 lmpack.o
+
+  gcc -O2 -fPIC -DMPACK_USE_SYSTEM -I/opt/arch/include -c lmpack.c -o lmpack.o
+  gcc -shared -lmpack -o mpack.so.5.3 lmpack.o
+}
+
+package_lua51-mpack() {
+  pkgdesc='Simple implementation of msgpack in C Lua 5.1'
+  depends+=('lua51')
+
+  cd "libmpack-lua-${pkgver}"
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.1
+  install -m755 mpack.so.5.1 "${pkgdir}/opt/arch/lib/lua/5.1/mpack.so"
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}
+
+package_lua52-mpack() {
+  pkgdesc='Simple implementation of msgpack in C Lua 5.2'
+  depends+=('lua52')
+
+  cd "libmpack-lua-${pkgver}"
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.2
+  install -m755 mpack.so.5.2 "${pkgdir}/opt/arch/lib/lua/5.2/mpack.so"
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}
+
+package_lua-mpack() {
+  pkgdesc='Simple implementation of msgpack in C Lua 5.3'
+  depends+=('lua')
+
+  cd "libmpack-lua-${pkgver}"
+  install -m755 -d "${pkgdir}/opt/arch/lib/lua/5.3
+  install -m755 mpack.so.5.3 "${pkgdir}/opt/arch/lib/lua/5.3/mpack.so"
+  install -m755 -d "${pkgdir}/opt/arch/share/licenses/${pkgname}
+  install -m644 LICENSE-MIT "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}
+
+# vim:set sw=2 sts=2 et:
