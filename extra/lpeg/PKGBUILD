@@ -14,6 +14,7 @@ sha256sums=('62d9f7a9ea3c1f215c77e0cadd8534c6ad9af0fb711c3f89188a8891c72f026b'
 prepare() {
   sed -i~ -e 's/^CFLAGS =/CFLAGS +=/' $pkgbase-$pkgver/makefile
   sed -i~ -e 's/^COPT =/# COPT =/' $pkgbase-$pkgver/makefile
+  #sed -i~ -e 's:-bundle:-bundle -L/opt/arch/lib:' $pkgbase-$pkgver/makefile
 
   cp -r $pkgbase-$pkgver $pkgbase-$pkgver-51
   cp -r $pkgbase-$pkgver $pkgbase-$pkgver-52
@@ -21,13 +22,13 @@ prepare() {
 
 build() {
   cd $pkgbase-$pkgver
-  make LUADIR=/opt/arch/include
+  make macosx LUADIR=/opt/arch/include
 
   cd "$srcdir"/$pkgbase-$pkgver-51
-  make LUADIR=/opt/arch/include/lua5.1
+  make macosx LUADIR=/opt/arch/include/lua5.1
 
   cd "$srcdir"/$pkgbase-$pkgver-52
-  make LUADIR=/opt/arch/include/lua5.2
+  make macosx LUADIR=/opt/arch/include/lua5.2
 }
 
 check() {
@@ -50,7 +51,7 @@ package_lua-lpeg() {
 
   cd $pkgbase-$pkgver
   install -m755 -d "$pkgdir"/opt/arch/lib/lua/5.3
-  install -m755 $pkgbase.dylib "$pkgdir"/opt/arch/lib/lua/5.3/$pkgbase.dylib
+  install -m755 $pkgbase.so "$pkgdir"/opt/arch/lib/lua/5.3/$pkgbase.so
   install -m755 -d "$pkgdir"/opt/arch/share/lua/5.3
   install -m644 re.lua "$pkgdir"/opt/arch/share/lua/5.3/re.lua
   install -m755 -d "$pkgdir"/opt/arch/share/licenses/$pkgname
@@ -63,7 +64,7 @@ package_lua51-lpeg() {
 
   cd $pkgbase-$pkgver-51
   install -m755 -d "$pkgdir"/opt/arch/lib/lua/5.1
-  install -m755 $pkgbase.dylib "$pkgdir"/opt/arch/lib/lua/5.1/$pkgbase.dylib
+  install -m755 $pkgbase.so "$pkgdir"/opt/arch/lib/lua/5.1/$pkgbase.so
   install -m755 -d "$pkgdir"/opt/arch/share/lua/5.1
   install -m644 re.lua "$pkgdir"/opt/arch/share/lua/5.1/re.lua
   install -m755 -d "$pkgdir"/opt/arch/share/licenses/$pkgname
@@ -76,7 +77,7 @@ package_lua52-lpeg() {
 
   cd $pkgbase-$pkgver-52
   install -m755 -d "$pkgdir"/opt/arch/lib/lua/5.2
-  install -m755 $pkgbase.dylib "$pkgdir"/opt/arch/lib/lua/5.2/$pkgbase.dylib
+  install -m755 $pkgbase.so "$pkgdir"/opt/arch/lib/lua/5.2/$pkgbase.so
   install -m755 -d "$pkgdir"/opt/arch/share/lua/5.2
   install -m644 re.lua "$pkgdir"/opt/arch/share/lua/5.2/re.lua
   install -m755 -d "$pkgdir"/opt/arch/share/licenses/$pkgname
