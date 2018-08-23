@@ -1,0 +1,13 @@
+pkgname=neovim-vim
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Start neovim using vim"
+arch=('any')
+license=('BSD')
+depends=('neovim')
+
+package() {
+  install -m755 -d "${pkgdir}/opt/arch/bin"
+  ln -sf nvim "${pkgdir}/opt/arch/bin/vim"
+  ln -sf nvim "${pkgdir}/opt/arch/bin/vi"
+}
