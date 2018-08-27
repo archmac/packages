@@ -1,0 +1,47 @@
+pkgname=libiconv
+pkgver=1.15
+pkgrel=1
+pkgdesc='Conversion library'
+arch=('x86_64')
+url='https://www.gnu.org/software/libiconv/'
+license=('LGPL')
+source=(
+  "https://ftp.gnu.org/gnu/libiconv/libiconv-${pkgver}.tar.gz"
+  'https://raw.githubusercontent.com/Homebrew/patches/9be2793af/libiconv/patch-utf8mac.diff'
+  'utf8mac.diff'
+)
+sha256sums=(
+  'ccf536620a45458d26ba83887a983b96827001e92a13847b45e4925cc8913178'
+  'e8128732f22f63b5c656659786d2cf76f1450008f36bcf541285268c66cabeab'
+  'c94319a05fb1531629960ed2f7912f9b2f64144c3f0b374bbe8a0d2227d2f700'
+)
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+
+  patch -p1 -i "${srcdir}/patch-utf8mac.diff"
+  patch -p1 -i "${srcdir}/utf8mac.diff"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+
+  ./configure \
+    --disable-debug \
+    --disable-dependency-tracking \
+    --prefix=/opt/arch \
+    --enable-extra-encodings \
+    --enable-static \
+    --docdir=/opt/arch/share/doc/iconv
+
+  make -f Makefile.devel #CFLAGS="${CFLAGS}" CC="${CC}"
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim:set sw=2 sts=2 et:
