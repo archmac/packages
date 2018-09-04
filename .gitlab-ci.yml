@@ -20,7 +20,7 @@ build:
         - echo > ~/.bashrc
         - echo > ~/.bash_profile
         # Setup Arch
-        - curl -s -o /tmp/snapshot.tar.gz https://download.archmac.org/snapshots/archmac-snapshot-20180220194509.tar.gz
+        - curl -o /tmp/snapshot.tar.gz https://download.archmac.org/snapshots/archmac-snapshot-20180220194509.tar.gz
         - echo '20436b3984139c96590609ee136f2ef8fcb65d8096c1f21adc0aac3668ad43cc  /tmp/snapshot.tar.gz' | shasum -a 256 -c -
         - sudo tar -C / -xpzf /tmp/snapshot.tar.gz
         - echo 'Server = https://download.archmac.org/packages/$repo/sierra/$arch' | sudo tee /opt/arch/etc/pacman.d/mirrorlist
