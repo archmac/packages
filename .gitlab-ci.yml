@@ -67,10 +67,12 @@ push:
         - mkdir -p ~/.ssh
         - touch ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
         - echo "${ARCH_PUSH_SSH_KEY}" > ~/.ssh/id_rsa
+        - ssh-keygen -lf ~/.ssh/id_rsa
         - |
           cat >> ~/.ssh/known_hosts <<'EOF'
           download.archmac.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRDDd1wxRN9dSZ9VS4P2UVsQE+IpO3jj3FUtOQcFVtzQnBRBucTXZ99/8masCy6gxAZ7JdY1+JxZKuiVmXuT6fP7JHedRUBuyR3hHtLFM1y6GRaJoJV0SBhgD8T4YT/yVk7TK/TIeUMon39XSdPcwD1aJMGCUB2NUClnXVfzElSoc+sabJepdH8ZfNeS+ChZpU/JvAjRKkjMlqW1GAsO5KmNPe9kgmM81weklYI36NImVaauBqgHZLVEbThSpKx59OLATXUFRuhBMAchcvbXGSUqfx3CiKtt3CSscsMAv40q648ohBVdGZ0XEdbNa6HSNKDTzmsllCFi6oSIWNGGMP
           EOF
+        - ssh-keygen -lf <(cat ~/.ssh/known_hosts | perl -ne 's/download.archmac.org\s+// and print')
         # Remove packages
         - .support/prune $(cat out/deletions) upload@download.archmac.org:packages
         # Upload packages
