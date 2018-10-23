@@ -1,4 +1,5 @@
-pkgname=('go' 'go-tools')
+#pkgname=('go' 'go-tools')
+pkgname=('go')
 epoch=2
 pkgver=1.11.1
 pkgrel=1
@@ -50,16 +51,16 @@ build() {
   export GOPATH="$srcdir"
 
   # System-wide tools
-  for tool in godex godoc goimports gomvpkg gorename gotype; do
-    $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
-    $GOROOT/bin/go build -v -x -o $GOPATH/bin/$tool $_gourl/$tool
-  done
+  #for tool in godex godoc goimports gomvpkg gorename gotype; do
+  #  $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
+  #  $GOROOT/bin/go build -v -x -o $GOPATH/bin/$tool $_gourl/$tool
+  #done
 
   # Distribution tools
-  for tool in benchcmp bundle callgraph digraph eg fiximports html2article  present ssadump stress stringer ; do
-    $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
-    $GOROOT/bin/go build -v -x -o $GOPATH/pkg/tool/${GOOS}_$GOARCH/$tool golang.org/x/tools/cmd/$tool
-  done
+  #for tool in benchcmp bundle callgraph digraph eg fiximports html2article  present ssadump stress stringer ; do
+  #  $GOROOT/bin/go get -d golang.org/x/tools/cmd/$tool
+  #  $GOROOT/bin/go build -v -x -o $GOPATH/pkg/tool/${GOOS}_$GOARCH/$tool golang.org/x/tools/cmd/$tool
+  #done
 }
 
 check() {
@@ -133,26 +134,26 @@ package_go() {
   #done
 }
 
-package_go-tools() {
-  pkgdesc='Developer tools for the Go programming language (includes godoc)'
-  depends=('go>2:1.5.3-1')
-
-  GOOS=darwin
-  GOARCH=amd64
-
-  install -d -m755 "$pkgdir/opt/arch/share/licenses/$pkgname"
-  install -m644 "$srcdir/src/$_gourl/../LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
-
-  # System-wide tools
-  install -d -m755 "$pkgdir/opt/arch/bin"
-  install -p -m755 "$srcdir/bin"/* "$pkgdir/opt/arch/bin"
-
-  # Distribution tools
-  install -d -m755 "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
-  install -p -m755 "$srcdir/pkg/tool/${GOOS}_$GOARCH"/* "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
-
-  #for i in "$pkgdir/opt/arch/bin"/* \
-  #         "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"/*; do
-  #  strip -s "$i"
-  #done
-}
+#package_go-tools() {
+#  pkgdesc='Developer tools for the Go programming language (includes godoc)'
+#  depends=('go>2:1.5.3-1')
+#
+#  GOOS=darwin
+#  GOARCH=amd64
+#
+#  install -d -m755 "$pkgdir/opt/arch/share/licenses/$pkgname"
+#  install -m644 "$srcdir/src/$_gourl/../LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+#
+#  # System-wide tools
+#  install -d -m755 "$pkgdir/opt/arch/bin"
+#  install -p -m755 "$srcdir/bin"/* "$pkgdir/opt/arch/bin"
+#
+#  # Distribution tools
+#  install -d -m755 "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
+#  install -p -m755 "$srcdir/pkg/tool/${GOOS}_$GOARCH"/* "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"
+#
+#  #for i in "$pkgdir/opt/arch/bin"/* \
+#  #         "$pkgdir/opt/arch/lib/go/pkg/tool/${GOOS}_$GOARCH"/*; do
+#  #  strip -s "$i"
+#  #done
+#}
