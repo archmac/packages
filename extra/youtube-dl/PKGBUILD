@@ -1,5 +1,5 @@
 pkgname=youtube-dl
-pkgver=2018.08.04
+pkgver=2018.11.07
 pkgrel=1
 pkgdesc='Download videos from YouTube (and more sites)'
 arch=('x86_64')
@@ -7,8 +7,8 @@ url='https://rg3.github.io/youtube-dl/'
 license=('custom')
 #depends=('python')
 makedepends=()
-source=("https://github.com/rg3/youtube-dl/releases/download/2018.08.04/youtube-dl-2018.08.04.tar.gz")
-sha256sums=('f582dc699e88699f0f9db9ba9188c1d072a10c630b319426622ffab5704a9dc1')
+source=("https://github.com/rg3/youtube-dl/releases/download/${pkgver}/youtube-dl-${pkgver}.tar.gz")
+sha256sums=('69f6f7bc3280fe8fc89347050b07072e51fcca63d31da531f353d43545156ce7')
 
 package() {
     cd "${srcdir}/youtube-dl"
