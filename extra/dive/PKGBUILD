@@ -1,0 +1,43 @@
+pkgname=dive
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="A tool for exploring each layer in a docker image"
+depends=('libc' 'bash')
+makedepends=('go')
+arch=('x86_64')
+source=(
+    "https://github.com/wagoodman/dive/archive/v${pkgver}.tar.gz"
+    "go.mod"
+    "go.sum"
+)
+noextract=("$pkgname-$pkgver.tar.gz")
+url="http://kubernetes.io/"
+license=("APACHE")
+sha256sums=(
+    '25d3107e0fb0ce19d776567ac4dfd27863aff0c4b28c6107a1f2775666a5eff5'
+    '389fcee4dfbba6a4b8006b2cdc6cfe0f69c50361dddd13dc8af2aa3feed89ba9'
+    '334dfd4a54f7e203e92b72d9dd58c230e1ad4b05540391ab946f2fecd07d2865'
+)
+
+prepare() {
+    sudo rm -rf /Users/runner/Library/Caches/go-build
+
+    cd $srcdir/$pkgname-$pkgver
+    cp ../go.{mod,sum} .
+}
+
+build() {
+    cd $srcdir/$pkgname-$pkgver
+
+    make build
+}
+
+package() {
+    cd $srcdir/$pkgname-$pkgver
+
+    install -d -m755 $pkgdir/opt/arch/bin
+    binaries=(dive)
+    for bin in "${binaries[@]}"; do
+        install -m755 build/$bin $pkgdir/opt/arch/bin/$bin
+    done
+}
