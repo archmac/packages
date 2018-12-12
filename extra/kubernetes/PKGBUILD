@@ -1,17 +1,19 @@
 pkgname=kubernetes
-pkgver=1.9.1
+pkgver=1.12.3
 pkgrel=1
 pkgdesc="Container Cluster Manager for Docker"
 depends=('libc' 'bash')
 #makedepends=('go' 'rsync' 'go-bindata')
 makedepends=('go')
 arch=('x86_64')
-source=("$pkgname-$pkgver.tar.gz::https://dl.k8s.io/v$pkgver/kubernetes-src.tar.gz"
+source=(
+    "$pkgname-$pkgver.tar.gz::https://dl.k8s.io/v$pkgver/kubernetes-src.tar.gz"
 )
 noextract=("$pkgname-$pkgver.tar.gz")
 url="http://kubernetes.io/"
 license=("APACHE")
-sha256sums=('625ebb79412bd12feccf12e8b6a15d9c71ea681b571f34deaa59fe6c9ba55935'
+sha256sums=(
+    '91d22cb48f1958cf798e724f03503b95624a1717597f086cb070bc81a6cdbba7'
 )
 
 prepare() {
