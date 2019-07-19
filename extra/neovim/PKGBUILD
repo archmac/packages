@@ -1,6 +1,6 @@
 pkgname=neovim
-pkgver=0.3.1
-pkgrel=2
+pkgver=0.3.8
+pkgrel=1
 pkgdesc='Fork of Vim aiming to improve user experience, plugins, and GUIs'
 arch=('x86_64')
 url='https://neovim.io'
@@ -10,7 +10,9 @@ makedepends=('cmake' 'lua51-mpack' 'lua51-lpeg' 'gperf')
 optdepends=('python2-neovim: for Python 2 plugin support (see :help python)'
             'python-neovim: for Python 3 plugin support (see :help python)')
 source=(https://github.com/neovim/neovim/archive/v${pkgver}.tar.gz)
-sha512sums=('42c541608509dc0335203ee1c008045f0eaeebce8e18dffc554ab22a029da700bba9b8c721bd9d68337ddb4a56f8cf034fad2a3eb88d36baf8295e6648fce506')
+sha256sums=(
+  '953e134568d824dad7cbf32ee3114951732f9a750c462e430e6b593f418af76c'
+)
 
 build() {
   mkdir -p "${srcdir}/build"
