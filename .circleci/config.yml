@@ -73,7 +73,7 @@ jobs:
                 at: /tmp/workspace
             - add_ssh_keys:
                 fingerprints:
-                    - "1f:0e:fd:19:1f:b4:b5:97:ae:0c:16:8a:bb:f3:a1:b6"
+                    - "89:be:32:e8:7e:b8:7b:e5:2a:c0:0f:d9:b7:78:76:d1"
             - run:
                 name: Add remote ssh host
                 command: |
