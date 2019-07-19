@@ -1,0 +1,30 @@
+pkgbase=python3-appdirs
+pkgname=(python3-appdirs)
+pkgver=1.4.3
+pkgrel=2
+pkgdesc='A small Python module for determining appropriate platform-specific dirs, e.g. a "user data dir".'
+arch=('any')
+url="https://github.com/ActiveState/appdirs"
+license=('MIT')
+source=("https://pypi.io/packages/source/a/appdirs/appdirs-$pkgver.tar.gz")
+md5sums=('44c679904082a2133f5566c8a0d3ab42')
+
+build() {
+  cd "$srcdir"/appdirs-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd "$srcdir"/appdirs-$pkgver
+  python3 setup.py test
+}
+
+package_python3-appdirs() {
+  depends=('python3')
+
+  cd appdirs-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir/" --optimize=1
+  #install -Dm644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE.txt
+}
+
+# vim:set ts=2 sw=2 et:

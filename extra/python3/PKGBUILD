@@ -1,7 +1,7 @@
 pkgname=python3
-pkgver=3.5.1
-pkgrel=4
-_pybasever=3.5
+pkgver=3.7.2
+pkgrel=1
+_pybasever=3.7
 pkgdesc="Next generation of the python high-level scripting language"
 arch=('x86_64')
 license=('custom')
@@ -19,7 +19,7 @@ optdepends=('python3-setuptools'
 options=('!makeflags')
 source=("http://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz"
         dont-make-libpython-readonly.patch)
-sha1sums=('0186da436db76776196612b98bb9c2f76acfe90e'
+sha1sums=('c3dc6928516bcb934cf4740461044c79c7c35494'
           'c22b24324b8e53326702de439c401d97927ee3f2')
 
 prepare() {
@@ -34,13 +34,16 @@ prepare() {
   # Ensure that we are using the system copy of various libraries (expat, zlib, libffi, and libmpdec),
   # rather than copies shipped in the tarball
   rm -r Modules/expat
-  rm -r Modules/zlib
+  #rm -r Modules/zlib
   #rm -r Modules/_ctypes/{darwin,libffi}*
   #rm -r Modules/_decimal/libmpdec
 }
 
 build() {
   cd Python-${pkgver}
+
+  CFLAGS='-I/opt/arch/include'
+  LDFLAGS='-L/opt/arch/lib'
 
   # Disable bundled pip & setuptools
   ./configure --prefix=/opt/arch \
@@ -57,7 +60,7 @@ build() {
               #--with-system-libmpdec \
               #--enable-framework=/Library/Frameworks \
 
-  make EXTRA_CFLAGS="$CFLAGS"
+  make EXTRA_CFLAGS="$CFLAGS" EXTRA_LDFLAGS="$LDFLAGS"
 }
 
 package() {
@@ -66,7 +69,7 @@ package() {
 
   # Fix FS#22552
   ln -sf ../../libpython${_pybasever}m.so \
-    "${pkgdir}/opt/arch/lib/python${_pybasever}/config-${_pybasever}m/libpython${_pybasever}m.so"
+    "${pkgdir}/opt/arch/lib/python${_pybasever}/config-${_pybasever}m-darwin/libpython${_pybasever}m.so"
 
   # some useful "stuff" FS#46146
   install -dm755 "${pkgdir}"/opt/arch/lib/python${_pybasever}/Tools/{i18n,scripts}
@@ -74,7 +77,7 @@ package() {
   install -m755 Tools/scripts/{README,*py} "${pkgdir}"/opt/arch/lib/python${_pybasever}/Tools/scripts/
 
   # Clean-up reference to build directory
-  sed -i -e "s|$srcdir/Python-${pkgver}:||" "$pkgdir/opt/arch/lib/python${_pybasever}/config-${_pybasever}m/Makefile"
+  sed -i -e "s|$srcdir/Python-${pkgver}:||" "$pkgdir/opt/arch/lib/python${_pybasever}/config-${_pybasever}m-darwin/Makefile"
 
   # License
   install -dm755 "${pkgdir}/opt/arch/share/licenses/${pkgname}"

@@ -1,14 +1,13 @@
 pkgname=('python3-pip')
-pkgver=8.1.1
+pkgver=18.1
 pkgrel=1
 pkgdesc="The PyPA recommended tool for installing Python packages"
 url="https://pip.pypa.io/"
 arch=('any')
 license=('MIT')
 makedepends=('python3' 'python3-setuptools')
-source=(http://pypi.python.org/packages/source/p/pip/pip-${pkgver}.tar.gz)
-md5sums=('6b86f11841e89c8241d689956ba99ed7')
-sha256sums=('3e78d3066aaeb633d185a57afdccf700aa2e660436b4af618bcb6ff0fa511798')
+source=('https://files.pythonhosted.org/packages/45/ae/8a0ad77defb7cc903f09e551d88b443304a9bd6e6f124e75c0fbbf6de8f7/pip-18.1.tar.gz')
+sha256sums=('c0a292bd977ef590379a3f05d7b7f65135487b67470f6281289a94e015650ea1')
 
 package_python3-pip() {
   depends=('python3' 'python3-setuptools')

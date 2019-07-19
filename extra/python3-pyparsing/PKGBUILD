@@ -1,14 +1,14 @@
 pkgname=python3-pyparsing
 pkgname=('python3-pyparsing')
-pkgver=2.1.1
+pkgver=2.3.1
 pkgrel=1
 pkgdesc='General parsing module for Python'
 arch=('any')
 url='http://pyparsing.wikispaces.com/'
 makedepends=('python3-setuptools')
 license=('MIT')
-source=("http://downloads.sourceforge.net/pyparsing/pyparsing-$pkgver.tar.gz")
-sha256sums=('9bae5cd4cbee6da0d7d8d9a1647f5253a3b89652e707647eaf1961f4932ae6c6')
+source=('https://files.pythonhosted.org/packages/b9/b8/6b32b3e84014148dcd60dd05795e35c2e7f4b72f918616c61fdce83d27fc/pyparsing-2.3.1.tar.gz')
+sha256sums=('66c9268862641abcac4a96ba74506e594c884e3f57690a696d21ad8210ed667a')
 
 #prepare() {
 #  cp -r "pyparsing-$pkgver" py2
