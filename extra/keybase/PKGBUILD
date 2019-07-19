@@ -2,7 +2,7 @@ pkgname=keybase
 pkgdesc='CLI tool for GPG with keybase.io'
 pkgver=1.0.15
 _realver=1.0.15
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url='http://keybase.io/'
 license=('BSD')
@@ -20,6 +20,8 @@ prepare() {
 
 build() {
   cd client-${pkgver}/go/keybase
+  go get github.com/keybase/client/go/keybase
+  go install -tags production github.com/keybase/client/go/keybase
   go build -a -tags production github.com/keybase/client/go/keybase # -gccgoflags "$CFLAGS $LDFLAGS"
 }
 
