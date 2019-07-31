@@ -3,4 +3,4 @@
 ##
 
 ## Worldwide
-Server = https://download.archmac.org/packages/$repo/sierra/$arch
+Server = https://archmac.fra1.cdn.digitaloceanspaces.com/packages/$repo/sierra/$arch
