@@ -1,0 +1,10 @@
+--- scripts/makepkg.sh.in.orig	2017-05-18 13:10:47.000000000 +0200
++++ scripts/makepkg.sh.in	2019-07-31 17:38:17.000000000 +0200
+@@ -2243,6 +2243,7 @@
+ else
+ 	# clean existing pkg directory
+ 	if [[ -d $pkgdirbase ]]; then
++		chmod 755 "$pkgdirbase"
+ 		msg "$(gettext "Removing existing %s directory...")" "\$pkgdir/"
+ 		rm -rf "$pkgdirbase"
+ 	fi

@@ -1,6 +1,6 @@
 pkgname=pacman
 pkgver=5.0.2
-pkgrel=3
+pkgrel=4
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -24,6 +24,7 @@ source=(
   pacman-tmp-scriptlet.patch
   pacman-lazy-chroot.patch
   pacman-no-ro-check.patch
+  makepkg-chmod.patch
   pacman.conf.x86_64
   makepkg.conf
 )
@@ -35,6 +36,7 @@ sha256sums=(
   '8fd668217dac6c1086b8658de0534a5ca080a97ed684c12519df666aeb653e7a'
   '261468877f7b7cdfa597c34f66ea8f12adde6d37e76b8c5019f13b4fe82c6f3d'
   'a4bfddc1c32effb86d77412a323e1468869c235f332d24f0c1fc46a99ca0629b'
+  'ec46e453d67c5d0eceae60f3dccb904576d0f0552bb75adbed21f37e0a215040'
   '42c190510e576734365ed55271ddcf616845555f406c3d7a03c8a548ac9af12e'
   '3b380092065991eea4d1f95affee93c88ca8cf55315c4f596a1ff43d4ba165de'
 )
@@ -48,6 +50,7 @@ prepare() {
   patch -p0 < ../pacman-usr-local.patch
   patch -p0 < ../pacman-tmp-scriptlet.patch
   patch -p0 < ../pacman-lazy-chroot.patch
+  patch -p0 < ../makepkg-chmod.patch
   patch -p0 < ../pacman-no-ro-check.patch
 }
 
