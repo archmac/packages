@@ -1,0 +1,11 @@
+--- lib/libalpm/diskspace.c.orig	2019-07-31 17:40:00.000000000 +0200
++++ lib/libalpm/diskspace.c	2019-07-31 17:40:29.000000000 +0200
+@@ -482,7 +482,7 @@
+ 
+ 	for(i = mount_points; i; i = i->next) {
+ 		alpm_mountpoint_t *data = i->data;
+-		if(data->used && data->read_only) {
++		if(data->used && data->read_only && 0) {
+ 			_alpm_log(handle, ALPM_LOG_ERROR, _("Partition %s is mounted read only\n"),
+ 					data->mount_dir);
+ 			error = 1;
