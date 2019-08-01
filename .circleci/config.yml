@@ -71,23 +71,14 @@ jobs:
             - checkout
             - attach_workspace:
                 at: /tmp/workspace
-            - add_ssh_keys:
-                fingerprints:
-                    - "89:be:32:e8:7e:b8:7b:e5:2a:c0:0f:d9:b7:78:76:d1"
-            - run:
-                name: Add remote ssh host
-                command: |
-                    cat >> ~/.ssh/known_hosts <<'EOF'
-                    download.archmac.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRDDd1wxRN9dSZ9VS4P2UVsQE+IpO3jj3FUtOQcFVtzQnBRBucTXZ99/8masCy6gxAZ7JdY1+JxZKuiVmXuT6fP7JHedRUBuyR3hHtLFM1y6GRaJoJV0SBhgD8T4YT/yVk7TK/TIeUMon39XSdPcwD1aJMGCUB2NUClnXVfzElSoc+sabJepdH8ZfNeS+ChZpU/JvAjRKkjMlqW1GAsO5KmNPe9kgmM81weklYI36NImVaauBqgHZLVEbThSpKx59OLATXUFRuhBMAchcvbXGSUqfx3CiKtt3CSscsMAv40q648ohBVdGZ0XEdbNa6HSNKDTzmsllCFi6oSIWNGGMP
-                    EOF
             - run:
                 name: Remove packages
                 command: |
-                    .support/prune $(cat /tmp/workspace/deletions) upload@download.archmac.org:packages
+                    cd /tmp/workspace; "${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"/.support/s3put deletions archmac.fra1.digitaloceanspaces.com/builds/${CIRCLE_SHA1}/
             - run:
                 name: Upload packages
                 command: |
-                    .support/push /tmp/workspace/packages/* upload@download.archmac.org:packages
+                    cd /tmp/workspace; "${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"/.support/s3put packages archmac.fra1.digitaloceanspaces.com/builds/${CIRCLE_SHA1}/
 
 workflows:
     version: 2
@@ -97,6 +88,3 @@ workflows:
             - push:
                 requires:
                     - build
-                filters:
-                  branches:
-                    only: master

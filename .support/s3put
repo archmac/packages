@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+set -u
+
+access_key="${AWS_ACCESS_KEY}"
+secret_key="${AWS_SECRET_KEY}"
+
+tgt="${*:$#}"
+src=("${@:1:$# - 1}")
+bucket="${tgt%%.*}"
+host_bucket="${tgt%%/*}"
+host_base="${host_bucket#*.}"
+dst="${tgt#*/}"
+
+if [[ "${#src[@]}" = 0 ]]; then
+    exit 1
+fi
+
+if [[ ! "$dst" =~ .*/$ ]]; then
+    if [[ "${#src[@]}" -gt 1 || -d "${src[0]}" ]]; then
+        exit 1
+    fi
+fi
+
+for s in "${src[@]}"; do
+    find "$s" -type f | while read -r f; do
+        if [[ ! "$dst" =~ .*/$ ]]; then
+            d="${dst}"
+        else
+            d="${dst}${f}"
+        fi
+
+        resource="/${bucket}/${d}"
+        content_type="application/x-compressed-tar"
+        date="$(date -u -R)"
+        payload="PUT\n\n${content_type}\n${date}\n${resource}"
+        signature=$(echo -en "${payload}" | openssl sha1 -hmac "${secret_key}" -binary | base64)
+
+        echo "$f -> ${host_bucket}/${d}"
+        curl -X PUT -T "${f}" \
+             -H "Host: ${host_bucket}" \
+             -H "Date: ${date}" \
+             -H "Content-Type: ${content_type}" \
+             -H "Authorization: AWS ${access_key}:${signature}" \
+             "https://${host_bucket}/${d}"
+    done
+done
