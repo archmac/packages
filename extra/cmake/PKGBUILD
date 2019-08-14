@@ -1,5 +1,5 @@
 pkgname=cmake
-pkgver=3.5.1
+pkgver=3.15.2
 pkgrel=1
 pkgdesc='A cross-platform open-source make system'
 arch=('x86_64')
@@ -10,7 +10,7 @@ license=('custom')
 #optdepends=('qt5-base: cmake-gui'
 #            'libxkbcommon-x11: cmake-gui')
 source=("http://www.cmake.org/files/v${pkgver%.*}/${pkgname}-${pkgver}.tar.gz")
-md5sums=('ca051f4a66375c89d1a524e726da0296')
+sha256sums=('539088cb29a68e6d6a8fba5c00951e5e5b1a92c68fa38a83e1ed2f355933f768')
 
 prepare() {
   cd ${pkgname}-${pkgver}
