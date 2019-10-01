@@ -1,6 +1,6 @@
 pkgname=docker
-pkgver=18.02.0
-_rev='fc4de447b563498eb4da89f56fb858bbe761d91b'
+pkgver=19.03.2
+_rev='6a30dfca03664a0b6bf0646a7d389ee7d0318e6e'
 pkgrel=1
 pkgdesc='Pack, ship and run any application as a lightweight container'
 arch=('x86_64' 'i686')
@@ -10,7 +10,7 @@ license=('Apache')
 makedepends=('git' 'go')
 # don't strip binaries! A sha1 is used to check binary consistency.
 options=('!strip')
-source=("git+https://github.com/docker/docker-ce.git#tag=v$pkgver-ce")
+source=("git+https://github.com/docker/docker-ce.git#commit=${_rev}")
 md5sums=('SKIP')
 
 # create a fake go path directory and pushd into it
