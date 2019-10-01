@@ -1,8 +1,8 @@
 #pkgname=('go' 'go-tools')
 pkgname=('go')
 epoch=2
-pkgver=1.12
-pkgrel=3
+pkgver=1.13.1
+pkgrel=1
 arch=('x86_64')
 url='http://golang.org/'
 license=('BSD')
@@ -11,8 +11,8 @@ options=('!strip' 'staticlibs')
 source=(https://storage.googleapis.com/golang/go${pkgver}.src.tar.gz
         https://storage.googleapis.com/golang/go${pkgver}.darwin-amd64.tar.gz)
 noextract=("go${pkgver}.darwin-amd64.tar.gz")
-sha256sums=("09c43d3336743866f2985f566db0520b36f4992aea2b4b2fd9f52f17049e88f2"
-            "6c7e07349403f71588ef4e93a6d4ae31f8e5de1497a0a42fd998fe9b6bd07c8e")
+sha256sums=("81f154e69544b9fa92b1475ff5f11e64270260d46e7e36c34aafc8bc96209358"
+            "f3985fced3adecb62dd1e636cfa5eb9fea8f3e98101d9fcc4964d8f1ec255b7f")
 _gourl=golang.org/x/tools/cmd
 
 prepare() {
