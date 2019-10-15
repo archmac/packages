@@ -1,0 +1,23 @@
+--- lib/libalpm/util.c.orig	2016-04-20 11:25:59.000000000 +0200
++++ lib/libalpm/util.c	2016-04-20 11:26:20.000000000 +0200
+@@ -459,6 +459,10 @@
+ 	|| errnum == EINTR;
+ }
+ 
++#ifndef MSG_NOSIGNAL
++ 	#define MSG_NOSIGNAL 0x0 //Don't request NOSIGNAL on systems where this is not implemented.
++#endif
++
+ static int _alpm_chroot_write_to_child(alpm_handle_t *handle, int fd,
+ 		char *buf, ssize_t *buf_size, ssize_t buf_limit,
+ 		_alpm_cb_io out_cb, void *cb_ctx)
+@@ -556,7 +556,7 @@
+ 	int *i, signals[] = {
+ 		SIGABRT, SIGALRM, SIGBUS, SIGCHLD, SIGCONT, SIGFPE, SIGHUP, SIGILL,
+ 		SIGINT, SIGKILL, SIGPIPE, SIGQUIT, SIGSEGV, SIGSTOP, SIGTERM, SIGTSTP,
+-		SIGTTIN, SIGTTOU, SIGUSR1, SIGUSR2, SIGPOLL, SIGPROF, SIGSYS, SIGTRAP,
++		SIGTTIN, SIGTTOU, SIGUSR1, SIGUSR2, SIGPROF, SIGSYS, SIGTRAP,
+ 		SIGURG, SIGVTALRM, SIGXCPU, SIGXFSZ,
+ 		0
+ 	};
+

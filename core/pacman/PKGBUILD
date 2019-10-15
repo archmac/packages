@@ -1,6 +1,6 @@
 pkgname=pacman
-pkgver=5.0.2
-pkgrel=4
+pkgver=5.1.2
+pkgrel=1
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -24,18 +24,20 @@ source=(
   pacman-tmp-scriptlet.patch
   pacman-lazy-chroot.patch
   pacman-no-ro-check.patch
+  pacman-macos-signals.patch
   makepkg-chmod.patch
   pacman.conf.x86_64
   makepkg.conf
 )
 sha256sums=(
-  'dfd36086ad68564bcd977f4a1fafe51dd328acd4a95093ac4bf1249be9c41f0e'
+  'ce4eef1585fe64fd1c65c269e263577261edd7535fe2278240103012d74b6ef6'
   'SKIP'
   '689d02182ca2aef4adfc6efa9d0fcecc0402a31fea461e4c2a57bc725bb97fdd'
   'dcf9280a74af19ce84adee2a691b37b79ee7b2543968eccb51df411f6babce9c'
   '8fd668217dac6c1086b8658de0534a5ca080a97ed684c12519df666aeb653e7a'
   '261468877f7b7cdfa597c34f66ea8f12adde6d37e76b8c5019f13b4fe82c6f3d'
   'a4bfddc1c32effb86d77412a323e1468869c235f332d24f0c1fc46a99ca0629b'
+  'a41c1b7a9ab8288bb734567602d35684e207d55e9e672a36ae8449f81f2e13ad'
   'ec46e453d67c5d0eceae60f3dccb904576d0f0552bb75adbed21f37e0a215040'
   '42c190510e576734365ed55271ddcf616845555f406c3d7a03c8a548ac9af12e'
   '3b380092065991eea4d1f95affee93c88ca8cf55315c4f596a1ff43d4ba165de'
@@ -52,6 +54,7 @@ prepare() {
   patch -p0 < ../pacman-lazy-chroot.patch
   patch -p0 < ../makepkg-chmod.patch
   patch -p0 < ../pacman-no-ro-check.patch
+  patch -p0 < ../pacman-macos-signals.patch
 }
 
 build() {
@@ -73,7 +76,6 @@ build() {
     --disable-dependency-tracking
     #--with-ldconfig=/usr/bin/ldconfig
   make V=1
-  make -C contrib
 }
 
 check() {
@@ -84,7 +86,6 @@ package() {
   cd "$pkgname-$pkgver"
 
   make DESTDIR="$pkgdir" install
-  make DESTDIR="$pkgdir" -C contrib install
 
   # install Arch specific stuff
   install -d -m755 "$pkgdir/opt/arch/etc"
@@ -100,7 +101,7 @@ package() {
 
   # set things correctly in the default conf file
   install -m644 "$srcdir/makepkg.conf" "$pkgdir/opt/arch/etc"
-  sed -i~ \
+  sed -i '' \
     -e "s|@CARCH[@]|$mycarch|g" \
     -e "s|@CHOST[@]|$mychost|g" \
     -e "s|@CARCHFLAGS[@]|$myflags|g" \
@@ -114,7 +115,4 @@ package() {
   for f in makepkg pacman-key; do
     ln -s pacman "$pkgdir/opt/arch/share/bash-completion/completions/$f"
   done
-
-  install -d -m755 "$pkgdir/opt/arch/share/vim/vimfiles/syntax"
-  install -m644 contrib/PKGBUILD.vim "$pkgdir/opt/arch/share/vim/vimfiles/syntax/PKGBUILD.vim"
 }
