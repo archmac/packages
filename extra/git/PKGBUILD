@@ -1,5 +1,5 @@
 pkgname=git
-pkgver=2.19.1
+pkgver=2.23.0
 pkgrel=1
 pkgdesc="the fast distributed version control system"
 arch=(x86_64)
@@ -30,10 +30,10 @@ noextract=(
     "git-manpages-$pkgver.tar.xz"
 )
 sha256sums=(
-    '345056aa9b8084280b1b9fe1374d232dec05a34e8849028a20bfdb56e920dbb5'
+    '234fa05b6839e92dc300b2dd78c92ec9c0c8d439f65e1d430a7034f60af16067'
     'SKIP'
-    '7252eb32735ca60f86d0a2081891c8cc5937a2e03373c92e8eaf657029776482'
-    '27af909c7a43ffc8b1736af19a6a68d8a5b177963ec4ddd2b2f9f0ed53bcc6ee'
+    'b7959afd19554aeaaa455c88eeed2c164854391f13319bd3fa7df2577c57ddc8'
+    '9558433f68ff4229bd55e84c4d26b74e5d3518ab0ec30186253b090ea887946a'
 )
 validpgpkeys=(
     '96E07AF25771955980DAD10020D04E5A713660A7' # Junio C Hamano
