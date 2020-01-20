@@ -1,0 +1,84 @@
+name: Package
+on: [push]
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest
+    steps:
+      - name: Check macOS version
+        run: uname -a | grep 'Darwin Kernel Version 19'
+      - name: Check sudo
+        run: sudo whoami | grep root
+      - name: Pristine macOS
+        run: |
+            sudo mkdir -p /opt
+            for f in /usr/local/*; do sudo mv "$f" "$f.disabled"; done
+            echo > ~/.bashrc
+            echo > ~/.bash_profile
+            echo > ~/.circlerc
+      - name: Setup ArchMac
+        run: |
+            curl -o /tmp/snapshot.tar.gz https://archmac.fra1.cdn.digitaloceanspaces.com//snapshots/archmac-snapshot.tar.gz
+            sudo bsdtar -C /opt -xvpzf /tmp/snapshot.tar.gz && sudo mv /opt/opt/arch /opt/arch && sudo rmdir /opt/opt
+            sudo sed -i~ -e 's/^#Server =/Server =/' /opt/arch/etc/pacman.d/mirrorlist
+            echo 'export PATH="/opt/arch/bin:/opt/arch/sbin:$PATH"' >> ~/.archrc
+            echo 'source ~/.archrc' | tee -a ~/.bashrc ~/.bash_profile > /dev/null
+      - name: Update ArchMac
+        run: |
+            source ~/.archrc
+            #sudo pacman --sync --refresh --noprogressbar
+            #sudo pacman --sync --sysupgrade --noprogressbar --noconfirm --downloadonly
+            #sudo pacman --sync --sysupgrade --noprogressbar --noconfirm
+            sudo pacman --sync --noprogressbar --noconfirm base-devel
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - name: Build packages
+        run: |
+            source ~/.archrc
+            .support/changes -u origin/master "${GITHUB_SHA}" | .support/order
+            .support/build $(.support/changes -u origin/master "${GITHUB_SHA}" | .support/order)
+      - name: Copy packages
+        run: |
+            source ~/.archrc
+            .support/copy $(.support/built) ${{ runner.temp }}/workspace/packages
+      - name: Mark package deletions
+        run: |
+            source ~/.archrc
+            .support/changes -d origin/master "${GITHUB_SHA}" | .support/order
+            .support/deleted $(.support/changes -b -d origin/master "${GITHUB_SHA}") | tee ${{ runner.temp }}/workspace/deletions
+      - uses: actions/upload-artifact@v1
+        with:
+          name: packages
+          path: ${{ runner.temp }}/workspace
+  push:
+    name: Push
+    needs: [build]
+    runs-on: macos-latest
+    steps:
+      - name: Pristine macOS
+        run: |
+            sudo mkdir -p /opt
+            for f in /usr/local/*; do sudo mv "$f" "$f.disabled"; done
+            echo > ~/.bashrc
+            echo > ~/.bash_profile
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/download-artifact@v1
+        with:
+          name: packages
+          path: ${{ runner.temp }}/workspace
+      - name: Remove packages
+        run: |
+            cd ${{ runner.temp }}/workspace; "${GITHUB_WORKSPACE}"/.support/s3put deletions archmac.fra1.digitaloceanspaces.com/builds/${GITHUB_SHA}/
+        env:
+            AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+            AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      - name: Upload packages
+        run: |
+            cd ${{ runner.temp }}/workspace; "${GITHUB_WORKSPACE}"/.support/s3put packages archmac.fra1.digitaloceanspaces.com/builds/${GITHUB_SHA}/
+        env:
+            AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+            AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
