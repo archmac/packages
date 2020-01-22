@@ -7,7 +7,7 @@ url='http://www.pcre.org/'
 license=('BSD')
 #depends=('gcc-libs' 'readline' 'zlib' 'bzip2' 'bash')
 depends=('readline' 'zlib' 'bzip2' 'bash')
-source=("ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$pkgname-$pkgver.tar.bz2")
+source=("https://ftp.pcre.org/pub/pcre/$pkgname-$pkgver.tar.bz2")
 sha512sums=('44d7db2513d9415dcdf6541366fea585e016f572f3e4379f6e959a38114b2337851092049ab4a1576ae8f19b9de413edbcfa62f434c77fc8470747ee5413e967')
 
 build() {
