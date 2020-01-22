@@ -1,0 +1,39 @@
+pkgname=coreutils
+pkgver=8.31
+pkgrel=1
+pkgdesc='The basic file, shell and text manipulation utilities of the GNU operating system'
+arch=('x86_64')
+license=('GPL3')
+url='https://www.gnu.org/software/coreutils/'
+source=(
+  "https://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz"{,.sig}
+)
+validpgpkeys=('6C37DC12121A5006BC1DB804DF6FD971306037D9') # Pádraig Brady
+groups=('base' 'base-devel')
+sha256sums=(
+  'ff7a9c918edce6b4f4b2725e3f9b37b0c4d193531cac49a48b56c4d0d3a9e9fd'
+  'SKIP'
+)
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure \
+      --prefix=/opt/arch \
+      --libexecdir=/opt/arch/lib \
+      --program-prefix=g \
+      --without-gmp \
+      --enable-no-install-program=groups,hostname,kill,uptime \
+      gl_cv_func_ftello_works=yes
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  for f in b2sum base32 chcon hostid md5sum nproc numfmt pinky ptx realpath runcon sha1sum sha224sum sha256sum sha384sum sha512sum shred shuf stdbuf tac timeout truncate; do
+    ln -s "g$f" "$pkgdir/opt/arch/bin/$f"
+    ln -s "g$f.1" "$pkgdir/opt/arch/share/man/man1/$f"
+  done
+}
+
+# vim:set ts=2 sw=2 et:
