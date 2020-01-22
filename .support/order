@@ -27,6 +27,7 @@ order=(
     core/npth
     core/pinentry
     core/gnupg
+    core/coreutils
     core/pacman
     core/pacman-mirrorlist
     core/binutils
