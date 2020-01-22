@@ -19,6 +19,8 @@ build() {
   cd ${srcdir}/${pkgname}-${pkgver}
   ./configure --prefix=/opt/arch --disable-fd-passing --disable-static \
               --disable-gpgsm-test
+  sed -i .orig -e 's/DIST_SUBDIRS = src tests doc lang/DIST_SUBDIRS = src doc lang/' Makefile
+  sed -i .orig -e 's/SUBDIRS = src ${tests} doc lang/SUBDIRS = src doc lang/' Makefile
   make
 }
 
