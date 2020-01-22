@@ -6,7 +6,7 @@ set -o pipefail
 
 target="${*:$#}"
 files=("${@:1:$# - 1}")
-name="catalina"
+name="darwin19"
 arch="x86_64"
 
 mkdir -p "${target}"

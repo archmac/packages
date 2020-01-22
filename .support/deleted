@@ -7,7 +7,7 @@ set -o pipefail
 ref="$1"
 shift
 packages=("$@")
-name="catalina"
+name="darwin19"
 arch="x86_64"
 
 eval "$(grep -e PKGEXT= -e SRCEXT= /opt/arch/etc/makepkg.conf)"
