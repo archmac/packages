@@ -1,6 +1,6 @@
 pkgname=system
 pkgver=10.11
-pkgrel=2
+pkgrel=3
 pkgdesc="OS X system components meta package"
 arch=('any')
 url=""

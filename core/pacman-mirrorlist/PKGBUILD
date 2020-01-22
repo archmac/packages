@@ -1,6 +1,6 @@
 pkgname=pacman-mirrorlist
 pkgver=20190731
-pkgrel=1
+pkgrel=2
 pkgdesc="ArchMac mirror list for use by pacman"
 arch=('any')
 url="https://www.archmac.org"

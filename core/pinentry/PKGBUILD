@@ -1,6 +1,6 @@
 pkgname=pinentry
 pkgver=1.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Collection of simple PIN or passphrase entry dialogs which utilize the Assuan protocol'
 url='http://gnupg.org/related_software/pinentry/'
 arch=('x86_64')

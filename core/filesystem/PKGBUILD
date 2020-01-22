@@ -1,6 +1,6 @@
 pkgname=filesystem
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="filesystem layout"
 arch=('any')
 license=('MIT')

@@ -1,6 +1,6 @@
 pkgname=libgcrypt
 pkgver=1.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc="General purpose cryptographic library based on the code from GnuPG"
 arch=(i686 x86_64)
 url="http://www.gnupg.org"

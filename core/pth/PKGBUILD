@@ -1,6 +1,6 @@
 pkgname=pth
 pkgver=2.0.7
-pkgrel=6
+pkgrel=7
 pkgdesc="The GNU Portable Threads."
 arch=('x86_64')
 url="http://www.gnu.org/software/pth/"

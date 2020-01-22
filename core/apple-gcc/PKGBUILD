@@ -1,6 +1,6 @@
 pkgname=apple-gcc
 pkgver=4.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="GNU compiler collection"
 arch=('x86_64')
 url="https://r.research.att.com/tools/"
