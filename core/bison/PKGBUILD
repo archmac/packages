@@ -1,6 +1,6 @@
 pkgname=bison
-pkgver=3.0.4
-pkgrel=3
+pkgver=3.5.1
+pkgrel=1
 pkgdesc="The GNU general-purpose parser generator"
 arch=('i686' 'x86_64')
 license=('GPL3')
@@ -10,7 +10,7 @@ depends=('libc' 'm4' 'sh')
 groups=('base-devel')
 source=(https://ftp.gnu.org/gnu/bison/${pkgname}-${pkgver}.tar.gz{,.sig})
 sha256sums=(
-  'b67fd2daae7a64b5ba862c66c07c1addb9e6b1b05c5f2049392cfd8a2172952e'
+  '4cef2322d96751be1c0d04f3e57adbb30e7fea83af9c00f98efa6e7509296f25'
   'SKIP'
 )
 validpgpkeys=('7DF84374B1EE1F9764BBE25D0DDCAA3278D5264E')  # Akim Demaille
