@@ -34,6 +34,6 @@ package() {
   cd "$pkgname-$pkgver"
 
   make DESTDIR="$pkgdir" install
-  install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
-  install -m644 COPYING "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+  ginstall -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
+  ginstall -m644 COPYING "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }

@@ -46,10 +46,10 @@ package() {
 
   make install DESTDIR=${pkgdir}
 
-  install -d -m755 \
+  ginstall -d -m755 \
     ${pkgdir}/opt/arch/lib/python2.7/site-packages
 
-  install -m644 asciidocapi.py \
+  ginstall -m644 asciidocapi.py \
     ${pkgdir}/opt/arch/lib/python2.7/site-packages/asciidocapi.py
 
   # fix FS#21579 - [asciidoc] 8.6.2-2 "asciidoc" table style doesn't work (mismatched python version) 

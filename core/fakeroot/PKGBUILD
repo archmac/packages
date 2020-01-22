@@ -50,6 +50,6 @@ package() {
   make DESTDIR="$pkgdir" install
 
   # install README for sysv/tcp usage
-  install -d -m755 "$pkgdir"/opt/arch/share/doc/$pkgname
-  install -m644 README "$pkgdir"/opt/arch/share/doc/$pkgname/README
+  ginstall -d -m755 "$pkgdir"/opt/arch/share/doc/$pkgname
+  ginstall -m644 README "$pkgdir"/opt/arch/share/doc/$pkgname/README
 }

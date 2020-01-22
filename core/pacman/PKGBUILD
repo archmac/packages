@@ -88,8 +88,8 @@ package() {
   make DESTDIR="$pkgdir" install
 
   # install Arch specific stuff
-  install -d -m755 "$pkgdir/opt/arch/etc"
-  install -m644 "$srcdir/pacman.conf.$CARCH" "$pkgdir/opt/arch/etc/pacman.conf"
+  ginstall -d -m755 "$pkgdir/opt/arch/etc"
+  ginstall -m644 "$srcdir/pacman.conf.$CARCH" "$pkgdir/opt/arch/etc/pacman.conf"
 
   case $CARCH in
     x86_64)
@@ -100,7 +100,7 @@ package() {
   esac
 
   # set things correctly in the default conf file
-  install -m644 "$srcdir/makepkg.conf" "$pkgdir/opt/arch/etc"
+  ginstall -m644 "$srcdir/makepkg.conf" "$pkgdir/opt/arch/etc"
   sed -i '' \
     -e "s|@CARCH[@]|$mycarch|g" \
     -e "s|@CHOST[@]|$mychost|g" \
@@ -108,7 +108,7 @@ package() {
     "$pkgdir/opt/arch/etc/makepkg.conf"
 
   ## put bash_completion in the right location
-  install -d m755 "$pkgdir/opt/arch/share/bash-completion/completions"
+  ginstall -d m755 "$pkgdir/opt/arch/share/bash-completion/completions"
   mv "$pkgdir/opt/arch/etc/bash_completion.d/pacman" "$pkgdir/opt/arch/share/bash-completion/completions"
   rmdir "$pkgdir/opt/arch/etc/bash_completion.d"
 

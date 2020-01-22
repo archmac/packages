@@ -35,6 +35,6 @@ package() {
   cd "$pkgname-$pkgver"
   make DESTDIR="$pkgdir" install
 
-  install -d -m755 "$pkgdir"/opt/arch/share/licenses/libarchive
-  install -m644 COPYING "$pkgdir"/opt/arch/share/licenses/libarchive/COPYING
+  ginstall -d -m755 "$pkgdir"/opt/arch/share/licenses/libarchive
+  ginstall -m644 COPYING "$pkgdir"/opt/arch/share/licenses/libarchive/COPYING
 }

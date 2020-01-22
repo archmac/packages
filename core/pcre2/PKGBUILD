@@ -32,8 +32,8 @@ package() {
   cd $pkgname-$pkgver
   make DESTDIR="$pkgdir" install
 
-  install -m755 -d "$pkgdir/opt/arch/share/licenses/$pkgname"
-  install -m644 LICENCE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+  ginstall -m755 -d "$pkgdir/opt/arch/share/licenses/$pkgname"
+  ginstall -m644 LICENCE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:

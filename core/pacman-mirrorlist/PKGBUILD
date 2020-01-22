@@ -9,8 +9,8 @@ backup=(opt/arch/etc/pacman.d/mirrorlist)
 source=(mirrorlist)
 
 package() {
-  install -d -m755 $pkgdir/opt/arch/etc/pacman.d
-  install -m644 $srcdir/mirrorlist $pkgdir/opt/arch/etc/pacman.d/
+  ginstall -d -m755 $pkgdir/opt/arch/etc/pacman.d
+  ginstall -m644 $srcdir/mirrorlist $pkgdir/opt/arch/etc/pacman.d/
 }
 
 sha256sums=('3a4d3ee5fdc053e002ba886849668990e5901e21d8e34dc7bb03634aa5d1b213')

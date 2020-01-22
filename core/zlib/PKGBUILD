@@ -47,8 +47,8 @@ package_zlib() {
 
     install_name_tool -id /opt/arch/lib/libz.so.1.2.11 $pkgdir/opt/arch/lib/libz.so.1.2.11
 
-	install -d -m755 ${pkgdir}/opt/arch/share/licenses/zlib
-	install -m644 LICENSE ${pkgdir}/opt/arch/share/licenses/zlib/LICENSE
+	ginstall -d -m755 ${pkgdir}/opt/arch/share/licenses/zlib
+	ginstall -m644 LICENSE ${pkgdir}/opt/arch/share/licenses/zlib/LICENSE
 }
 
 package_minizip() {
@@ -57,8 +57,8 @@ package_minizip() {
 
 	cd ${srcdir}/zlib-$pkgver/contrib/minizip
 	make install DESTDIR=${pkgdir}
-	install -d -m755 ${pkgdir}/opt/arch/share/licenses/minizip
-	install -m644 ${srcdir}/zlib-$pkgver/LICENSE ${pkgdir}/opt/arch/share/licenses/minizip/LICENSE
+	ginstall -d -m755 ${pkgdir}/opt/arch/share/licenses/minizip
+	ginstall -m644 ${srcdir}/zlib-$pkgver/LICENSE ${pkgdir}/opt/arch/share/licenses/minizip/LICENSE
 
 	# https://github.com/madler/zlib/pull/229
 	rm ${pkgdir}/opt/arch/include/minizip/crypt.h

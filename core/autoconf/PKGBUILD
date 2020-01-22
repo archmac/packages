@@ -34,8 +34,8 @@ package() {
   make DESTDIR=${pkgdir} install
 
   # license exception
-  install -d -m755 $pkgdir/opt/arch/share/licenses/autoconf
-  install -m644 COPYING.EXCEPTION \
+  ginstall -d -m755 $pkgdir/opt/arch/share/licenses/autoconf
+  ginstall -m644 COPYING.EXCEPTION \
     $pkgdir/opt/arch/share/licenses/autoconf/COPYING.EXCEPTION
 
   # remove unwanted file

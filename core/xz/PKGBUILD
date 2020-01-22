@@ -28,7 +28,7 @@ check() {
 package() {
     cd ${srcdir}/${pkgname}-${pkgver}
     make DESTDIR=${pkgdir} install
-    install -d -m755 ${pkgdir}/opt/arch/share/licenses/xz/
+    ginstall -d -m755 ${pkgdir}/opt/arch/share/licenses/xz/
     #ln -sf /opt/arch/share/doc/xz/COPYING ${pkgdir}/opt/arch/share/licenses/xz/
     #ln -sf /opt/arch/share/licenses/common/GPL2/license.txt ${pkgdir}/opt/arch/share/doc/xz/COPYING.GPLv2
 }

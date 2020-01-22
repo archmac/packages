@@ -70,7 +70,7 @@ check() {
 package() {
     cd $srcdir/$pkgname-$_ver
     make INSTALL_PREFIX=$pkgdir MANDIR=/opt/arch/share/man MANSUFFIX=ssl install
-    install -m755 $srcdir/c_keychain $pkgdir/opt/arch/bin/c_keychain
-    install -d -m755 $pkgdir/opt/arch/share/licenses/$pkgname
-    install -m644 LICENSE $pkgdir/opt/arch/share/licenses/$pkgname/LICENSE
+    ginstall -m755 $srcdir/c_keychain $pkgdir/opt/arch/bin/c_keychain
+    ginstall -d -m755 $pkgdir/opt/arch/share/licenses/$pkgname
+    ginstall -m644 LICENSE $pkgdir/opt/arch/share/licenses/$pkgname/LICENSE
 }

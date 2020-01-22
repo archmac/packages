@@ -12,6 +12,6 @@ package() {
   cd "${pkgdir}"
 
   for d in bin sbin etc include lib share share/man src; do
-    install -d -m755 opt/arch/$d
+    ginstall -d -m755 opt/arch/$d
   done
 }
