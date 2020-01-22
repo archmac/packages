@@ -13,4 +13,4 @@ package() {
   install -m644 $srcdir/mirrorlist $pkgdir/opt/arch/etc/pacman.d/
 }
 
-sha256sums=('64bc1dd31125b5e4ad63ef0ca95c22c84b59b5a979235769ca6ab947fd67fbe6')
+sha256sums=('4687515058585514aee25dc79687c41d64f9f2ad486b6635b5d2122deff76bbd')

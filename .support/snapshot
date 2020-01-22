@@ -11,6 +11,7 @@ out="${2:-snapshots}"
 
 sudo rm -rf "${new_root}"
 sudo mkdir -p "${new_root}"/opt/arch/var/lib/pacman
+sudo chown root:admin "${new_root}"
 sudo chown -R root:wheel "${new_root}"/opt
 sudo pacman --root "${new_root}" --cachedir "${new_root}"/opt/arch/var/cache/pacman/pkg --noscriptlet --sync --refresh --noconfirm --noprogress base gpgme expat xz openssl
 mkdir -p "${out}"
