@@ -1,0 +1,24 @@
+pkgname=rubyfmt
+pkgver=0.2.0
+pkgrel=1
+pkgdesc='Autoformat Ruby code'
+url='https://github.com/penelopezone/rubyfmt/'
+arch=('x86_64')
+license=('MIT')
+depends=()
+source=(
+    "https://github.com/penelopezone/rubyfmt/archive/v${pkgver}.zip"
+)
+sha256sums=(
+    '1b4314240f817e54a1bd6d600279121ec97c7f0aeb1e334bffe264590d652e34'
+)
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    make
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    ginstall -D -m755 build/rubyfmt.rb "${pkgdir}"/opt/arch/bin/rubyfmt
+}
